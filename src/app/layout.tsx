@@ -1,9 +1,10 @@
 import './globals.css';
+
+import SessionContextProvider from '@/components/context/SessionContextProvider';
 import { Toaster } from '@/components';
-import Sidebar from './(sidebar)/Sidebar';
 
 export const metadata = {
-	title: 'Snippad',
+	title: 'Snippad Notepad',
 	description: 'Code snippets & note-taking for developers.',
 }
 
@@ -12,18 +13,16 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
-
-
-
 	return (
-		<html lang="en" className=''>
-			<body className='theme-light text-body-text-color'>
-				<Sidebar />
-				<main className='relative ml-80'>
-					{children}
-				</main>
-				<Toaster />
-			</body>
-		</html>
+		<>
+			<SessionContextProvider>
+				<html lang="en" className=''>
+					<body className='theme-light text-body-text-color'>
+						{children}
+						<Toaster />
+					</body>
+				</html>
+			</SessionContextProvider>
+		</>
 	)
 }

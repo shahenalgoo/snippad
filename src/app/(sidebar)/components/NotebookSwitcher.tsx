@@ -6,10 +6,8 @@
 
 'use client';
 
+import { FC } from "react";
 import useToggle from "@/hooks/useToggle";
-import { FC, useState } from "react";
-// import { useToggle } from "@/hooks";
-// import {}
 
 import { HiOutlineChevronUpDown } from "react-icons/hi2";
 
