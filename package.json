@@ -2,7 +2,7 @@
 	"name": "snippad",
 	"version": "0.0.0",
 	"author": "Shahen & Shahil Algoo",
-	"description": "A snippet & note-taking app for developers.",
+	"description": "An open-source code snippet & note-taking app for developers.",
 	"license": "MIT",
 	"private": true,
 	"scripts": {
