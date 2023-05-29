@@ -16,7 +16,7 @@ export default function RootLayout({
 
 
 	return (
-		<html lang="en">
+		<html lang="en" className=''>
 			<body className='theme-light text-body-text-color'>
 				<Sidebar />
 				<main className='relative ml-80'>
