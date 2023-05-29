@@ -16,10 +16,10 @@ export default function RootLayout({
 
 
 	return (
-		<html lang="en" className=''>
-			<body className='theme-light text-text-default'>
+		<html lang="en">
+			<body className='theme-light text-body-text-color'>
 				<Sidebar />
-				<main className='relative'>
+				<main className='relative ml-80'>
 					{children}
 				</main>
 				<Toaster />

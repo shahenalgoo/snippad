@@ -14,10 +14,8 @@ module.exports = {
 				// 'body': ['Helvetica', 'Arial', 'sans-serif'],
 			},
 			colors: {
-
 				'danger': '#f43f5e',
 				'success': '#4ade80',
-
 			},
 			container: {
 				center: true,
@@ -36,22 +34,25 @@ module.exports = {
 			light: {
 				'primary': '#34d399',
 				'secondary': 'yellow',
-				'text-default': '#000000',
+				'body-text-color': '#000000',
 				'background': '#f1f5f9',
-				'border-default': '#e2e8f0',
+				'border-color': '#e2e8f0',
+
+				// Sidebar
+				'notebook-switcher-bg': '#ffffff'
 			},
 			dark: {
 				'primary': '#34d399',
 				'secondary': 'yellow',
 				'text-default': '#ffffff',
 				'background': '#18181b',
-				'border-default': '#3f3f46',
+				'border-color': '#3f3f46',
 			},
 			coffee: {
 				'primary': '#34d399',
 				'secondary': 'yellow',
 				'background': '#713f12',
-				'border': '#e2e8f0',
+				'border-color': '#e2e8f0',
 			}
 		})
 	],

@@ -10,7 +10,8 @@ const ThemeSwitcher: FC<ThemeSwitcherProps> = () => {
 
 
 
-    const switchTheme = () => {
+    const switchTheme = (e: any) => {
+
         document.body.classList.remove('theme-light');
         document.body.classList.add('theme-dark');
 

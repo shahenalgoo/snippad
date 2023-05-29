@@ -1,14 +1,14 @@
 import ThemeSwitcher from "../components/ThemeSwitcher";
-import SidebarHeader from "./components/Header";
+import NotebookSwitcher from "./components/NotebookSwitcher";
 
 const Sidebar = () => {
 
-    // const bg_background = "bg-coffee-background"
-
     return (
-        <aside className={`fixed top-0 left-0 z-40 w-[300px] h-full border-r bg-background border-border-default `}>
+        <aside className={`fixed top-0 left-0 z-40 w-80 h-full border-r border-border-color bg-background`}>
 
-            <SidebarHeader />
+            <NotebookSwitcher />
+
+
             <ThemeSwitcher />
         </aside>
     );
