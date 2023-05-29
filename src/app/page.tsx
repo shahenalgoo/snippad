@@ -1,9 +1,15 @@
-import Image from 'next/image'
+import { Box, Button, Container } from '@/components'
 
 export default function Home() {
 	return (
 		<main>
-			Hello world!
+			<Container>
+				<Box>
+					Hello world!
+					<br />
+					<Button>Say hello!</Button>
+				</Box>
+			</Container>
 		</main>
 	)
 }

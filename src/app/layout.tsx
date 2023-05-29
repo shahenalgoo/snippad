@@ -1,4 +1,5 @@
 import './globals.css';
+import { Toaster } from '@/components';
 
 export const metadata = {
 	title: 'Snippad',
@@ -14,6 +15,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				{children}
+				<Toaster />
 			</body>
 		</html>
 	)
