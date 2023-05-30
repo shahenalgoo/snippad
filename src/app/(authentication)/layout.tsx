@@ -4,15 +4,9 @@ export default function Layout({
     children: React.ReactNode
 }) {
 
-
     return (
-        <>
-            <div>
-                <main className="relative w-full">
-                    <p>auth layout</p>
-                    {children}
-                </main>
-            </div>
-        </>
+        <main className="p-6 min-h-screen w-full relative flex flex-col justify-center items-center">
+            {children}
+        </main>
     )
 }

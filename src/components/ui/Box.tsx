@@ -7,10 +7,11 @@ const boxVariants = cva(
     {
         variants: {
             variant: {
-                solid: 'bg-slate-50'
+                solid: 'bg-slate-100',
+                transparent: ''
             },
             rounded: {
-                default: 'rounded-xl'
+                default: 'rounded-2xl'
             },
             space: {
                 default: 'p-4 sm:p-6'

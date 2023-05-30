@@ -38,6 +38,12 @@ module.exports = {
 				'background': '#f1f5f9',
 				'border-color': '#e2e8f0',
 
+				// Form Elements
+				'input-bg': '#f8fafc',
+				'input-border': '#e2e8f0',
+				'input-border-focus': '#cbd5e1',
+				'input-color': '#000000',
+
 				// Sidebar
 				'notebook-switcher-bg': '#ffffff'
 			},
