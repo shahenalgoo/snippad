@@ -4,7 +4,6 @@ import Tests from './Tests';
 
 
 export default function Home() {
-
 	return (
 		<MainFullCentered>
 			<AccountVerifier />
