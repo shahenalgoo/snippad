@@ -17,7 +17,7 @@ const spinnerVariants = cva(
                 lg: 'w-8 h-8 mx-1',
             },
             bg: {
-                default: 'text-neutral-800'
+                default: 'text-slate-200'
             }
         },
         defaultVariants: {
