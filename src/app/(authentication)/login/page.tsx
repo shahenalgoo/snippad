@@ -1,12 +1,7 @@
-import CreateEmailSession from "../components/CreateEmailSession";
-
+import LoginClient from "./LoginClient";
 
 const LoginPage = () => {
-    return (
-        <>
-            <CreateEmailSession />
-        </>
-    );
+    return <LoginClient />
 }
 
 export default LoginPage;

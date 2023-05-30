@@ -5,18 +5,21 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const buttonVariants = cva(
-    'inline-flex items-center shrink-0 font-bold transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none',
+    'inline-flex justify-center items-center shrink-0 font-bold transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none',
     {
         variants: {
             variant: {
-                primary:
-                    'bg-primary text-black hover:bg-primary-focus',
+                primary: 'bg-primary',
+                gray: 'bg-slate-200',
+                danger: 'bg-danger',
+                github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
             },
             size: {
-                default: 'justify-center items-center h-10 px-4 text-sm',
+                default: 'h-10 px-4 text-sm',
+                full: 'h-12 px-4 w-full'
             },
             rounded: {
-                default: 'rounded-lg',
+                default: 'rounded-lg'
             }
         },
         defaultVariants: {

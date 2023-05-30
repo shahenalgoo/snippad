@@ -7,10 +7,10 @@ const inputFieldVariants = cva(
     {
         variants: {
             variant: {
-                default: 'placeholder-neutral-500 input-color bg-input-bg border-input-border focus:border-input-border-focus',
+                default: 'placeholder-slate-400 bg-slate-100 border-slate-200 focus:border-slate-400',
             },
             size: {
-                default: 'h-12'
+                default: 'h-10'
             }
         },
         defaultVariants: {

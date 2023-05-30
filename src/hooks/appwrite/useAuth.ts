@@ -54,7 +54,7 @@ export default function useAuth() {
 
         try {
             const res = await account.createEmailSession(email, password)
-            console.log("SESSION DATA:::", res);
+            // console.log("SESSION DATA:::", res);
 
             setIsLoggedIn(true);
         } catch (error) {
