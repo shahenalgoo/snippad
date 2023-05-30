@@ -16,8 +16,8 @@ export default function RootLayout({
 	return (
 		<>
 			<SessionProvider>
-				<html lang="en" className=''>
-					<body className='theme-light text-body-text-color'>
+				<html lang="en">
+					<body>
 						{children}
 						<Toaster />
 					</body>

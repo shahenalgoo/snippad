@@ -1,5 +1,3 @@
-const { createThemes } = require('tw-colors');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
@@ -14,6 +12,7 @@ module.exports = {
 				// 'body': ['Helvetica', 'Arial', 'sans-serif'],
 			},
 			colors: {
+				'primary': '#34d399',
 				'danger': '#f43f5e',
 				'success': '#4ade80',
 			},
@@ -29,37 +28,5 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [
-		createThemes({
-			light: {
-				'primary': '#34d399',
-				'secondary': 'yellow',
-				'body-text-color': '#000000',
-				'background': '#f1f5f9',
-				'border-color': '#e2e8f0',
-
-				// Form Elements
-				'input-bg': '#f8fafc',
-				'input-border': '#e2e8f0',
-				'input-border-focus': '#cbd5e1',
-				'input-color': '#000000',
-
-				// Sidebar
-				'notebook-switcher-bg': '#ffffff'
-			},
-			dark: {
-				'primary': '#34d399',
-				'secondary': 'yellow',
-				'text-default': '#ffffff',
-				'background': '#18181b',
-				'border-color': '#3f3f46',
-			},
-			coffee: {
-				'primary': '#34d399',
-				'secondary': 'yellow',
-				'background': '#713f12',
-				'border-color': '#e2e8f0',
-			}
-		})
-	],
+	plugins: [],
 }

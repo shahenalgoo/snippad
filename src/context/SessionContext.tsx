@@ -47,11 +47,12 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
 
         try {
             const promise = await account.get();
-            console.log(promise);
+            // console.log(promise);
+            setIsLoggedIn(true);
             setUser(promise);
         } catch (error) {
+            console.log("PLEASE LOG IN TO CONTINUE.");
             console.log(error);
-            console.log("PLEASE LOG IN TO CONTINUE");
             setUser(null);
         } finally {
             setIsLoading(false);

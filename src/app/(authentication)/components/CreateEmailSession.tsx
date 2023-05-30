@@ -56,7 +56,7 @@ const CreateEmailSession: FC<CreateEmailSessionProps> = () => {
     }
 
     return (
-        <form onSubmit={onSubmit} className="w-full md:w-96">
+        <form onSubmit={onSubmit}>
             <div className="mb-6">
                 <InputLabel>Email Address</InputLabel>
                 <InputField

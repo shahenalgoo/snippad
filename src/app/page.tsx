@@ -1,12 +1,11 @@
-import { MainFullCentered } from '@/components';
-import AccountVerifier from './AccountVerifier';
-import Tests from './Tests';
+/**
+ * The root page verifies the user state.
+ * More details in ./AccountVerifier
+ * 
+ */
 
+import AccountVerifier from './AccountVerifier';
 
 export default function Home() {
-	return (
-		<MainFullCentered>
-			<AccountVerifier />
-		</MainFullCentered>
-	)
+	return <AccountVerifier />
 }

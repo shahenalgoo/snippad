@@ -1,24 +1,24 @@
+/**
+ * The account verifier checks if wherever the user is logged in or not and performs redirects accordingly.
+ * 
+ */
+
 'use client';
 
-import { FC } from "react";
-import { Spinner } from "@/components";
-
+import { redirect } from "next/navigation";
 import { useUser } from '@/context/SessionContext';
 
-interface AccountVerifierProps {
+const AccountVerifier = () => {
 
-}
+    // Fetch user data from hook
+    const { user, isLoggedIn } = useUser();
 
-const AccountVerifier: FC<AccountVerifierProps> = () => {
+    if (!isLoggedIn && !user) {
+        redirect('/login')
+    } else {
+        redirect('/workspace')
+    }
 
-    const { user } = useUser();
-
-    return (
-        <>
-            <Spinner size='lg' className='mb-4' />
-            Verifying user...
-        </>
-    );
 }
 
 export default AccountVerifier;

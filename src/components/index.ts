@@ -18,4 +18,5 @@ export { default as InputField } from "./form/InputField";
 export { default as InputLabel } from "./form/InputLabel";
 
 // MISC
+export { default as Separator } from "./misc/Separator";
 export { default as Toaster } from "./misc/Toaster";
