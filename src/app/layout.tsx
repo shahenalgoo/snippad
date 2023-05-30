@@ -1,6 +1,6 @@
 import './globals.css';
 
-import SessionContextProvider from '@/components/context/SessionContextProvider';
+import SessionProvider from '@/components/context/SessionProvider';
 import { Toaster } from '@/components';
 
 export const metadata = {
@@ -15,14 +15,14 @@ export default function RootLayout({
 }) {
 	return (
 		<>
-			<SessionContextProvider>
+			<SessionProvider>
 				<html lang="en" className=''>
 					<body className='theme-light text-body-text-color'>
 						{children}
 						<Toaster />
 					</body>
 				</html>
-			</SessionContextProvider>
+			</SessionProvider>
 		</>
 	)
 }
