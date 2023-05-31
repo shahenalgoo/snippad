@@ -13,12 +13,11 @@ const NotebookTest: FC<NotebookTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                {/* <button className="mx-3" onClick={() => createEmailAccount("test123@gmail.com", "12345678")}>Create Account</button> */}
-                {/* <button className="mx-3" onClick={() => login("test123@gmail.com", "12345678")}>Login</button> */}
-                {/* <button className="mx-3" onClick={logout}>Logout</button> */}
-                <button className="mx-3" onClick={() => createNotebook("Personal Nook")}>Create Notebook</button>
-                <button className="mx-3" onClick={() => activateNotebook("6476ec1a8e188a011dc3", true)}>Select Another Notebook</button>
-            </div>
+                {/* <button className="mx-3" onClick={() => createNotebook("Another Notebook")}>Create Notebook</button> */}
+                {defaultNotebookId ? <button className="mx-3" onClick={() => activateNotebook(defaultNotebookId)}>Personal Notebook</button> : <></>}
+                {collection ? < button className="mx-3" onClick={() => activateNotebook(collection[1].$id)}>Another Notebook</button> : <></>}
+
+            </div >
         </>
     );
 }

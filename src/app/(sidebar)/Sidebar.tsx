@@ -1,5 +1,6 @@
-import ThemeSwitcher from "./components/ThemeSwitcher";
 import NotebookSwitcher from "./components/NotebookSwitcher";
+import NotesTest from "../workspace/components/NotesTest";
+import NotebookTest from "../workspace/components/NotebookTest";
 
 const Sidebar = () => {
 
@@ -8,8 +9,8 @@ const Sidebar = () => {
 
             <NotebookSwitcher />
 
-
-            <ThemeSwitcher />
+            <NotebookTest />
+            <NotesTest />
         </aside>
     );
 }
