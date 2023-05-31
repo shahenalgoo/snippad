@@ -2,13 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
+import { IRead, Notebook } from "../../../../types/typings";
 
-interface IRead {
-    collection_id: string,
-    queries?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
-}
 export default function useCollection({
     collection_id,
     queries,
@@ -17,7 +12,7 @@ export default function useCollection({
 }: IRead) {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [collection, setCollection] = useState<Models.Document[]>([]);
+    const [collection, setCollection] = useState<Models.Document[] | null>(null);
     const [total, setTotal] = useState<number>(0);
 
     const fetchCollection = useCallback(async () => {
@@ -32,7 +27,7 @@ export default function useCollection({
                 queries ? queries : []
             );
 
-            // console.log(res);
+            console.log(res);
 
             // Update collection
             setCollection(res.documents);
@@ -61,13 +56,9 @@ export default function useCollection({
             }
         );
 
-        //first time fetch
+        // First time fetch
         fetchCollection();
 
-        return () => {
-            //unsubscribe
-            subscribe();
-        }
 
     }, []);
 

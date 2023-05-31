@@ -3,14 +3,9 @@ import { useState } from "react";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
 import { ID, Permission } from "appwrite";
+import { IUpdate } from "../../../../types/typings";
 
-interface IUpdate {
-    document_id: string
-    data: any,
-    permission: Permission[],
-    onSuccess?: () => any,
-    onError?: () => any
-}
+
 export default function useDocumentUpdate(collection_id: string) {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
