@@ -8,6 +8,7 @@ const boxVariants = cva(
         variants: {
             variant: {
                 solid: 'bg-slate-100',
+                border: 'border border-slate-200',
                 transparent: ''
             },
             rounded: {
