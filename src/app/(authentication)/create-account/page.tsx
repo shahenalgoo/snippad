@@ -1,9 +1,7 @@
+import CreateAccountClient from "./CreateAccountClient";
+
 const page = () => {
-    return (
-        <div>
-            create account
-        </div>
-    );
+    return <CreateAccountClient />
 }
 
 export default page;
