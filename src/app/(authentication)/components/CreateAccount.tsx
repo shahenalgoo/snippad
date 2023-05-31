@@ -1,11 +1,10 @@
 import { FC } from "react";
 import { useUser } from "@/context/SessionContext";
-import { useAuth, useToggle } from "@/hooks";
+import { useAuth } from "@/hooks";
 
-import { Box, Button, InputField, InputLabel } from "@/components";
+import { Button, InputField, InputLabel } from "@/components";
 import { TbArrowNarrowRight } from "react-icons/tb";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
 
 interface CreateAccountProps {
 
@@ -40,6 +39,7 @@ const CreateAccount: FC<CreateAccountProps> = () => {
             toast.dismiss();
             toast.success('Your account has been created!');
 
+            // Login after account is created
             await (await login(createAccountForm.email, createAccountForm.password));
 
         } catch (error) {
@@ -95,23 +95,6 @@ const CreateAccount: FC<CreateAccountProps> = () => {
             </Button>
 
         </form>
-        // <>
-
-        //     {isRegistered &&
-        //         <div className="text-center">
-        //             <Button href="/login">
-        //                 Sign In
-        //             </Button>
-        //         </div>
-        //     }
-
-
-        //     {!isRegistered &&
-        //         <Box variant='border'>
-
-        //         </Box>
-        //     }
-        // </>
     );
 }
 

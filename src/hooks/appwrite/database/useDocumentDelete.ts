@@ -1,17 +1,45 @@
+/**
+ * A hook to delete documents
+ * 
+ */
+
+import { useState } from "react";
+import { IDeleteDocument } from "@/types/typings";
 
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
-import { useState } from "react";
 import toast from "react-hot-toast";
-import { IDelete } from "../../../../types/typings";
 
+
+/**
+ * Use to delete documents
+ * 
+ * @param collection_id id of parent collection
+ * @returns deleteDocument function
+ * @returns isLoading state
+ * 
+ */
 export default function useDocumentDelete(collection_id: string) {
+
+    // States
+    //
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const remove = async ({
+
+    /**
+     * DELETE DOCUMENT
+     * 
+     * @param document_id id of the document to be deleted
+     * @param onSuccess (optional) custom functions on success
+     * @param OnError (optional) custom functions on error
+     * 
+     */
+    const deleteDocument = async ({
         document_id,
         onSuccess,
         onError
-    }: IDelete) => {
+    }: IDeleteDocument) => {
+
+        setIsLoading(true);
         toast.loading('Deleting...');
 
         try {
@@ -21,22 +49,24 @@ export default function useDocumentDelete(collection_id: string) {
             // Execute OnSuccess, if any
             if (onSuccess) onSuccess();
 
-            setIsLoading(false);
             toast.dismiss();
             toast.success('Delete Successful');
+
         } catch (error) {
             // Execute OnError, if any
             if (onError) onError();
 
-            setIsLoading(false);
             toast.dismiss();
             toast.error('Unable to Delete');
 
+        } finally {
+            setIsLoading(false);
         }
     }
 
+
     return {
-        remove,
+        deleteDocument,
         isLoading
     }
 }

@@ -15,6 +15,7 @@ const VerifyUserState = () => {
     //
     const { isLoading, isLoggedIn } = useUser();
 
+
     // Redirects based on user's state
     //
     if (!isLoading) {
