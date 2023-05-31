@@ -3,13 +3,9 @@ import { useState } from "react";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
 import { ID, Permission } from "appwrite";
+import { ICreate } from "../../../../types/typings";
 
-interface ICreate {
-    data: any,
-    permission: Permission[],
-    onSuccess?: () => any,
-    onError?: () => any
-}
+
 export default function useDocumentCreate(collection_id: string) {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);

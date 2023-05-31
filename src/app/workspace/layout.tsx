@@ -1,5 +1,6 @@
-import Sidebar from "../(sidebar)/Sidebar";
+import NotebookProvider from "@/components/context/NotebookProvider";
 import VerifyUserState from "./verify";
+import Sidebar from "../(sidebar)/Sidebar";
 
 export default function Layout({
     children,
@@ -9,12 +10,14 @@ export default function Layout({
 
     return (
         <>
-            <VerifyUserState>
-                <Sidebar />
-                <main className="relative w-auto ml-80">
-                    {children}
-                </main>
-            </VerifyUserState>
+            <NotebookProvider>
+              <VerifyUserState>
+                  <Sidebar />
+                  <main className="relative w-auto ml-80">
+                      {children}
+                  </main>
+              </VerifyUserState>
+            </NotebookProvider>
         </>
     )
 }
