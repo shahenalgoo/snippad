@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
-import { IRead, Notebook } from "../../../../types/typings";
+import { IRead } from "../../../../types/typings";
 
 export default function useCollection({
     collection_id,
@@ -11,13 +11,13 @@ export default function useCollection({
     onError
 }: IRead) {
 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [collection, setCollection] = useState<Models.Document[] | null>(null);
     const [total, setTotal] = useState<number>(0);
 
     const fetchCollection = useCallback(async () => {
 
-        setIsLoading(true);
+        // setIsLoading(true);
 
         try {
             // Query database
@@ -26,8 +26,6 @@ export default function useCollection({
                 collection_id,
                 queries ? queries : []
             );
-
-            console.log(res);
 
             // Update collection
             setCollection(res.documents);
@@ -66,6 +64,6 @@ export default function useCollection({
         collection,
         total,
         isLoading,
-        refresh: fetchCollection
+        fetch: fetchCollection
     }
 }

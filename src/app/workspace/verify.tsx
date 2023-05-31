@@ -26,7 +26,11 @@ const VerifyUserState: FC<VerifyUserStateProps> = ({ children }) => {
         <>
             {isLoading && <LoadingComponent />}
 
-            {!isLoading && { children }}
+            {!isLoading &&
+                <>
+                    {children}
+                </>
+            }
         </>
     )
 }

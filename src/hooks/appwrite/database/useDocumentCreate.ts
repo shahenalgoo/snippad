@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
-import { ID, Permission } from "appwrite";
+import { ID } from "appwrite";
 import { ICreate } from "../../../../types/typings";
 
 

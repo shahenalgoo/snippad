@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
-import { ID, Permission } from "appwrite";
 import { IUpdate } from "../../../../types/typings";
 
 
