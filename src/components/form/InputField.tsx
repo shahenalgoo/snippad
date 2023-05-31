@@ -3,7 +3,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const inputFieldVariants = cva(
-    'w-full px-6 rounded-lg outline-none border',
+    'w-full px-4 rounded-lg outline-none border',
     {
         variants: {
             variant: {

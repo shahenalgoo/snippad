@@ -10,8 +10,9 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 primary: 'bg-primary',
-                gray: 'bg-slate-200',
                 danger: 'bg-danger',
+                gray: 'bg-slate-200',
+                link: 'text-slate-500 hover:bg-slate-100',
                 github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
             },
             size: {

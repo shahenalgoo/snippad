@@ -1,4 +1,5 @@
 import Sidebar from "../(sidebar)/Sidebar";
+import VerifyUserState from "./verify";
 
 export default function Layout({
     children,
@@ -6,15 +7,14 @@ export default function Layout({
     children: React.ReactNode
 }) {
 
-
     return (
         <>
-            <div>
+            <VerifyUserState>
                 <Sidebar />
-                <main className="relative w-full ml-80">
+                <main className="relative w-auto ml-80">
                     {children}
                 </main>
-            </div>
+            </VerifyUserState>
         </>
     )
 }

@@ -4,8 +4,8 @@
  * 
  */
 
-import AccountVerifier from './AccountVerifier';
+import VerifyUserState from './verify';
 
 export default function Home() {
-	return <AccountVerifier />
+	return <VerifyUserState />
 }

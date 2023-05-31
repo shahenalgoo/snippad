@@ -1,36 +1,35 @@
+/**
+ * Traditional login component
+ * 
+ */
+
 'use client';
 
-import { FC, useState } from "react";
-import { account } from "@/lib/appwrite-config";
+import { FC } from "react";
+import { useAuth } from "@/hooks";
+import { useUser } from "@/context/SessionContext";
 
 import { Button, InputField, InputLabel } from "@/components";
 import { TbArrowNarrowRight } from "react-icons/tb";
-import { toast } from "react-hot-toast";
+
 
 interface CreateEmailSessionProps {
 
 }
 
-type FormData = {
-    email: string;
-    password: string;
-}
 
 const CreateEmailSession: FC<CreateEmailSessionProps> = () => {
 
-    // States
+    // Hooks
     //
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [form, setForm] = useState<FormData>({
-        email: 'email32@example.com',
-        password: '12345678'
-    });
+    const { login, loginForm, setLoginForm } = useAuth();
+    const { isLoading } = useUser();
 
 
     // Handle state changes on form
     //
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.id]: e.target.value });
+        setLoginForm({ ...loginForm, [e.target.id]: e.target.value });
     }
 
 
@@ -38,50 +37,38 @@ const CreateEmailSession: FC<CreateEmailSessionProps> = () => {
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        setIsLoading(true);
-        toast.loading('Signing in...');
-
-        try {
-            await account.createEmailSession(form.email, form.password);
-            toast.dismiss();
-            toast.success('You are signed in!');
-        } catch (error) {
-            toast.dismiss();
-            toast.error('Unable to sign in.');
-            console.log(error);
-        } finally {
-            setIsLoading(false);
-        }
+        await login(loginForm.email, loginForm.password);
     }
+
 
     return (
         <form onSubmit={onSubmit}>
+
             <div className="mb-6">
                 <InputLabel>Email Address</InputLabel>
                 <InputField
                     id="email"
                     type='email'
-                    defaultValue={form.email}
+                    defaultValue={loginForm.email}
                     onChange={onFieldChange}
                     disabled={isLoading}
                     className="text-sm disabled:opacity-50"
                 />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-6">
                 <InputLabel>Password</InputLabel>
                 <InputField
                     id="password"
                     type='password'
-                    defaultValue={form.password}
+                    defaultValue={loginForm.password}
                     onChange={onFieldChange}
                     disabled={isLoading}
                     className="text-sm disabled:opacity-50"
                 />
             </div>
 
-            <Button type="submit" className="mt-2">
+            <Button type="submit" className="w-full">
                 Sign In <TbArrowNarrowRight size={20} strokeWidth={1.5} className="ml-2" />
             </Button>
 
