@@ -5,6 +5,11 @@ import { account } from "@/lib/appwrite-config";
 import { ID } from "appwrite";
 
 import { toast } from "react-hot-toast";
+import { redirect } from "next/navigation";
+
+
+/// TODO: Create a 'General' Notebook for every new user with a server-side function.
+
 
 type MagicForm = {
     email: string;
@@ -48,7 +53,7 @@ export default function useAuth() {
     //
     const [createAccountForm, setCreateAccountForm] = useState<CreateAccountForm>({
         name: 'Shahen',
-        email: 'email32@example.com',
+        email: 'email44@example.com',
         password: '12345678'
     });
 
@@ -62,24 +67,15 @@ export default function useAuth() {
      * @param email example@email.com
      * @param password  set a password
      */
-    const createEmailAccount = async (
+    const createAccount = async (
         email: string,
-        password: string
+        password: string,
+        name?: string
     ) => {
 
-        try {
-            await account.create(ID.unique(), email, password);
+        const res = await account.create(ID.unique(), email, password, name);
+        return res;
 
-            /// TODO: Create a 'General' Notebook for every new user with a server-side function.
-
-            // Proceed to login
-            login(email, password);
-
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsLoading(false);
-        }
     };
 
 
@@ -87,6 +83,9 @@ export default function useAuth() {
     const magicLogin = async (
         email: string
     ) => {
+
+        setIsLoading(true);
+
         try {
             await account.createMagicURLSession(ID.unique(), email, 'http://localhost:3000/confirm-magic-session');
             toast.success('Verification email sent!');
@@ -113,6 +112,7 @@ export default function useAuth() {
         password: string
     ) => {
 
+        setIsLoading(true);
         toast.loading('Logging in...');
 
         try {
@@ -137,6 +137,7 @@ export default function useAuth() {
      */
     const logout = async () => {
 
+        setIsLoading(true);
         toast.loading('Logging in...');
 
         try {
@@ -153,7 +154,7 @@ export default function useAuth() {
     };
 
     return {
-        createEmailAccount, createAccountForm, setCreateAccountForm,
+        createAccount, createAccountForm, setCreateAccountForm,
         magicLogin, magicForm, setMagicForm,
         login, loginForm, setLoginForm,
         logout

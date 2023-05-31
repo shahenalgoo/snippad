@@ -8,7 +8,7 @@
 'use client';
 
 import { useUser } from "@/context/SessionContext";
-import { useAuth, useToggle } from "@/hooks";
+import { useToggle } from "@/hooks";
 
 import { Box, Button, Separator } from "@/components";
 import { TbArrowNarrowRight } from "react-icons/tb";
@@ -16,6 +16,7 @@ import { TbArrowNarrowRight } from "react-icons/tb";
 import CreateOauthSession from "../components/CreateOauthSession";
 import CreateMagicSession from "../components/CreateMagicSession";
 import CreateEmailSession from "../components/CreateEmailSession";
+import AlreadyLoggedIn from "@/components/misc/AlreadyLoggedIn";
 
 
 const LoginClient = () => {
@@ -24,11 +25,12 @@ const LoginClient = () => {
     //
     const [traditionalLogin, setTraditionalLogin] = useToggle();
     const { isLoggedIn } = useUser();
-    const { logout } = useAuth();
 
 
     return (
         <div className="w-full sm:w-96">
+
+            {isLoggedIn && <AlreadyLoggedIn />}
 
             {!isLoggedIn &&
                 <>
@@ -80,20 +82,6 @@ const LoginClient = () => {
                         </Button>
                     </div>
 
-                </>
-            }
-
-            {/* Once logged in -> Logout or Go to Workspace */}
-            {isLoggedIn &&
-                <>
-                    <h1 className="mb-4 text-xl text-center text-slate-400">Already Logged In!</h1>
-                    <div className="flex justify-center gap-2">
-                        <Button onClick={logout} variant='gray'>Logout</Button>
-                        <Button href="/workspace">
-                            Go to Workspace
-                            <TbArrowNarrowRight className="ml-2" />
-                        </Button>
-                    </div>
                 </>
             }
 
