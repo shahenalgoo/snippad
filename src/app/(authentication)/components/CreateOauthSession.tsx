@@ -6,12 +6,16 @@ import { account } from "@/lib/appwrite-config";
 import { Button, Grid } from "@/components";
 import { TbBrandGithub, TbBrandDiscord, TbBrandGoogle, TbArrowNarrowRight } from "react-icons/tb";
 
+
 interface CreateOauthSessionProps {
 
 }
 
+
 const CreateOauthSession: FC<CreateOauthSessionProps> = () => {
 
+    // Sign in with Github
+    //
     const handleGithubAuth = async () => {
         try {
             await account.createOAuth2Session(
@@ -23,6 +27,9 @@ const CreateOauthSession: FC<CreateOauthSessionProps> = () => {
         }
     }
 
+
+    // Sign in with Discord
+    //
     const handleDiscordAuth = async () => {
         try {
             await account.createOAuth2Session(
@@ -33,6 +40,7 @@ const CreateOauthSession: FC<CreateOauthSessionProps> = () => {
             console.log(error);
         }
     }
+
 
     return (
         <>

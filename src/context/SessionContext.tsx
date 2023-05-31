@@ -1,7 +1,17 @@
+/**
+ * A context to handle user sessions from appwrite
+ * Also contains the useUser hook to access user data and states
+ * 
+ */
+
 import React, { createContext, useState, useEffect, useContext } from "react";
+
 import { account } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
 
+
+// Session typings
+//
 type SessionContextType = {
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +27,14 @@ type SessionProviderProps = {
     children: React.ReactNode;
 };
 
+
+// Create new context
+//
 const SessionContext = createContext<SessionContextType | null>(null);
+
+
+// Hook to access context
+//
 export const useUser = (): SessionContextType => {
     const context = useContext(SessionContext);
 
@@ -28,19 +45,28 @@ export const useUser = (): SessionContextType => {
     return context;
 };
 
+
+/**
+ * Session Provider
+ * Wrap application to provide context
+ * 
+ */
 export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: any) => {
 
+    // States
+    //
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
     // const [session, setSession] = useState<Models.Session | null>(null);
 
 
+    // Fetch User
+    //
     const fetchUser = async () => {
-
+        setIsLoading(true);
         try {
             const promise = await account.get();
-            // console.log(promise);
             setIsLoggedIn(true);
             setUser(promise);
         } catch (error) {
@@ -50,15 +76,18 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
         } finally {
             setIsLoading(false);
         }
-
     }
 
+
+    // Use effect
+    //
     useEffect(() => {
         fetchUser();
     }, []);
 
 
-
+    // Variables made available from context
+    //
     const contextValue: SessionContextType = {
         isLoading,
         setIsLoading,
@@ -66,9 +95,8 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
         setIsLoggedIn,
         user,
         setUser,
-        //session,
-        //setSession
     };
+
 
     return (
         <SessionContext.Provider value={contextValue}>

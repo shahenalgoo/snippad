@@ -4,7 +4,7 @@ import { FC } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { account } from "@/lib/appwrite-config";
 
-import { Button, Separator, Spinner } from "@/components";
+import { Button, Spinner } from "@/components";
 import { TbArrowNarrowRight } from "react-icons/tb";
 import { toast } from "react-hot-toast";
 import { useUser } from "@/context/SessionContext";
@@ -17,21 +17,26 @@ interface ConfirmMagicClientProps {
 
 const ConfirmMagicClient: FC<ConfirmMagicClientProps> = () => {
 
+    // Set user states
+    //
+    const { setIsLoading, setIsLoggedIn } = useUser();
+
+
     // Find userId and secret token from url
     //
     const searchParams = useSearchParams();
     const userId = searchParams.get('userId');
     const secret = searchParams.get('secret');
 
+
     // Init router
     //
     const router = useRouter();
 
-    const { setIsLoading, setIsLoggedIn } = useUser();
 
-
+    // Handle to confirm magic login's secret
+    //
     const handleConfirmation = async () => {
-
         setIsLoading(true);
         toast.loading('Logging in...');
 
@@ -49,10 +54,11 @@ const ConfirmMagicClient: FC<ConfirmMagicClientProps> = () => {
         } finally {
             setIsLoading(true);
         }
-
     }
 
 
+    // Confirmation failed
+    //
     if (!userId || !secret) {
         return (
             <>
@@ -64,12 +70,11 @@ const ConfirmMagicClient: FC<ConfirmMagicClientProps> = () => {
         )
     }
 
+
     return (
         <>
             <Spinner size='lg' className="mb-4" />
             <span className="mb-8 text-sm text-slate-500">Awaiting user confirmation.</span>
-
-            {/* <Separator /> */}
 
             <div className="flex justify-center gap-2">
                 <Button onClick={handleConfirmation}>

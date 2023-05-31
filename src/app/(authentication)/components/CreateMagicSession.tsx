@@ -39,7 +39,7 @@ const CreateMagicSession: FC<CreateMagicSessionProps> = () => {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // await login(loginForm.email, loginForm.password);
-        await magicLogin(magicForm.email)
+        await magicLogin(magicForm.email, "http://localhost:3000/confirm-magic-session")
     }
 
     return (
