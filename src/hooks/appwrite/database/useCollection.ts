@@ -1,23 +1,43 @@
+/**
+ * A hook to fetch collections
+ * 
+ */
+
 import { useState, useEffect, useCallback } from "react";
+import { IFetchCollection } from "@/types/typings";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
-import { IRead } from "../../../../types/typings";
 
+
+/**
+ * Use to fetch a collection
+ * 
+ * @param collection_id id of collection to be fetched
+ * @param queries (optional) filter with custom queries
+ * @param onSuccess (optional) custom functions on success
+ * @param OnError (optional) custom functions on error
+ * 
+ */
 export default function useCollection({
     collection_id,
     queries,
     onSuccess,
     onError
-}: IRead) {
+}: IFetchCollection) {
 
+    // States
+    //
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [collection, setCollection] = useState<Models.Document[] | null>(null);
     const [total, setTotal] = useState<number>(0);
 
+
+    // Fetch collection
+    //
     const fetchCollection = useCallback(async () => {
 
-        // setIsLoading(true);
+        setIsLoading(true);
 
         try {
             // Query database
@@ -45,20 +65,23 @@ export default function useCollection({
 
     }, []);
 
+
+    // Use effect
+    //
     useEffect(() => {
-        //subscribe to live changes for the user's collection of documents
-        const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${collection_id}.documents`,
-            res => {
-                // console.log("realtime triggered");
-                fetchCollection();
-            }
-        );
+
+        // Subscribe to live changes for the user's collection of documents
+        //
+        const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${collection_id}.documents`, res => {
+            fetchCollection();
+        });
 
         // First time fetch
+        //
         fetchCollection();
 
-
     }, []);
+
 
     return {
         collection,

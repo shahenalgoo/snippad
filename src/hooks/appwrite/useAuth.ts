@@ -1,30 +1,18 @@
+/**
+ * A hook to handle authentication
+ * 
+ * TODO: Create a 'General' Notebook for every new user with a server-side function.
+ * 
+*/
+
 import { useState } from "react";
 import { useUser } from "@/context/SessionContext";
+import { MagicForm, LoginForm, CreateAccountForm } from "@/types/typings";
 
 import { account } from "@/lib/appwrite-config";
 import { ID } from "appwrite";
 
 import { toast } from "react-hot-toast";
-import { redirect } from "next/navigation";
-
-
-/// TODO: Create a 'General' Notebook for every new user with a server-side function.
-
-
-type MagicForm = {
-    email: string;
-}
-
-type LoginForm = {
-    email: string;
-    password: string;
-}
-
-type CreateAccountForm = {
-    name: string;
-    email: string;
-    password: string;
-}
 
 
 export default function useAuth() {
@@ -37,7 +25,8 @@ export default function useAuth() {
     // Magic Form State
     //
     const [magicForm, setMagicForm] = useState<MagicForm>({
-        email: 'shahenalgoo@gmail.com'
+        email: 'shahenalgoo@gmail.com',
+        url: ''
     });
 
 
@@ -66,6 +55,7 @@ export default function useAuth() {
      * 
      * @param email example@email.com
      * @param password  set a password
+     * 
      */
     const createAccount = async (
         email: string,
@@ -79,15 +69,24 @@ export default function useAuth() {
     };
 
 
-
+    /**
+     * MAGIC LOGIN
+     * 
+     * Log user in magically 🧙
+     * 
+     * @param email email address
+     * @param url redirect url
+     * 
+     */
     const magicLogin = async (
-        email: string
+        email: string,
+        url: string
     ) => {
 
         setIsLoading(true);
 
         try {
-            await account.createMagicURLSession(ID.unique(), email, 'http://localhost:3000/confirm-magic-session');
+            await account.createMagicURLSession(ID.unique(), email, url);
             toast.success('Verification email sent!');
         } catch (error) {
             console.log(error);
@@ -98,14 +97,14 @@ export default function useAuth() {
     }
 
 
-
     /**
      * LOGIN
      * 
      * Log user in with traditional email and passowrd.
      * 
-     * @param email Email address
-     * @param password Password
+     * @param email email address
+     * @param password password
+     * 
      */
     const login = async (
         email: string,

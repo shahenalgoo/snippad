@@ -1,20 +1,32 @@
+/**
+ * A context to handle notebooks globally
+ * Also contains the useNotebook hook to access notebook data and states
+ * 
+ */
+
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { Notebook } from "@/types/typings";
+
+import { useUser } from "./SessionContext";
+import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
+
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
-import { Notebook } from "../../types/typings";
-import { useUser } from "./SessionContext";
-import useDocumentCreate from "@/hooks/appwrite/database/useDocumentCreate";
-import useDocumentDelete from "@/hooks/appwrite/database/useDocumentDelete";
+
 import Cookies from "universal-cookie";
-import useDocumentUpdate from "@/hooks/appwrite/database/useDocumentUpdate";
 import toast from "react-hot-toast";
 
+
+// Notebook typings
+//
 type NotebookContextType = {
     isLoading: boolean
     collection: Notebook[] | null;
     total: number;
+
     defaultNotebookId: string | null;
     activeNotebookId: string | null;
+
     activateNotebook: (id: string, setCookie: boolean) => void;
     createNotebook: (id: string) => Promise<void>;
     updateNotebook: (document_id: string, title: string) => Promise<void>;
@@ -25,8 +37,14 @@ type NotebookProviderProps = {
     children: React.ReactNode;
 };
 
+
+// Create new context
+//
 const NotebookContext = createContext<NotebookContextType | null>(null)
 
+
+// Hook to access context
+//
 export const useNotebook = (): NotebookContextType => {
     const context = useContext(NotebookContext);
 
@@ -36,25 +54,39 @@ export const useNotebook = (): NotebookContextType => {
 
     return context;
 };
-export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: any) => {
-    // User data
-    const { user } = useUser();
 
-    // Notebook Variables
+
+/**
+ * Notebook Provider
+ * Used to wrap the /workspace
+ * 
+ */
+export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: any) => {
+
+    // States
+    //
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [collection, setCollection] = useState<Notebook[] | null>(null);
     const [total, setTotal] = useState<number>(0);
-
-    // Default Notebook
     const [defaultNotebookId, setDefaultNotebookId] = useState<string | null>(null);
-    const defaultNotebookName = "Personal Notebook";
-
-    // Current Active Notebook
     const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
 
-    // Cookies to save and retrieve last active notebook
+
+    // Default Names
+    //
+    const defaultNotebookName = "Personal Notebook";
+    const cookieNotebookRef = "activeNotebookId";
+
+
+    // Init Cookies
+    //
     const cookies = new Cookies();
-    const cookieNotebookRef = 'activeNotebookId'
+
+
+    // User data
+    //
+    const { user } = useUser();
+
 
     // Fetch notebooks
     //
@@ -63,13 +95,13 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         setIsLoading(true);
 
         try {
-            // Query db for user's notebooks
+
+            // Fetch user's notebooks
             const res = await databases.listDocuments(
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notebook
             );
 
-            //console.log(res);
             // Set collection & total
             setCollection(res.documents as Notebook[]);
             setTotal(res.total);
@@ -86,18 +118,22 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+
     // Set selected notebook as active
     //
     const activateNotebook = async (id: string, setCookie: boolean) => {
         setActiveNotebookId(id);
+
+        // Also set it in cookies
         if (setCookie) {
             cookies.set(cookieNotebookRef, id);
         }
     }
 
+
     // Create a new notebook
     //
-    const { create } = useDocumentCreate(AppwriteIds.collectionId_notebook);
+    const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
 
     const createNotebook = async (title: string) => {
         // New notebook cannot be the same name as default notebook
@@ -108,7 +144,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
 
         if (user) {
-            create({
+            createDocument({
                 data: {
                     title: title,
                 } as Notebook,
@@ -121,13 +157,14 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+
     // Update a notebook
     //
-    const { update } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
+    const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
 
     const updateNotebook = async (document_id: string, title: string) => {
         if (user) {
-            update({
+            updateDocument({
                 document_id: document_id,
                 data: {
                     title: title,
@@ -141,12 +178,13 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+
     // Delete a notebook
     //
-    const { remove } = useDocumentDelete(AppwriteIds.collectionId_notebook);
+    const { deleteDocument } = useDocumentDelete(AppwriteIds.collectionId_notebook);
 
     const deleteNotebook = (id: string) => {
-        remove({ document_id: id })
+        deleteDocument({ document_id: id })
 
         // Switch active notebook to 'personal' IF the active notebook has been deleted
         if (activeNotebookId === id && defaultNotebookId) {
@@ -154,7 +192,11 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+
+    // Use effect
+    //
     useEffect(() => {
+
         // Fetch notebooks
         fetchNotebooks();
 
@@ -167,6 +209,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
 
         // Subscribe to live changes for the user's notebook collection
+        //
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notebook}.documents`,
             res => {
                 // console.log("realtime triggered");
@@ -176,7 +219,9 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     }, []);
 
+
     // Variables made available from context
+    //
     const contextValue: NotebookContextType = {
         isLoading,
         collection: collection as Notebook[] | null,
@@ -188,6 +233,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         updateNotebook,
         deleteNotebook
     }
+
 
     return (
         <NotebookContext.Provider value={contextValue}>
