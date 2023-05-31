@@ -1,3 +1,5 @@
+import NotebookProvider from "@/components/context/NotebookProvider";
+import VerifyUserState from "./verify";
 import Sidebar from "../(sidebar)/Sidebar";
 
 export default function Layout({
@@ -6,15 +8,16 @@ export default function Layout({
     children: React.ReactNode
 }) {
 
-
     return (
         <>
-            <div>
-                <Sidebar />
-                <main className="relative w-full ml-80">
-                    {children}
-                </main>
-            </div>
+            <NotebookProvider>
+              <VerifyUserState>
+                  <Sidebar />
+                  <main className="relative w-auto ml-80">
+                      {children}
+                  </main>
+              </VerifyUserState>
+            </NotebookProvider>
         </>
     )
 }

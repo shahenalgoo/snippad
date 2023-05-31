@@ -2,11 +2,6 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { account } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
 
-
-// type User = {
-//     name: string;
-// };
-
 type SessionContextType = {
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,15 +30,13 @@ export const useUser = (): SessionContextType => {
 
 export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: any) => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
     // const [session, setSession] = useState<Models.Session | null>(null);
 
 
     const fetchUser = async () => {
-
-        setIsLoading(true);
 
         try {
             const promise = await account.get();

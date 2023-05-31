@@ -2,12 +2,8 @@
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { IDelete } from "../../../../types/typings";
 
-interface IDelete {
-    document_id: any,
-    onSuccess?: () => any,
-    onError?: () => any
-}
 export default function useDocumentDelete(collection_id: string) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -27,7 +23,7 @@ export default function useDocumentDelete(collection_id: string) {
 
             setIsLoading(false);
             toast.dismiss();
-            toast.error('Delete Successful');
+            toast.success('Delete Successful');
         } catch (error) {
             // Execute OnError, if any
             if (onError) onError();

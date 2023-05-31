@@ -1,10 +1,58 @@
+import { useState } from "react";
 import { useUser } from "@/context/SessionContext";
+
 import { account } from "@/lib/appwrite-config";
 import { ID } from "appwrite";
 
+import { toast } from "react-hot-toast";
+
+type MagicForm = {
+    email: string;
+}
+
+type LoginForm = {
+    email: string;
+    password: string;
+}
+
+type CreateAccountForm = {
+    name: string;
+    email: string;
+    password: string;
+}
+
+
 export default function useAuth() {
 
+    // User hook
+    //
     const { setUser, setIsLoading, setIsLoggedIn } = useUser();
+
+
+    // Magic Form State
+    //
+    const [magicForm, setMagicForm] = useState<MagicForm>({
+        email: 'shahenalgoo@gmail.com'
+    });
+
+
+    // Login Form State
+    //
+    const [loginForm, setLoginForm] = useState<LoginForm>({
+        email: 'email32@example.com',
+        password: '12345678'
+    });
+
+
+    // Create Account Form State
+    //
+    const [createAccountForm, setCreateAccountForm] = useState<CreateAccountForm>({
+        name: 'Shahen',
+        email: 'email32@example.com',
+        password: '12345678'
+    });
+
+
 
     /**
      * CREATE ACCOUNT
@@ -18,8 +66,6 @@ export default function useAuth() {
         email: string,
         password: string
     ) => {
-
-        setIsLoading(true);
 
         try {
             await account.create(ID.unique(), email, password);
@@ -37,6 +83,23 @@ export default function useAuth() {
     };
 
 
+
+    const magicLogin = async (
+        email: string
+    ) => {
+        try {
+            await account.createMagicURLSession(ID.unique(), email, 'http://localhost:3000/confirm-magic-session');
+            toast.success('Verification email sent!');
+        } catch (error) {
+            console.log(error);
+            toast.error('Unable to send verification email.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+
     /**
      * LOGIN
      * 
@@ -50,28 +113,38 @@ export default function useAuth() {
         password: string
     ) => {
 
-        setIsLoading(true);
+        toast.loading('Logging in...');
 
         try {
-            const res = await account.createEmailSession(email, password)
-            // console.log("SESSION DATA:::", res);
-
+            await account.createEmailSession(email, password);
             setIsLoggedIn(true);
+            toast.dismiss();
+            toast.success('You are logged in!');
         } catch (error) {
+            setIsLoggedIn(false);
+            toast.dismiss();
+            toast.error('Unable to log in.');
             console.log(error);
         } finally {
             setIsLoading(false);
         }
     };
 
+
+    /**
+     * LOGOUT
+     * 
+     */
     const logout = async () => {
 
-        setIsLoading(true);
+        toast.loading('Logging in...');
 
         try {
-            const res = await account.deleteSession('current');
+            await account.deleteSession('current');
             setIsLoggedIn(false);
             setUser(null);
+            toast.dismiss();
+            toast.success('You logged out!');
         } catch (error) {
             console.log(error);
         } finally {
@@ -80,8 +153,9 @@ export default function useAuth() {
     };
 
     return {
-        createEmailAccount,
-        login,
+        createEmailAccount, createAccountForm, setCreateAccountForm,
+        magicLogin, magicForm, setMagicForm,
+        login, loginForm, setLoginForm,
         logout
     }
 }
