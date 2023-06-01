@@ -27,7 +27,7 @@ type NotebookContextType = {
     defaultNotebookId: string | null;
     activeNotebookId: string | null;
 
-    activateNotebook: (id: string, setCookie: boolean) => void;
+    activateNotebook: (id: string) => void;
     createNotebook: (id: string) => Promise<void>;
     updateNotebook: (document_id: string, title: string) => Promise<void>;
     deleteNotebook: (id: string) => void;
@@ -109,6 +109,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             // The first document in the list is the default one
             if (res.total > 0) {
                 setDefaultNotebookId(res.documents[0].$id);
+
+                if (!cookies.get(cookieNotebookRef)) {
+                    activateNotebook(res.documents[0].$id);
+                }
             }
 
         } catch (error) {
@@ -118,16 +122,13 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
-
     // Set selected notebook as active
     //
-    const activateNotebook = async (id: string, setCookie: boolean) => {
+    const activateNotebook = async (id: string) => {
         setActiveNotebookId(id);
 
         // Also set it in cookies
-        if (setCookie) {
-            cookies.set(cookieNotebookRef, id);
-        }
+        cookies.set(cookieNotebookRef, id);
     }
 
 
@@ -188,7 +189,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
         // Switch active notebook to 'personal' IF the active notebook has been deleted
         if (activeNotebookId === id && defaultNotebookId) {
-            activateNotebook(defaultNotebookId, true);
+            activateNotebook(defaultNotebookId);
         }
     }
 
@@ -205,7 +206,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
         // If found, set saved as active.
         if (lastNotebookUsed) {
-            activateNotebook(lastNotebookUsed, false);
+            activateNotebook(lastNotebookUsed);
         }
 
         // Subscribe to live changes for the user's notebook collection
