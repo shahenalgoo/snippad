@@ -11,12 +11,16 @@ export default function Layout({
     return (
         <>
             <NotebookProvider>
-              <VerifyUserState>
-                  <Sidebar />
-                  <main className="relative w-auto ml-80">
-                      {children}
-                  </main>
-              </VerifyUserState>
+                <VerifyUserState>
+
+                    {/* @ts-ignore */}
+                    <Sidebar />
+
+                    <main className="relative w-auto ml-80">
+                        {children}
+                    </main>
+
+                </VerifyUserState>
             </NotebookProvider>
         </>
     )
