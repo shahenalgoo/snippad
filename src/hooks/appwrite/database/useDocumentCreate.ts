@@ -42,6 +42,7 @@ export default function useDocumentCreate(collection_id: string) {
         setIsLoading(true);
 
         try {
+
             // Create document with the arguments: collection_id, data & permissions
             const res = await databases.createDocument(
                 AppwriteIds.databaseId,

@@ -66,6 +66,12 @@ const WorkspaceSidebar = () => {
                 [Query.equal('notebook_related', activeNotebookId)]
             );
 
+            // Temp code: use to quick delete while developing
+            //
+            // res.documents.forEach(element => {
+            //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
+            // });
+
             setNoteList(res.documents as Note[]);
 
         } catch (error) {
@@ -108,14 +114,6 @@ const WorkspaceSidebar = () => {
 
     }, [handleResize, fetchNoteList]);
 
-
-
-
-
-
-
-
-
     return (
         <aside>
             <button onClick={() => setSidebar(!sidebar)} className={`lg:!hidden fixed top-0 left-0 z-40 w-full h-full transition-all backdrop-blur-sm ${!sidebar ? 'invisible bg-black/0' : 'visible bg-black/60'}`}>
@@ -132,7 +130,7 @@ const WorkspaceSidebar = () => {
 
 
                 {/* <NotebookTest /> */}
-                {/* <NotesTest /> */}
+                <NotesTest />
             </div>
         </aside >
     );

@@ -11,6 +11,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TextStyle from "@tiptap/extension-text-style";
 
 import LoadingComponent from "@/components/misc/Loading";
 import NoteHeader from "./components/NoteHeader";

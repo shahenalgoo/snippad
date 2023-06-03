@@ -16,6 +16,7 @@ import { Permission, Query, Role } from "appwrite";
 import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentCreate } from "@/hooks";
+import { NoteType } from "@/types/enums";
 
 
 interface NotesTestProps {
@@ -55,6 +56,12 @@ const NotesTest: FC<NotesTestProps> = () => {
                 [Query.equal('notebook_related', activeNotebookId)]
             );
 
+            // Temp code: use to delete bloated notebooks
+            //
+            // res.documents.forEach(element => {
+            //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
+            // });
+
             setNotes(res.documents as Note[]);
 
         } catch (error) {
@@ -73,11 +80,17 @@ const NotesTest: FC<NotesTestProps> = () => {
         }
 
         if (user) {
+            try {
+
+            } catch (error) {
+
+            }
             createDocument({
                 data: {
                     title: title,
                     body: "this is somebody",
-                    notebook_related: activeNotebookId
+                    notebook_related: activeNotebookId,
+                    type: NoteType.note
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user.$id)),
@@ -114,18 +127,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                <button className="mx-3" onClick={() => createNote("A New Note")}>Create Note</button>
-                {notes?.map((item) => (
-                    <div key={item.$id} className={` cursor-pointer group flex justify-between items-center h-12 mb-4 border px-4 pr-2 rounded-lg 'border-neutral-700'}`}>
-                        <h6 className="text-sm font-semibold">{item.title}</h6>
-                        <div className="hidden group-hover:block">
-                            <button className="text-danger py-2 px-2">
-                                <TbTrash />
-                            </button>
-                        </div>
-                    </div>
-                ))}
-
+                <button className="mx-3" onClick={() => createNote("TESTING")}>Create Note</button>
             </div>
         </>
     );
