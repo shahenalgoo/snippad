@@ -4,7 +4,6 @@ import { FC } from "react";
 import { redirect } from "next/navigation";
 import { useUser } from "@/context/SessionContext";
 
-import { Spinner } from "@/components";
 import LoadingComponent from "@/components/misc/Loading";
 
 

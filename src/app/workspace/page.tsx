@@ -1,7 +1,3 @@
-import NotebookTest from "./components/NotebookTest";
-import NotesTest from "./components/NotesTest";
-
-
 
 export default function Workspace() {
 

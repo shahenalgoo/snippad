@@ -16,6 +16,7 @@ import { Permission, Query, Role } from "appwrite";
 import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentCreate } from "@/hooks";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 
 interface NotesTestProps {
@@ -55,6 +56,12 @@ const NotesTest: FC<NotesTestProps> = () => {
                 [Query.equal('notebook_related', activeNotebookId)]
             );
 
+            // Temp code: use to delete bloated notebooks
+            //
+            // res.documents.forEach(element => {
+            //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
+            // });
+
             setNotes(res.documents as Note[]);
 
         } catch (error) {
@@ -66,18 +73,28 @@ const NotesTest: FC<NotesTestProps> = () => {
     //
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
-    const createNote = async (title: string) => {
+
+    const createNote = async () => {
         // If we cannot find the relating notebook, cancel create.
         if (activeNotebookId === null) {
             return;
         }
 
         if (user) {
+            try {
+
+            } catch (error) {
+
+            }
             createDocument({
                 data: {
-                    title: title,
-                    body: "this is somebody",
-                    notebook_related: activeNotebookId
+                    title: "",
+                    subtitle: "",
+                    body: "",
+                    notebook_related: activeNotebookId,
+                    type: NoteType.note,
+                    starred: false,
+                    status: NoteStatus.published
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user.$id)),
@@ -114,18 +131,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                <button className="mx-3" onClick={() => createNote("A New Note")}>Create Note</button>
-                {notes?.map((item) => (
-                    <div key={item.$id} className={` cursor-pointer group flex justify-between items-center h-12 mb-4 border px-4 pr-2 rounded-lg 'border-neutral-700'}`}>
-                        <h6 className="text-sm font-semibold">{item.title}</h6>
-                        <div className="hidden group-hover:block">
-                            <button className="text-danger py-2 px-2">
-                                <TbTrash />
-                            </button>
-                        </div>
-                    </div>
-                ))}
-
+                <button className="mx-3" onClick={createNote}>Create Note</button>
             </div>
         </>
     );
