@@ -10,9 +10,10 @@ interface NoteHeaderProps {
     isSaving: boolean
 }
 
+
 const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving }) => {
     return (
-        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-slate-200">
+        <div className="fixed top-3 right-3 z-30 rounded-full py-1 px-2 bg-slate-100">
             <Button variant='primary' rounded='full' type="submit" disabled={isSaving} className="mr-3">
                 {!isSaving && <TbDeviceFloppy size={20} strokeWidth={1} className="mr-1" />}
                 {isSaving && <TbLoader2 size={18} className="mr-1 animate-spin" />}

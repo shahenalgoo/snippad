@@ -11,11 +11,12 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Placeholder from "@tiptap/extension-placeholder";
 import TextStyle from "@tiptap/extension-text-style";
+import BubbleMenu from "./components/BubbleMenu";
 
 import LoadingComponent from "@/components/misc/Loading";
 import NoteHeader from "./components/NoteHeader";
-import BubbleMenu from "./components/BubbleMenu";
 
 type PageProps = {
     params: {
@@ -87,16 +88,20 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const editor = useEditor({
         extensions: [
             StarterKit,
+            Placeholder.configure({
+                placeholder: 'Write your note...'
+            })
         ],
         editorProps: {
             attributes: {
                 class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none"
             }
         },
-        content: `Write here...`,
+        autofocus: true,
         onCreate: async ({ editor }) => {
             const data = await fetchNote(id);
-            editor.commands.setContent(`${data?.body}`);
+            editor.commands.setContent(`${data?.body}` || null);
+
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
@@ -117,7 +122,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 subtitle: formData?.subtitle,
                 body: formData?.body
             });
-            toast.success("Note saved!")
+            toast.success("Note saved!");
         } catch (error) {
             console.log(error);
             toast.error("Unable to save note");
@@ -166,9 +171,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     <div className="lg:pt-24">
                         <div className="mb-1">
-                            <InputLabel variant='lighter'>Note Title</InputLabel>
                             <TextareaAutosize
                                 id="title"
+                                placeholder="Title"
                                 defaultValue={note?.title}
                                 onChange={onFieldChange}
                                 className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto"
@@ -176,9 +181,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         </div>
 
                         <div className="mb-10">
-                            <InputLabel variant='lighter'>Subtitle</InputLabel>
                             <TextareaAutosize
                                 id="subtitle"
+                                placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
                                 onChange={onFieldChange}
                                 className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-slate-500"
@@ -186,8 +191,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         </div>
 
                         <div>
-                            <InputLabel variant='lighter'>Note</InputLabel>
-                            <EditorContent editor={editor} autoFocus />
+                            <EditorContent editor={editor} placeholder="test" />
                         </div>
                     </div>
 

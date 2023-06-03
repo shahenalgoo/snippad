@@ -73,7 +73,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     //
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
-    const createNote = async (title: string) => {
+    const createNote = async (title?: string) => {
         // If we cannot find the relating notebook, cancel create.
         if (activeNotebookId === null) {
             return;
@@ -88,7 +88,7 @@ const NotesTest: FC<NotesTestProps> = () => {
             createDocument({
                 data: {
                     title: title,
-                    body: "this is somebody",
+                    body: "",
                     notebook_related: activeNotebookId,
                     type: NoteType.note
                 } as Note,
@@ -127,7 +127,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                <button className="mx-3" onClick={() => createNote("TESTING")}>Create Note</button>
+                <button className="mx-3" onClick={() => createNote()}>Create Note</button>
             </div>
         </>
     );

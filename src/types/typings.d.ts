@@ -49,7 +49,9 @@ export type Note = Models.Document & {
     subtitle: string;
     body: string;
     notebook_related: string;
-    type: NoteType
+    type: NoteType,
+    starred: boolean,
+    status: string
 }
 
 
