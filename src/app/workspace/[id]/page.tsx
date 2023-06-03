@@ -1,15 +1,20 @@
-'use client'
+'use client';
 
 import { useCallback, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 import { Note } from "@/types/typings";
-import { Button, InputField } from "@/components";
+import { Button, InputField, InputLabel } from "@/components";
 import { toast } from "react-hot-toast";
+import TextareaAutosize from 'react-textarea-autosize';
 
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+
+import LoadingComponent from "@/components/misc/Loading";
+import NoteHeader from "./components/NoteHeader";
+import BubbleMenu from "./components/BubbleMenu";
 
 type PageProps = {
     params: {
@@ -49,6 +54,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 AppwriteIds.collectionId_notes,
                 id
             );
+
             setNote(res);
             setFormData({
                 title: res.title,
@@ -71,7 +77,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Handle state changes on form
     //
-    const onFieldChange = (e: any) => {
+    const onFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     }
 
@@ -84,9 +90,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
         ],
         editorProps: {
             attributes: {
-                id: "body",
-                name: "body"
-                // class: "bg-neutral-900 w-[500px] min-h-[300px] text-lg"
+                class: "bg-white text-black text-xl leading-8 border-none outline-none"
             }
         },
         content: `Write here...`,
@@ -96,8 +100,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            console.log(html);
-
+            setFormData({ ...formData, body: html })
         }
     });
 
@@ -129,53 +132,43 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     return (
         <>
-            <div className="w-[500px] mx-auto text-lg">
-                <form onSubmit={onSubmit}>
+            {isLoading &&
+                <LoadingComponent loadingMessage="Loading note..." />
+            }
 
-                    {!isLoading &&
-                        <>
-                            <input
-                                id="title"
-                                type="text"
-                                defaultValue={note?.title}
-                                onChange={onFieldChange}
-                                className=" bg-transparent outline-none mt-10 mb-4 text-4xl font-semibold"
-                            />
+            {!isLoading &&
+                <form onSubmit={onSubmit} className="font-body">
 
-                            <EditorContent
-                                editor={editor}
+                    <NoteHeader editor={editor} isSaving={isSaving} />
 
-                            />
+                    <BubbleMenu editor={editor} />
 
-                            <InputField id="body" defaultValue={note?.body} onChange={onFieldChange} />
-                        </>
-                    }
+                    <div className="mb-1">
+                        <InputLabel variant='lighter'>Note Title</InputLabel>
+                        <TextareaAutosize
+                            id="title"
+                            defaultValue={note?.title}
+                            onChange={onFieldChange}
+                            className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto"
+                        />
+                    </div>
 
+                    <div className="mb-10">
+                        <InputLabel variant='lighter'>Subtitle</InputLabel>
+                        <TextareaAutosize
+                            id="subtitle"
+                            defaultValue={note?.subtitle}
+                            onChange={onFieldChange}
+                            className="w-full bg-transparent outline-none text-xl font-medium resize-none overflow-auto text-slate-500"
+                        />
+                    </div>
 
+                    <div>
+                        <EditorContent editor={editor} />
+                    </div>
 
-
-
-
-                    {/* <input
-                        id="subtitle"
-                        type="text"
-                        defaultValue={note?.subtitle}
-                        onChange={onFieldChange}
-                        className=""
-                    />
-
-                    <textarea
-                        id="body"
-                        defaultValue={note?.body}
-                        onChange={onFieldChange}
-                        className="block w-full min-h-[200px] bg-transparent outline-none resize-none"
-                    ></textarea> */}
-
-                    <Button disabled={isSaving}>
-                        Save Note
-                    </Button>
                 </form>
-            </div>
+            }
         </>
     )
 }

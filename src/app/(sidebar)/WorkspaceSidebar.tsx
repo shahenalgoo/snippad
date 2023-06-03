@@ -1,7 +1,8 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Note } from "@/types/typings";
+import { useGlobalState } from "@/utils/global-states";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
@@ -26,12 +27,13 @@ import LoadingComponent from "@/components/misc/Loading";
  * TODO: 
  */
 
-const Sidebar = () => {
+const WorkspaceSidebar = () => {
 
     // States
     //
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [noteList, setNoteList] = useState<Note[] | null>(null)
+    const [noteList, setNoteList] = useState<Note[] | null>(null);
+    const [sidebar, setSidebar] = useGlobalState("sidebar");
 
 
     // User Data
@@ -45,6 +47,7 @@ const Sidebar = () => {
 
 
     // Fetch Notes
+    //
     const fetchNoteList = useCallback(async () => {
 
         setIsLoading(true);
@@ -74,12 +77,21 @@ const Sidebar = () => {
     }, [activeNotebookId]);
 
 
-
+    // Set sidebar to false on breakpoint
+    //
+    const handleResize = useCallback(() => {
+        if (window.innerWidth > 1023) {
+            setSidebar(false)
+        }
+    }, [setSidebar]);
 
 
     // Use effect
     //
     useEffect(() => {
+
+        // Resize event
+        window.addEventListener("resize", handleResize);
 
         //Fetch Notes
         fetchNoteList();
@@ -94,7 +106,7 @@ const Sidebar = () => {
             subscribe();
         }
 
-    }, [fetchNoteList]);
+    }, [handleResize, fetchNoteList]);
 
 
 
@@ -105,20 +117,25 @@ const Sidebar = () => {
 
 
     return (
-        <aside className={`fixed top-0 left-0 z-40 w-80 h-full border-r border-border-color bg-background`}>
+        <aside>
+            <button onClick={() => setSidebar(!sidebar)} className={`lg:!hidden fixed top-0 left-0 z-40 w-full h-full transition-all backdrop-blur-sm ${!sidebar ? 'invisible bg-black/0' : 'visible bg-black/60'}`}>
+                &nbsp;
+            </button>
 
-            <NotebookSwitcher />
+            <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transition-all ${!sidebar ? 'invisible lg:visible -left-80 lg:left-0' : 'visible left-0'} bg-white lg:border-r border-slate-200`}>
 
-            <div className="px-3 mt-8">
-                <NoteSwitcher noteList={noteList} />
+                <NotebookSwitcher />
 
+                <div className="px-3 mt-4">
+                    <NoteSwitcher noteList={noteList} />
+                </div>
+
+
+                {/* <NotebookTest /> */}
+                {/* <NotesTest /> */}
             </div>
-
-
-            {/* <NotebookTest /> */}
-            {/* <NotesTest /> */}
-        </aside>
+        </aside >
     );
 }
 
-export default Sidebar;
+export default WorkspaceSidebar;

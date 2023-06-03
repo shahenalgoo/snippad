@@ -1,6 +1,7 @@
 import NotebookProvider from "@/components/context/NotebookProvider";
 import VerifyUserState from "./verify";
-import Sidebar from "../(sidebar)/Sidebar";
+import WorkspaceSidebar from "../(sidebar)/WorkspaceSidebar";
+import WorkspaceHeader from "../(header)/Header";
 
 export default function Layout({
     children,
@@ -13,11 +14,13 @@ export default function Layout({
             <NotebookProvider>
                 <VerifyUserState>
 
-                    {/* @ts-ignore */}
-                    <Sidebar />
+                    <WorkspaceHeader />
+                    <WorkspaceSidebar />
 
-                    <main className="relative w-auto ml-80">
-                        {children}
+                    <main className="!min-h-full h-full lg:ml-80 xl:ml-96 transition-all">
+                        <div className="relative !min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] mt-20 lg:mt-0 md:mx-auto px-6">
+                            {children}
+                        </div>
                     </main>
 
                 </VerifyUserState>
