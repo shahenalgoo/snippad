@@ -109,7 +109,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSaving(true);
-        toast.loading("Saving note...");
 
         try {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
@@ -117,11 +116,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 subtitle: formData?.subtitle,
                 body: formData?.body
             });
-            toast.dismiss();
             toast.success("Note saved!")
         } catch (error) {
             console.log(error);
-            toast.dismiss();
             toast.error("Unable to save note");
         } finally {
             setIsSaving(false);
@@ -162,7 +159,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
             {!isLoading &&
                 <form onSubmit={onSubmit} className="font-body">
 
-                    <NoteHeader editor={editor} isSaving={isSaving} />
+                    <NoteHeader editor={editor} isSaving={isSaving} note={note} />
 
                     <BubbleMenu editor={editor} />
 
