@@ -16,7 +16,7 @@ import { Permission, Query, Role } from "appwrite";
 import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentCreate } from "@/hooks";
-import { NoteType } from "@/types/enums";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 
 interface NotesTestProps {
@@ -73,7 +73,8 @@ const NotesTest: FC<NotesTestProps> = () => {
     //
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
-    const createNote = async (title?: string) => {
+
+    const createNote = async () => {
         // If we cannot find the relating notebook, cancel create.
         if (activeNotebookId === null) {
             return;
@@ -87,10 +88,13 @@ const NotesTest: FC<NotesTestProps> = () => {
             }
             createDocument({
                 data: {
-                    title: title,
+                    title: "",
+                    subtitle: "",
                     body: "",
                     notebook_related: activeNotebookId,
-                    type: NoteType.note
+                    type: NoteType.note,
+                    starred: false,
+                    status: NoteStatus.published
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user.$id)),
@@ -127,7 +131,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                <button className="mx-3" onClick={() => createNote()}>Create Note</button>
+                <button className="mx-3" onClick={createNote}>Create Note</button>
             </div>
         </>
     );
