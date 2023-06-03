@@ -106,6 +106,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setCollection(res.documents as Notebook[]);
             setTotal(res.total);
 
+
             // The first document in the list is the default one
             if (res.total > 0) {
                 setDefaultNotebookId(res.documents[0].$id);
@@ -138,11 +139,11 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     const createNotebook = async (title: string) => {
         // New notebook cannot be the same name as default notebook
-        if (title === defaultNotebookName) {
-            const msg: string = "'" + defaultNotebookName + "'" + " already exists"
-            toast.error(msg);
-            return;
-        }
+        // if (title === defaultNotebookName) {
+        //     const msg: string = "'" + defaultNotebookName + "'" + " already exists"
+        //     toast.error(msg);
+        //     return;
+        // }
 
         if (user) {
             createDocument({

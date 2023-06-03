@@ -9,12 +9,13 @@ module.exports = {
 		extend: {
 			fontFamily: {
 				'sans': ['Noto Sans', 'system-ui'],
-				// 'body': ['Helvetica', 'Arial', 'sans-serif'],
+				'body': ['Roboto Slab', 'Arial', 'sans-serif'],
 			},
 			colors: {
 				'primary': '#34d399',
 				'danger': '#f43f5e',
 				'success': '#4ade80',
+				'border-light': ''
 			},
 			container: {
 				center: true,

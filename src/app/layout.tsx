@@ -16,8 +16,8 @@ export default function RootLayout({
 	return (
 		<>
 			<SessionProvider>
-				<html lang="en">
-					<body>
+				<html lang="en" className='!min-h-full h-full'>
+					<body className='relative !min-h-full h-full'>
 						{children}
 						<Toaster />
 					</body>
