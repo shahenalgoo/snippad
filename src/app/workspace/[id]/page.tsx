@@ -16,6 +16,10 @@ import TextStyle from "@tiptap/extension-text-style";
 import LoadingComponent from "@/components/misc/Loading";
 import NoteHeader from "./components/NoteHeader";
 import BubbleMenu from "./components/BubbleMenu";
+import { useDocumentUpdate } from "@/hooks";
+import { Permission, Role } from "appwrite";
+import { useUser } from "@/context/SessionContext";
+import { NoteStatus } from "@/types/enums";
 
 type PageProps = {
     params: {
@@ -37,12 +41,18 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [note, setNote] = useState<Note | null>(null);
+    const [starred, setStarred] = useState<boolean>(false);
+    const [status, setStatus] = useState<NoteStatus | null>(null);
+
+
     const [formData, setFormData] = useState<FormData>({
         title: '',
         subtitle: '',
         body: '',
         type: 'note'
     })
+
+
 
 
     // Fetch Note
@@ -59,12 +69,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
             );
 
             setNote(res);
+            setStarred(res.starred);
+            setStatus(res.status);
             setFormData({
                 title: res.title,
                 subtitle: res.subtitle,
                 body: res.body,
                 type: res.type
             });
+
             return res;
         } catch (error) {
             console.log(error);
@@ -74,6 +87,32 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, []);
 
+    // // Mark a Note as Published or Archived or Trashed
+    // //
+    // const updateNoteStatus = (newStatus: NoteStatus) => {
+    //     setIsLoadingStatus(true);
+
+    //     if (user && note) {
+    //         updateDocument({
+    //             document_id: note.$id,
+    //             data: {
+    //                 status: newStatus
+    //             } as Note,
+    //             permission: [
+    //                 Permission.read(Role.user(user.$id)),
+    //                 Permission.update(Role.user(user.$id)),
+    //                 Permission.delete(Role.user(user.$id)),
+    //             ],
+    //             onSuccess() {
+    //                 setStatus(newStatus);
+    //                 setIsLoadingStatus(false);
+    //             },
+    //             onError() {
+    //                 setIsLoadingStatus(false);
+    //             }
+    //         });
+    //     }
+    // };
 
     // Handle state changes on form
     //
@@ -160,7 +199,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
             {!isLoading &&
                 <form onSubmit={onSubmit} className="font-body">
 
-                    <NoteHeader editor={editor} isSaving={isSaving} note={note} />
+                    <NoteHeader
+                        editor={editor}
+                        note={note}
+                        isSaving={isSaving}
+                        isStarred={starred}
+                        setStarred={setStarred}
+                        status={status}
+                        setStatus={setStatus}
+                    />
 
                     <BubbleMenu editor={editor} />
 
