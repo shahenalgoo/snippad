@@ -1,34 +1,36 @@
-import { Button } from "@/components";
 import { FC } from "react";
+import { Button } from "@/components";
+
+import { TbDeviceFloppy, TbLoader2, TbJewishStar, TbTrash, TbArchive } from "react-icons/tb";
+import { Note } from "@/types/typings";
 
 interface NoteHeaderProps {
     editor: any;
+    note: Note | null;
     isSaving: boolean
 }
 
-const NoteHeader: FC<NoteHeaderProps> = ({ editor, isSaving }) => {
+const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving }) => {
     return (
-        <nav className="h-16 flex items-center">
-
-            <button type="button"
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                disabled={
-                    !editor?.can()
-                        .chain()
-                        .focus()
-                        .toggleBold()
-                        .run()
-                }
-                className={editor?.isActive('bold') ? 'is-active' : ''}
-            >
-                bold
-            </button>
-
-
-            <Button type="submit" disabled={isSaving}>
-                Save Note
+        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-slate-200">
+            <Button variant='primary' rounded='full' type="submit" disabled={isSaving} className="mr-3">
+                {!isSaving && <TbDeviceFloppy size={20} strokeWidth={1} className="mr-1" />}
+                {isSaving && <TbLoader2 size={18} className="mr-1 animate-spin" />}
+                Save&nbsp;<span className="capitalize">{note?.type}</span>
             </Button>
-        </nav>
+
+            <Button variant='bubble' type="button" disabled={isSaving}>
+                <TbJewishStar size={20} strokeWidth={1} />
+            </Button>
+
+            <Button variant='bubble' type="button" disabled={isSaving}>
+                <TbArchive size={20} strokeWidth={1} />
+            </Button>
+
+            <Button variant='bubble' type="button" disabled={isSaving}>
+                <TbTrash size={20} strokeWidth={1} />
+            </Button>
+        </div>
     );
 }
 

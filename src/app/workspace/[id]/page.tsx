@@ -27,6 +27,7 @@ type FormData = {
     title: string,
     subtitle: string,
     body: string,
+    type: string
 }
 
 const NotePage = ({ params: { id } }: PageProps) => {
@@ -39,7 +40,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [formData, setFormData] = useState<FormData>({
         title: '',
         subtitle: '',
-        body: ''
+        body: '',
+        type: 'note'
     })
 
 
@@ -60,7 +62,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
             setFormData({
                 title: res.title,
                 subtitle: res.subtitle,
-                body: res.body
+                body: res.body,
+                type: res.type
             });
             return res;
         } catch (error) {
@@ -70,10 +73,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
 
     }, []);
-
-    // useEffect(() => {
-    //     fetchNote(id);
-    // }, [fetchNote, id]);
 
 
     // Handle state changes on form
@@ -91,13 +90,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
         ],
         editorProps: {
             attributes: {
-                class: "bg-white text-black text-xl leading-8 border-none outline-none"
+                class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none"
             }
         },
         content: `Write here...`,
         onCreate: async ({ editor }) => {
             const data = await fetchNote(id);
-            editor.commands.setContent(`${data?.body}`)
+            editor.commands.setContent(`${data?.body}`);
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
@@ -108,10 +107,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Save Note
     //
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSaving(true);
-        toast.loading("Saving note...");
 
         try {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
@@ -119,16 +117,38 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 subtitle: formData?.subtitle,
                 body: formData?.body
             });
-            toast.dismiss();
             toast.success("Note saved!")
         } catch (error) {
             console.log(error);
-            toast.dismiss();
             toast.error("Unable to save note");
         } finally {
             setIsSaving(false);
         }
-    }
+    }, [formData, id])
+
+
+    // Keyboard Events
+    //
+    const handleKeyDown = useCallback((e: any) => {
+
+        // Save Note - Ctrl + s
+        if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
+            e.preventDefault();
+            onSubmit(e);
+        }
+
+    }, [onSubmit]);
+
+    useEffect(() => {
+
+        // Register keydown events
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            // De-register keydown events
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleKeyDown]);
 
 
     return (
@@ -140,32 +160,35 @@ const NotePage = ({ params: { id } }: PageProps) => {
             {!isLoading &&
                 <form onSubmit={onSubmit} className="font-body">
 
-                    <NoteHeader editor={editor} isSaving={isSaving} />
+                    <NoteHeader editor={editor} isSaving={isSaving} note={note} />
 
                     <BubbleMenu editor={editor} />
 
-                    <div className="mb-1">
-                        <InputLabel variant='lighter'>Note Title</InputLabel>
-                        <TextareaAutosize
-                            id="title"
-                            defaultValue={note?.title}
-                            onChange={onFieldChange}
-                            className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto"
-                        />
-                    </div>
+                    <div className="lg:pt-24">
+                        <div className="mb-1">
+                            <InputLabel variant='lighter'>Note Title</InputLabel>
+                            <TextareaAutosize
+                                id="title"
+                                defaultValue={note?.title}
+                                onChange={onFieldChange}
+                                className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto"
+                            />
+                        </div>
 
-                    <div className="mb-10">
-                        <InputLabel variant='lighter'>Subtitle</InputLabel>
-                        <TextareaAutosize
-                            id="subtitle"
-                            defaultValue={note?.subtitle}
-                            onChange={onFieldChange}
-                            className="w-full bg-transparent outline-none text-xl font-medium resize-none overflow-auto text-slate-500"
-                        />
-                    </div>
+                        <div className="mb-10">
+                            <InputLabel variant='lighter'>Subtitle</InputLabel>
+                            <TextareaAutosize
+                                id="subtitle"
+                                defaultValue={note?.subtitle}
+                                onChange={onFieldChange}
+                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-slate-500"
+                            />
+                        </div>
 
-                    <div>
-                        <EditorContent editor={editor} />
+                        <div>
+                            <InputLabel variant='lighter'>Note</InputLabel>
+                            <EditorContent editor={editor} autoFocus />
+                        </div>
                     </div>
 
                 </form>
