@@ -20,12 +20,6 @@ import NotebookTest from "../workspace/components/NotebookTest";
 import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
 
-/**
- * TODO: 1. Notebook switcher - button with dropdown to switch notebooks
- * TODO: 2. Note switcher
- * TODO: 3. Note single page
- * TODO: 
- */
 
 const WorkspaceSidebar = () => {
 

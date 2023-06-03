@@ -73,6 +73,7 @@ const NotesTest: FC<NotesTestProps> = () => {
     //
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
+
     const createNote = async () => {
         // If we cannot find the relating notebook, cancel create.
         if (activeNotebookId === null) {
@@ -87,9 +88,9 @@ const NotesTest: FC<NotesTestProps> = () => {
             }
             createDocument({
                 data: {
-                    title: "This is a title",
-                    subtitle: "Fuck a subtitle",
-                    body: "This is somebody",
+                    title: "",
+                    subtitle: "",
+                    body: "",
                     notebook_related: activeNotebookId,
                     type: NoteType.note,
                     starred: false,
