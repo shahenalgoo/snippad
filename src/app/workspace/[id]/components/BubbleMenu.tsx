@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { BubbleMenu as Bubble, Editor } from '@tiptap/react';
-import { TbBold, TbItalic, TbStrikethrough, TbH1 } from "react-icons/tb";
+import { TbBold, TbItalic, TbStrikethrough, TbH1, TbH2, TbH3, TbList, TbListNumbers, TbQuote, TbCode } from "react-icons/tb";
 import { Button } from "@/components";
-
 interface BubbleMenuProps {
     editor: Editor | null;
 }
@@ -17,6 +16,30 @@ const BubbleMenu: FC<BubbleMenuProps> = ({ editor }) => {
     return (
         <div>
             {editor && <Bubble className="flex items-center px-2 rounded-full bg-black" tippyOptions={{ duration: 100 }} editor={editor}>
+
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                    className={editor.isActive('heading', { level: 1 }) ? style.active : style.inactive}
+                >
+                    <TbH1 />
+                </BubbleButton>
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                    className={editor.isActive('heading', { level: 2 }) ? style.active : style.inactive}
+                >
+                    <TbH2 />
+                </BubbleButton>
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                    className={editor.isActive('heading', { level: 3 }) ? style.active : style.inactive}
+                >
+                    <TbH3 />
+                </BubbleButton>
+
+                <BubbleSep />
 
                 <BubbleButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -42,11 +65,36 @@ const BubbleMenu: FC<BubbleMenuProps> = ({ editor }) => {
                 <BubbleSep />
 
                 <BubbleButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={editor.isActive('heading', { level: 1 }) ? style.active : style.inactive}
+                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    className={editor.isActive('bulletList') ? style.active : style.inactive}
                 >
-                    <TbH1 />
+                    <TbList />
                 </BubbleButton>
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    className={editor.isActive('orderedList') ? style.active : style.inactive}
+                >
+                    <TbListNumbers />
+                </BubbleButton>
+
+                {/* <BubbleSep />
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                    className={editor.isActive('blockquote') ? style.active : style.inactive}
+                >
+                    <TbQuote />
+                </BubbleButton>
+
+                <BubbleButton
+                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    className={editor.isActive('codeBlock') ? style.active : style.inactive}
+                >
+                    <TbCode />
+                </BubbleButton> */}
+
+
 
             </Bubble>}
         </div>

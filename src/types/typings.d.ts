@@ -1,4 +1,5 @@
 import { Models } from "appwrite";
+import { NoteType } from "./enums";
 
 /**
  * Appwrite DB interfaces
@@ -47,7 +48,8 @@ export type Note = Models.Document & {
     title: string;
     subtitle: string;
     body: string;
-    notebook_related: string
+    notebook_related: string;
+    type: NoteType
 }
 
 
