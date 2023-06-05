@@ -17,7 +17,7 @@ interface CodeEditorProps {
 
 }
 
-const CodeEditor: FC<CodeEditorProps> = ({ note, formData, setFormData }) => {
+const Monaco: FC<CodeEditorProps> = ({ note, formData, setFormData }) => {
 
     // const [fileName, setFileName] = useState('script.js');
 
@@ -57,4 +57,4 @@ const CodeEditor: FC<CodeEditorProps> = ({ note, formData, setFormData }) => {
     );
 }
 
-export default CodeEditor;
+export default Monaco;

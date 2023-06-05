@@ -24,7 +24,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
-import CodeEditor from "../(code-editor)/CodeEditor";
+import Monaco from "../(code-editor)/Monaco";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 
 // Type Definitions
@@ -234,12 +235,19 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                         <div className="relative">
                             {note?.type === NoteType.note && <EditorContent editor={editor} />}
+
                             {note?.type === NoteType.code &&
-                                <CodeEditor
+                                // <Monaco
+                                //     note={note}
+                                //     formData={formData}
+                                //     setFormData={setFormData}
+                                // />
+                                <SnippetEditor
                                     note={note}
                                     formData={formData}
                                     setFormData={setFormData}
-                                />}
+                                />
+                            }
                         </div>
                     </div>
 
