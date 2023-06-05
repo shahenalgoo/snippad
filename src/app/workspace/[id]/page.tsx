@@ -12,7 +12,7 @@ import { NoteStatus } from "@/types/enums";
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
-import NoteHeader from "../(note-header)/NoteHeader";
+import NoteHeader from "../(header-note)/NoteHeader";
 
 // Text Editor
 import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';

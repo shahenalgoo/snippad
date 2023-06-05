@@ -108,6 +108,8 @@ const WorkspaceSidebar = () => {
 
     }, [handleResize, fetchNoteList]);
 
+
+
     return (
         <aside>
             <button onClick={() => setSidebar(!sidebar)} className={`lg:!hidden fixed top-0 left-0 z-40 w-full h-full transition-all backdrop-blur-sm ${!sidebar ? 'invisible bg-black/0' : 'visible bg-black/60'}`}>
@@ -121,8 +123,11 @@ const WorkspaceSidebar = () => {
                 <div className="px-3 mt-4">
                     <NoteSwitcher noteList={noteList} />
 
-                    {pathname !== '/workspace' && <Button href="/workspace">Create New</Button>}
-
+                    {pathname !== '/workspace' &&
+                        <Button className="mt-6" href="/workspace">
+                            Create New
+                        </Button>
+                    }
                 </div>
 
 
