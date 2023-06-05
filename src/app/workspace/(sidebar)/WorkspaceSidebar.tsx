@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
+import { usePathname } from 'next/navigation';
+
 import { Note } from "@/types/typings";
 import { useGlobalState } from "@/utils/global-states";
 
@@ -15,10 +17,11 @@ import { toast } from "react-hot-toast";
 
 
 import NotebookSwitcher from "./components/NotebookSwitcher";
-import NotesTest from "../workspace/components/NotesTest";
-import NotebookTest from "../workspace/components/NotebookTest";
+// import NotesTest from "../workspace/components/NotesTest";
+// import NotebookTest from "../workspace/components/NotebookTest";
 import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
+import { Button } from "@/components";
 
 
 const WorkspaceSidebar = () => {
@@ -30,13 +33,10 @@ const WorkspaceSidebar = () => {
     const [sidebar, setSidebar] = useGlobalState("sidebar");
 
 
-    // User Data
+    // Hooks
     //
+    const pathname = usePathname();
     const { user } = useUser();
-
-
-    // Notebook Data
-    //
     const { activeNotebookId } = useNotebook();
 
 
@@ -108,6 +108,8 @@ const WorkspaceSidebar = () => {
 
     }, [handleResize, fetchNoteList]);
 
+
+
     return (
         <aside>
             <button onClick={() => setSidebar(!sidebar)} className={`lg:!hidden fixed top-0 left-0 z-40 w-full h-full transition-all backdrop-blur-sm ${!sidebar ? 'invisible bg-black/0' : 'visible bg-black/60'}`}>
@@ -120,11 +122,17 @@ const WorkspaceSidebar = () => {
 
                 <div className="px-3 mt-4">
                     <NoteSwitcher noteList={noteList} />
+
+                    {pathname !== '/workspace' &&
+                        <Button className="mt-6" href="/workspace">
+                            Create New
+                        </Button>
+                    }
                 </div>
 
 
                 {/* <NotebookTest /> */}
-                <NotesTest />
+                {/* <NotesTest /> */}
             </div>
         </aside >
     );

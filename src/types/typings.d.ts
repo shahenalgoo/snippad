@@ -74,3 +74,10 @@ export type CreateAccountForm = {
     email: string;
     password: string;
 }
+
+// Note Form
+export type NoteFormData = {
+    title: string,
+    subtitle: string,
+    body: string,
+}

@@ -1,38 +1,42 @@
 'use client';
 
+// React
 import { useCallback, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
-import { Note } from "@/types/typings";
-import { Button, InputField, InputLabel } from "@/components";
-import { toast } from "react-hot-toast";
-import TextareaAutosize from 'react-textarea-autosize';
+// Typings
+import { Note, NoteFormData } from "@/types/typings";
+import { NoteStatus, NoteType } from "@/types/enums";
 
+// Database
+import { AppwriteIds, databases } from "@/lib/appwrite-config";
+
+// Note header
+import NoteHeader from "../(header-note)/NoteHeader";
+
+// Text Editor
 import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from "@tiptap/extension-placeholder";
-import TextStyle from "@tiptap/extension-text-style";
-import BubbleMenu from "./components/BubbleMenu";
+import BubbleMenu from "../(text-editor)/BubbleMenu";
+import TextareaAutosize from 'react-textarea-autosize';
 
+// Utils
 import LoadingComponent from "@/components/misc/Loading";
-import NoteHeader from "./components/NoteHeader";
+import { toast } from "react-hot-toast";
+import Monaco from "../(code-editor)/Monaco";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
 
-import BubbleMenu from "./components/BubbleMenu";
-import { NoteStatus } from "@/types/enums";
 
+// Type Definitions
+//
 type PageProps = {
     params: {
         id: string;
     }
 }
 
-type FormData = {
-    title: string,
-    subtitle: string,
-    body: string,
-    type: string
-}
+
 
 const NotePage = ({ params: { id } }: PageProps) => {
 
@@ -40,19 +44,16 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isSaving, setIsSaving] = useState<boolean>(false);
+
     const [note, setNote] = useState<Note | null>(null);
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
-
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
-        type: 'note'
     })
-
-
 
 
     // Fetch Note
@@ -71,11 +72,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
             setNote(res);
             setStarred(res.starred);
             setStatus(res.status);
+
             setFormData({
                 title: res.title,
                 subtitle: res.subtitle,
-                body: res.body,
-                type: res.type
+                body: res.body
             });
 
             return res;
@@ -87,38 +88,14 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, []);
 
-    // // Mark a Note as Published or Archived or Trashed
-    // //
-    // const updateNoteStatus = (newStatus: NoteStatus) => {
-    //     setIsLoadingStatus(true);
-
-    //     if (user && note) {
-    //         updateDocument({
-    //             document_id: note.$id,
-    //             data: {
-    //                 status: newStatus
-    //             } as Note,
-    //             permission: [
-    //                 Permission.read(Role.user(user.$id)),
-    //                 Permission.update(Role.user(user.$id)),
-    //                 Permission.delete(Role.user(user.$id)),
-    //             ],
-    //             onSuccess() {
-    //                 setStatus(newStatus);
-    //                 setIsLoadingStatus(false);
-    //             },
-    //             onError() {
-    //                 setIsLoadingStatus(false);
-    //             }
-    //         });
-    //     }
-    // };
 
     // Handle state changes on form
     //
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     }
+
+
 
 
     // Text Editor
@@ -153,6 +130,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSaving(true);
+
+        // Disable save if note is empty
+        if (formData.body === "") {
+            setIsSaving(false);
+            return toast.error('Please write a note first.');
+        }
 
         try {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
@@ -193,6 +176,20 @@ const NotePage = ({ params: { id } }: PageProps) => {
         };
     }, [handleKeyDown]);
 
+
+    // If note note found, return not-found page
+    //
+    if (!isLoading && !note) {
+        return notFound();
+    }
+
+    // if (!isLoading && note?.type === NoteType.code) {
+    //     return (
+    //         <>
+    //             <CodeEditor />
+    //         </>
+    //     )
+    // }
 
     return (
         <>
@@ -236,8 +233,21 @@ const NotePage = ({ params: { id } }: PageProps) => {
                             />
                         </div>
 
-                        <div>
-                            <EditorContent editor={editor} placeholder="test" />
+                        <div className="relative">
+                            {note?.type === NoteType.note && <EditorContent editor={editor} />}
+
+                            {note?.type === NoteType.code &&
+                                // <Monaco
+                                //     note={note}
+                                //     formData={formData}
+                                //     setFormData={setFormData}
+                                // />
+                                <SnippetEditor
+                                    note={note}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                />
+                            }
                         </div>
                     </div>
 
