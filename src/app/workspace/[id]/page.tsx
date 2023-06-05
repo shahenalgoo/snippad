@@ -5,8 +5,8 @@ import { useCallback, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
-import { Note } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { Note, NoteFormData } from "@/types/typings";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
@@ -24,6 +24,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
+import CodeEditor from "../(code-editor)/CodeEditor";
 
 
 // Type Definitions
@@ -34,11 +35,7 @@ type PageProps = {
     }
 }
 
-type FormData = {
-    title: string,
-    subtitle: string,
-    body: string,
-}
+
 
 const NotePage = ({ params: { id } }: PageProps) => {
 
@@ -51,7 +48,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
@@ -96,6 +93,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     }
+
+
 
 
     // Text Editor
@@ -183,6 +182,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
         return notFound();
     }
 
+    // if (!isLoading && note?.type === NoteType.code) {
+    //     return (
+    //         <>
+    //             <CodeEditor />
+    //         </>
+    //     )
+    // }
 
     return (
         <>
@@ -226,8 +232,14 @@ const NotePage = ({ params: { id } }: PageProps) => {
                             />
                         </div>
 
-                        <div>
-                            <EditorContent editor={editor} />
+                        <div className="relative">
+                            {note?.type === NoteType.note && <EditorContent editor={editor} />}
+                            {note?.type === NoteType.code &&
+                                <CodeEditor
+                                    note={note}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                />}
                         </div>
                     </div>
 

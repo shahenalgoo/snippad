@@ -17,8 +17,8 @@ import { toast } from "react-hot-toast";
 
 
 import NotebookSwitcher from "./components/NotebookSwitcher";
-import NotesTest from "../workspace/components/NotesTest";
-import NotebookTest from "../workspace/components/NotebookTest";
+// import NotesTest from "../workspace/components/NotesTest";
+// import NotebookTest from "../workspace/components/NotebookTest";
 import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
 import { Button } from "@/components";
