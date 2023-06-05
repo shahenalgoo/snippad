@@ -57,7 +57,6 @@ export type Note = Models.Document & {
     search_index: string;
 }
 
-
 /**
  * AUTHENTICATION
  */
