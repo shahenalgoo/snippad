@@ -54,6 +54,7 @@ export type Note = Models.Document & {
     status: NoteStatus;
     status_last_update: string;
     snippet_language: string;
+    search_index: string;
 }
 
 

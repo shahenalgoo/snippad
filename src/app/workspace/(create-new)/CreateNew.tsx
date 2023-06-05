@@ -59,7 +59,8 @@ const CreateNew: FC<CreateNewProps> = () => {
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
-                    snippet_language: 'html'
+                    snippet_language: 'html',
+                    search_index: ''
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user?.$id || "")),

@@ -142,8 +142,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 title: formData?.title,
                 subtitle: formData?.subtitle,
                 body: formData?.body,
-                snippet_language: formData.snippet_language
-            });
+                snippet_language: formData.snippet_language,
+                search_index: formData?.title + ' ' + formData?.subtitle + ' ' + formData?.body
+            } as Note);
             toast.success("Note saved!");
         } catch (error) {
             console.log(error);
@@ -195,7 +196,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     return (
         <>
             {isLoading &&
-                <LoadingComponent loadingMessage="Loading note..." />
+                <LoadingComponent />
             }
 
             {!isLoading &&
