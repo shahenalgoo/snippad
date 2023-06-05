@@ -4,7 +4,8 @@ import { FC } from "react";
 import { usePathname } from 'next/navigation';
 import { Note } from "@/types/typings";
 
-import { TbNotes, TbCode } from "react-icons/tb";
+// import { TbNotes, TbCode } from "react-icons/tb";
+import * as Icons from "react-icons/tb";
 import Link from "next/link";
 
 interface NoteSwitcherProps {
@@ -26,13 +27,31 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList }) => {
         return newText.body.textContent?.substring(0, 120) || "";
     }
 
+
+    //@ts-ignore
+    const DynamicIcon = ({ name, className, size, strokeWidth }) => {
+        //@ts-ignore
+        const IconComponent = Icons[name];
+        return <IconComponent className={className} size={size} strokeWidth={strokeWidth} />
+    }
+
+
+
     return (
         <>
             {noteList?.map((note: Note | null) => (
-                <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg mb-2 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'bg-slate-100 border-primary' : 'border-transparent'}`}>
-                    <div className="w-10 h-10 flex items-center">
-                        {note?.type === "note" && <TbNotes size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
-                        {note?.type === "code" && <TbCode size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+                <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg mb-2 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'bg-slate-50 border-primary' : 'border-transparent'}`}>
+                    <div className="shrink-0 w-10 h-10 flex items-center">
+                        {/* {note?.type === "note" && <TbNotes size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
+                        {/* {note?.type === "code" && <TbCode size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
+
+                        {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+
+                        {note?.type === "code" && note?.snippet_language === 'html' && <DynamicIcon name="TbBrandHtml5" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+                        {note?.type === "code" && note?.snippet_language === 'css' && <DynamicIcon name="TbBrandCss3" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+                        {note?.type === "code" && note?.snippet_language === 'js' && <DynamicIcon name="TbBrandJavascript" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+                        {note?.type === "code" && note?.snippet_language === 'ts' && <DynamicIcon name="TbBrandTypescript" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+
                     </div>
 
                     <div>

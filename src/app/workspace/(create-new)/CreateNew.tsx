@@ -58,7 +58,9 @@ const CreateNew: FC<CreateNewProps> = () => {
                     notebook_related: activeNotebookId,
                     type: type,
                     starred: false,
-                    status: NoteStatus.published
+                    status: NoteStatus.published,
+                    snippet_language: 'html',
+                    search_index: ''
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user?.$id || "")),

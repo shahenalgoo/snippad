@@ -6,31 +6,31 @@ import { NoteStatus, NoteType } from "./enums";
  */
 
 export interface IFetchCollection {
-    collection_id: string,
-    queries?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    collection_id: string;
+    queries?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface ICreateDocument {
-    data: any,
-    permission?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    data: any;
+    permission?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface IUpdateDocument {
-    document_id: string
-    data: any,
-    permission?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    document_id: string;
+    data: any;
+    permission?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface IDeleteDocument {
-    document_id: any,
-    onSuccess?: () => any,
-    onError?: () => any
+    document_id: any;
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 
@@ -54,10 +54,11 @@ export type Note = Models.Document & {
     status: NoteStatus;
     status_last_update: string;
     snippet_language: string;
+    search_index: string;
 }
 
 /**
- * Forms
+ * AUTHENTICATION
  */
 
 export type MagicForm = {
@@ -76,9 +77,22 @@ export type CreateAccountForm = {
     password: string;
 }
 
+
+
+/**
+ * NOTES
+ */
+
 // Note Form
 export type NoteFormData = {
-    title: string,
-    subtitle: string,
-    body: string,
+    title: string;
+    subtitle: string;
+    body: string;
+    snippet_language?: string;
+}
+
+// Snippet supported languages
+export type SnippetLanguage = {
+    name: string;
+    alias: string;
 }

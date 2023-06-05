@@ -24,7 +24,6 @@ import TextareaAutosize from 'react-textarea-autosize';
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
-import Monaco from "../(code-editor)/Monaco";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 
@@ -53,6 +52,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
         title: '',
         subtitle: '',
         body: '',
+        snippet_language: ''
     })
 
 
@@ -141,8 +141,10 @@ const NotePage = ({ params: { id } }: PageProps) => {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
                 title: formData?.title,
                 subtitle: formData?.subtitle,
-                body: formData?.body
-            });
+                body: formData?.body,
+                snippet_language: formData.snippet_language,
+                search_index: formData?.title + ' ' + formData?.subtitle + ' ' + formData?.body
+            } as Note);
             toast.success("Note saved!");
         } catch (error) {
             console.log(error);
@@ -194,7 +196,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     return (
         <>
             {isLoading &&
-                <LoadingComponent loadingMessage="Loading note..." />
+                <LoadingComponent />
             }
 
             {!isLoading &&
@@ -212,7 +214,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     <BubbleMenu editor={editor} />
 
-                    <div className="lg:pt-24">
+                    <div className="lg:pt-24 lg:pb-24">
+
                         <div className="mb-1">
                             <TextareaAutosize
                                 id="title"
@@ -237,11 +240,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
                             {note?.type === NoteType.note && <EditorContent editor={editor} />}
 
                             {note?.type === NoteType.code &&
-                                // <Monaco
-                                //     note={note}
-                                //     formData={formData}
-                                //     setFormData={setFormData}
-                                // />
                                 <SnippetEditor
                                     note={note}
                                     formData={formData}
