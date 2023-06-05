@@ -1,7 +1,7 @@
 import NotebookProvider from "@/components/context/NotebookProvider";
 import VerifyUserState from "./verify";
-import WorkspaceSidebar from "../(sidebar)/WorkspaceSidebar";
-import WorkspaceHeader from "../(header)/Header";
+import WorkspaceSidebar from "./(sidebar)/WorkspaceSidebar";
+import WorkspaceHeader from "./(header-mobile)/Header";
 
 export default function Layout({
     children,

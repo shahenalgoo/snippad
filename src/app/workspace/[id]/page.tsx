@@ -5,14 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
-import { Note } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { Note, NoteFormData } from "@/types/typings";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
-import NoteHeader from "../(note-header)/NoteHeader";
+import NoteHeader from "../(header-note)/NoteHeader";
 
 // Text Editor
 import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
@@ -24,6 +24,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 
 // Type Definitions
@@ -34,11 +35,7 @@ type PageProps = {
     }
 }
 
-type FormData = {
-    title: string,
-    subtitle: string,
-    body: string,
-}
+
 
 const NotePage = ({ params: { id } }: PageProps) => {
 
@@ -51,10 +48,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
+        snippet_language: ''
     })
 
 
@@ -98,6 +96,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
+
+
     // Text Editor
     //
     const editor = useEditor({
@@ -131,12 +131,20 @@ const NotePage = ({ params: { id } }: PageProps) => {
         e.preventDefault();
         setIsSaving(true);
 
+        // Disable save if note is empty
+        if (formData.body === "") {
+            setIsSaving(false);
+            return toast.error('Please write a note first.');
+        }
+
         try {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
                 title: formData?.title,
                 subtitle: formData?.subtitle,
-                body: formData?.body
-            });
+                body: formData?.body,
+                snippet_language: formData.snippet_language,
+                search_index: formData?.title + ' ' + formData?.subtitle + ' ' + formData?.body
+            } as Note);
             toast.success("Note saved!");
         } catch (error) {
             console.log(error);
@@ -177,11 +185,18 @@ const NotePage = ({ params: { id } }: PageProps) => {
         return notFound();
     }
 
+    // if (!isLoading && note?.type === NoteType.code) {
+    //     return (
+    //         <>
+    //             <CodeEditor />
+    //         </>
+    //     )
+    // }
 
     return (
         <>
             {isLoading &&
-                <LoadingComponent loadingMessage="Loading note..." />
+                <LoadingComponent />
             }
 
             {!isLoading &&
@@ -199,7 +214,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     <BubbleMenu editor={editor} />
 
-                    <div className="lg:pt-24">
+                    <div className="lg:pt-24 lg:pb-24">
+
                         <div className="mb-1">
                             <TextareaAutosize
                                 id="title"
@@ -220,8 +236,16 @@ const NotePage = ({ params: { id } }: PageProps) => {
                             />
                         </div>
 
-                        <div>
-                            <EditorContent editor={editor} />
+                        <div className="relative">
+                            {note?.type === NoteType.note && <EditorContent editor={editor} />}
+
+                            {note?.type === NoteType.code &&
+                                <SnippetEditor
+                                    note={note}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                />
+                            }
                         </div>
                     </div>
 

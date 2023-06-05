@@ -6,31 +6,31 @@ import { NoteStatus, NoteType } from "./enums";
  */
 
 export interface IFetchCollection {
-    collection_id: string,
-    queries?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    collection_id: string;
+    queries?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface ICreateDocument {
-    data: any,
-    permission?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    data: any;
+    permission?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface IUpdateDocument {
-    document_id: string
-    data: any,
-    permission?: string[],
-    onSuccess?: () => any,
-    onError?: () => any
+    document_id: string;
+    data: any;
+    permission?: string[];
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 export interface IDeleteDocument {
-    document_id: any,
-    onSuccess?: () => any,
-    onError?: () => any
+    document_id: any;
+    onSuccess?: () => any;
+    onError?: () => any;
 }
 
 
@@ -41,7 +41,7 @@ export interface IDeleteDocument {
 
 export type Notebook = Models.Document & {
     title: string;
-    notes_related: string[]
+    notes_related: string[];
 }
 
 export type Note = Models.Document & {
@@ -49,14 +49,16 @@ export type Note = Models.Document & {
     subtitle: string;
     body: string;
     notebook_related: string;
-    type: NoteType
-    starred: boolean
-    status: NoteStatus
+    type: NoteType;
+    starred: boolean;
+    status: NoteStatus;
+    status_last_update: string;
+    snippet_language: string;
+    search_index: string;
 }
 
-
 /**
- * Forms
+ * AUTHENTICATION
  */
 
 export type MagicForm = {
@@ -73,4 +75,24 @@ export type CreateAccountForm = {
     name: string;
     email: string;
     password: string;
+}
+
+
+
+/**
+ * NOTES
+ */
+
+// Note Form
+export type NoteFormData = {
+    title: string;
+    subtitle: string;
+    body: string;
+    snippet_language?: string;
+}
+
+// Snippet supported languages
+export type SnippetLanguage = {
+    name: string;
+    alias: string;
 }
