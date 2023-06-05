@@ -63,7 +63,6 @@ const NotesTest: FC<NotesTestProps> = () => {
             // });
 
             setNotes(res.documents as Note[]);
-
         } catch (error) {
             console.log(error);
         }

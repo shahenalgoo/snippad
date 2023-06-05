@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from "react";
+import { usePathname } from 'next/navigation';
+
 import { Note } from "@/types/typings";
 import { useGlobalState } from "@/utils/global-states";
 
@@ -19,6 +21,7 @@ import NotesTest from "../workspace/components/NotesTest";
 import NotebookTest from "../workspace/components/NotebookTest";
 import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
+import { Button } from "@/components";
 
 
 const WorkspaceSidebar = () => {
@@ -30,13 +33,10 @@ const WorkspaceSidebar = () => {
     const [sidebar, setSidebar] = useGlobalState("sidebar");
 
 
-    // User Data
+    // Hooks
     //
+    const pathname = usePathname();
     const { user } = useUser();
-
-
-    // Notebook Data
-    //
     const { activeNotebookId } = useNotebook();
 
 
@@ -120,11 +120,14 @@ const WorkspaceSidebar = () => {
 
                 <div className="px-3 mt-4">
                     <NoteSwitcher noteList={noteList} />
+
+                    {pathname !== '/workspace' && <Button href="/workspace">Create New</Button>}
+
                 </div>
 
 
                 {/* <NotebookTest /> */}
-                <NotesTest />
+                {/* <NotesTest /> */}
             </div>
         </aside >
     );
