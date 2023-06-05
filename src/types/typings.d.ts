@@ -41,7 +41,7 @@ export interface IDeleteDocument {
 
 export type Notebook = Models.Document & {
     title: string;
-    notes_related: string[]
+    notes_related: string[];
 }
 
 export type Note = Models.Document & {
@@ -49,11 +49,12 @@ export type Note = Models.Document & {
     subtitle: string;
     body: string;
     notebook_related: string;
-    type: NoteType
-    starred: boolean
-    status: NoteStatus
+    type: NoteType;
+    starred: boolean;
+    status: NoteStatus;
+    status_last_update: string;
+    snippet_language: string;
 }
-
 
 /**
  * Forms
