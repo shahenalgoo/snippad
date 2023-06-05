@@ -131,6 +131,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
         e.preventDefault();
         setIsSaving(true);
 
+        // Disable save if note is empty
+        if (formData.body === "") {
+            setIsSaving(false);
+            return toast.error('Please write a note first.');
+        }
+
         try {
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
                 title: formData?.title,
