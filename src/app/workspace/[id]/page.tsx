@@ -9,13 +9,13 @@ import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType } from "@/types/enums";
 
 // Database
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, databases, storage } from "@/lib/appwrite-config";
 
 // Note header
 import NoteHeader from "../(header-note)/NoteHeader";
 
 // Text Editor
-import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react';
+import { useEditor, EditorContent, FloatingMenu, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from "@tiptap/extension-placeholder";
 import BubbleMenu from "../(text-editor)/BubbleMenu";
@@ -25,6 +25,9 @@ import TextareaAutosize from 'react-textarea-autosize';
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
+import Image from "@tiptap/extension-image";
+import { ID } from "appwrite";
+import Dropcursor from "@tiptap/extension-dropcursor";
 
 
 // Type Definitions
@@ -105,7 +108,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
             StarterKit,
             Placeholder.configure({
                 placeholder: 'Write your note...'
-            })
+            }),
+            Image,
+            Dropcursor
         ],
         editorProps: {
             attributes: {
@@ -123,6 +128,33 @@ const NotePage = ({ params: { id } }: PageProps) => {
             setFormData({ ...formData, body: html })
         }
     });
+
+    // Add Image
+    //
+    const addImage = async () => {
+        //console.log("trying to add image");
+
+        const element: HTMLInputElement = document.getElementById('uploader') as HTMLInputElement;
+        if (!element.files) {
+            console.log("no file found");
+            return;
+        }
+        const response = await storage.createFile(
+            AppwriteIds.bucketId_images,
+            ID.unique(),
+            element.files[0]
+        );
+
+
+        const url = storage.getFilePreview(AppwriteIds.bucketId_images, response.$id);
+
+        if (url) {
+            editor?.chain().focus().setImage({ src: url.href }).run()
+        }
+
+        //console.log("image added");
+
+    }
 
 
     // Save Note
@@ -211,6 +243,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         status={status}
                         setStatus={setStatus}
                     />
+
+                    <input type="file" id="uploader" onChange={() => addImage()} />
 
                     <BubbleMenu editor={editor} />
 

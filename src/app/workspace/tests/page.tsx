@@ -1,6 +1,6 @@
 'use client';
 
-import SearchTest from "./SearchTest";
+import SearchTest from "./SearchAndBucketTest";
 
 const page = () => {
     return (
