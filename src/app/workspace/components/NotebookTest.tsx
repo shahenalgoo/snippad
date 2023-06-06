@@ -13,7 +13,7 @@ const NotebookTest: FC<NotebookTestProps> = () => {
     return (
         <>
             <div className="my-10">
-                {/* <button className="mx-3" onClick={() => createNotebook("Another Notebook")}>Create Notebook</button> */}
+                <button className="mx-3" onClick={() => createNotebook("Another Notebook")}>Create Notebook</button>
                 {defaultNotebookId ? <button className="mx-3" onClick={() => activateNotebook(defaultNotebookId)}>Personal Notebook</button> : <></>}
                 {collection ? < button className="mx-3" onClick={() => activateNotebook(collection[1].$id)}>Another Notebook</button> : <></>}
 
