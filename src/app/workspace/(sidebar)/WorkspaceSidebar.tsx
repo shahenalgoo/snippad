@@ -16,6 +16,8 @@ import { useDocumentCreate } from "@/hooks";
 import { toast } from "react-hot-toast";
 
 
+
+
 import NotebookSwitcher from "./components/NotebookSwitcher";
 // import NotesTest from "../workspace/components/NotesTest";
 import NotebookTest from "../components/NotebookTest";
@@ -23,15 +25,25 @@ import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
 import { Button } from "@/components";
 
+// Sidebar Components
+import Status from "./components/Status";
+import Filters from "./components/Filters";
+import CreateNew from "./components/CreateNew";
+import SearchButton from "./components/SearchButton";
+import { NoteStatus } from "@/types/enums";
+
 
 const WorkspaceSidebar = () => {
 
     // States
     //
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [noteList, setNoteList] = useState<Note[] | null>(null);
     const [sidebar, setSidebar] = useGlobalState("sidebar");
     const [notebookDropdown, setNotebookDropdown] = useGlobalState("notebookSwitcher");
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [noteList, setNoteList] = useState<Note[] | null>(null);
+
+    const [noteStatus, setNoteStatus] = useState("all");
 
 
     // Hooks
@@ -58,8 +70,13 @@ const WorkspaceSidebar = () => {
             const res = await databases.listDocuments(
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notes,
-                [Query.equal('notebook_related', activeNotebookId)]
+                [
+                    Query.equal('notebook_related', activeNotebookId),
+                    Query.orderDesc('$createdAt')
+                    // Query.equal('filter_status', NoteStatus.published)
+                ]
             );
+
 
             // Temp code: use to quick delete while developing
             //
@@ -125,18 +142,21 @@ const WorkspaceSidebar = () => {
 
                 <NotebookSwitcher className={`relative ${!notebookDropdown ? '' : 'z-50'}`} />
 
-                <div className={`relative px-3 mt-4 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
-                    <NoteSwitcher noteList={noteList} />
 
-                    {pathname !== '/workspace' &&
-                        <Button className="mt-6" href="/workspace">
-                            Create New
-                        </Button>
-                    }
+
+                <div className="relative flex items-center gap-2 pb-3 px-3 border-b border-border-light z-40">
+                    <Status noteStatus={noteStatus} setNoteStatus={setNoteStatus} />
+                    <SearchButton />
+                    <Filters />
+                    <CreateNew />
+                </div>
+
+                <div className={`relative px-3 mt-4 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
+                    <NoteSwitcher noteList={noteList} noteStatus={noteStatus} />
                 </div>
 
 
-                <NotebookTest />
+                {/* <NotebookTest /> */}
                 {/* <NotesTest /> */}
             </div>
         </aside >

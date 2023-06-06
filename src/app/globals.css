@@ -12,3 +12,15 @@
     pointer-events: none;
     height: 0;
 }
+
+
+
+/* DROPDOWN */
+.dropdown {
+    position: relative;
+}
+
+.dropdown:hover .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+}
