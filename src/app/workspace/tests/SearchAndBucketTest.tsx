@@ -1,9 +1,10 @@
 import { useNotebook } from "@/context/NotebookContext";
 import { useUser } from "@/context/SessionContext";
 import { useDocumentUpdate } from "@/hooks";
-import { AppwriteIds, account, client, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, account, client, databases, storage } from "@/lib/appwrite-config";
 import { Note } from "@/types/typings";
-import { Query } from "appwrite";
+import { ID, Permission, Query, Role } from "appwrite";
+import { stringify } from "querystring";
 import { FC, useCallback, useEffect, useState } from "react";
 
 interface SearchTestProps {
@@ -75,6 +76,36 @@ const SearchTest: FC<SearchTestProps> = () => {
     }, [activeNotebookId]);
 
 
+    //Upload image
+
+    const uploadImage = async () => {
+
+        const element: HTMLInputElement = document.getElementById('uploader') as HTMLInputElement;
+        if (!element.files || !user) {
+            console.log("no file found");
+            return;
+        }
+        const response = await storage.createFile(
+            AppwriteIds.bucketId_images,
+            ID.unique(),
+            element.files[0],
+            [
+                Permission.read(Role.user(user?.$id || "")),
+                Permission.update(Role.user(user?.$id || "")),
+                Permission.delete(Role.user(user?.$id || "")),
+            ]
+        );
+
+        console.log(response);
+
+    }
+
+    function fetchImage() {
+        const response = storage.getFilePreview(AppwriteIds.bucketId_images, "647f032a23afd5d0bf54");
+
+        return response.href
+    }
+
 
     // Use effect
     //
@@ -82,6 +113,9 @@ const SearchTest: FC<SearchTestProps> = () => {
 
         //Fetch Notes
         fetchNoteList();
+
+        //Fetch Image Test
+        fetchImage();
 
         // Subscribe to live changes for the user's notebook collection
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notes}.documents`, res => {
@@ -98,6 +132,8 @@ const SearchTest: FC<SearchTestProps> = () => {
     return (
         <>
             <input name="firstName" onChange={(e) => fetchNoteList(e.target.value)} />
+            <input type="file" id="uploader" onChange={uploadImage} />
+            <img src={fetchImage()} alt="" />
         </>
     );
 }

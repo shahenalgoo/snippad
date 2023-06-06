@@ -12,6 +12,8 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@tiptap/extension-dropcursor": "^2.0.3",
+		"@tiptap/extension-image": "^2.0.3",
 		"@tiptap/extension-placeholder": "^2.0.3",
 		"@tiptap/extension-text-style": "^2.0.3",
 		"@tiptap/pm": "^2.0.3",
