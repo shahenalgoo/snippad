@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 
 // Typings
 import { Note, NoteFormData, SnippetLanguage } from "@/types/typings";
+import { NoteStatus } from "@/types/enums";
 
 // Code Editor
 import { languages } from "./languages";
@@ -72,6 +73,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData, setFormData }) 
                         backgroundColor: "#0f172a",
                         fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                     }}
+                    disabled={note?.status !== NoteStatus.published}
                 />
             </div>
         </>
