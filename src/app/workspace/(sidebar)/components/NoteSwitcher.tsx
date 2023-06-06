@@ -90,17 +90,14 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
     return (
         <>
             {noteList?.filter((el: Note) => noteFilterCondition(el)).map((note: Note | null) => (
+
                 <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg my-1 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'bg-slate-50 border-primary' : 'border-transparent'}`}>
+
                     <div className="shrink-0 w-10 h-10 flex items-center">
-                        {/* {note?.type === "note" && <TbNotes size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
-                        {/* {note?.type === "code" && <TbCode size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
-
-                        {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
-
-
-                        {/* {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
+                        {/* Default note icon */}
+                        {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-slate-600`} />}
+                        {/* Code snippet icons */}
                         {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
-
                     </div>
 
                     <div>
@@ -110,7 +107,9 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                         {note?.subtitle && <h6 className="text-xs text-slate-500 line-clamp-2">{note?.subtitle || 'No subtitle or note written yet'}</h6>}
                         {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{removeTags(note?.body || 'No subtitle or note written yet')}</p>}
                     </div>
+
                 </Link>
+
             ))}
         </>
     );
