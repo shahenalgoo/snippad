@@ -1,37 +1,36 @@
 'use client';
 
+// React
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
 
+// Typings
 import { Note } from "@/types/typings";
-import { useGlobalState } from "@/utils/global-states";
+import { NoteFilter, NoteStatus } from "@/types/enums";
 
-import { AppwriteIds, account, client, databases } from "@/lib/appwrite-config";
-import { Permission, Query, Role } from "appwrite";
+// Appwrite
+import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
+import { Query } from "appwrite";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
-import { useDocumentCreate } from "@/hooks";
 
-import { toast } from "react-hot-toast";
-
-
-
-
-import NotebookSwitcher from "./components/NotebookSwitcher";
-// import NotesTest from "../workspace/components/NotesTest";
-import NotebookTest from "../components/NotebookTest";
-import NoteSwitcher from "./components/NoteSwitcher";
-import LoadingComponent from "@/components/misc/Loading";
-import { Button } from "@/components";
+// Utils
+import { useGlobalState } from "@/utils/global-states";
 
 // Sidebar Components
+import NotebookSwitcher from "./components/NotebookSwitcher";
 import Status from "./components/Status";
 import Filters from "./components/Filters";
 import CreateNew from "./components/CreateNew";
 import SearchButton from "./components/SearchButton";
-import { NoteFilter, NoteStatus } from "@/types/enums";
-import { log } from "console";
+
+import NotebookTest from "../components/NotebookTest";
+import NoteSwitcher from "./components/NoteSwitcher";
+
+
+
 
 
 const WorkspaceSidebar = () => {
@@ -179,7 +178,6 @@ const WorkspaceSidebar = () => {
 
                 <div className="relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light z-40">
                     <Status noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
-
                     <SearchButton />
                     <Filters />
                     <CreateNew />

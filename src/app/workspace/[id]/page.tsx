@@ -28,6 +28,7 @@ import SnippetEditor from "../(code-editor)/SnippetEditor";
 import Image from "@tiptap/extension-image";
 import { ID } from "appwrite";
 import Dropcursor from "@tiptap/extension-dropcursor";
+import { Notification } from "@/components";
 
 
 // Type Definitions
@@ -99,8 +100,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
-
-
     // Text Editor
     //
     const editor = useEditor({
@@ -114,14 +113,19 @@ const NotePage = ({ params: { id } }: PageProps) => {
         ],
         editorProps: {
             attributes: {
-                class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none"
+                class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none disabled:cursor-not-allowed"
             }
         },
-        autofocus: true,
+
         onCreate: async ({ editor }) => {
+            // Fetch note data
             const data = await fetchNote(id);
+
+            // Load note content into editor
             editor.commands.setContent(`${data?.body}` || null);
 
+            // If note is not published, setEditable to false
+            if (data?.status !== NoteStatus.published) editor?.setEditable(false);
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
@@ -170,6 +174,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
 
         try {
+
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
                 title: formData?.title,
                 subtitle: formData?.subtitle,
@@ -177,7 +182,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 snippet_language: formData.snippet_language,
                 search_index: formData?.title + ' ' + formData?.subtitle + ' ' + formData?.body
             } as Note);
+
             toast.success("Note saved!");
+
         } catch (error) {
             console.log(error);
             toast.error("Unable to save note");
@@ -199,6 +206,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, [onSubmit]);
 
+
     useEffect(() => {
 
         // Register keydown events
@@ -208,7 +216,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
             // De-register keydown events
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [handleKeyDown]);
+    }, [handleKeyDown, note, editor]);
 
 
     // If note note found, return not-found page
@@ -244,11 +252,19 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         setStatus={setStatus}
                     />
 
-                    <input type="file" id="uploader" onChange={() => addImage()} />
+                    {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
+
 
                     <BubbleMenu editor={editor} />
 
                     <div className="lg:pt-24 lg:pb-24">
+
+                        {/* Visible only when a note is archived or trashed */}
+                        {note?.status !== NoteStatus.published &&
+                            <Notification variant='danger' className="mb-4">
+                                Cannot be edited while archived or trashed.
+                            </Notification>
+                        }
 
                         <div className="mb-1">
                             <TextareaAutosize
@@ -256,7 +272,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 placeholder="Title"
                                 defaultValue={note?.title}
                                 onChange={onFieldChange}
-                                className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto"
+                                className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
+                                disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
 
@@ -266,7 +283,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
                                 onChange={onFieldChange}
-                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-slate-500"
+                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-slate-500 disabled:cursor-not-allowed"
+                                disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
 
