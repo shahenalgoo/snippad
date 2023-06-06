@@ -100,13 +100,16 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                         {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
                     </div>
 
-                    <div>
-                        <h5 className={`text-md font-semibold line-clamp-1 ${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-500'} `}>
-                            {note?.title || 'Untitled'}
+                    <div className="flex-1">
+                        <h5 className={`text-md font-semibold ${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-500'} `}>
+                            <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
+
                         </h5>
                         {note?.subtitle && <h6 className="text-xs text-slate-500 line-clamp-2">{note?.subtitle || 'No subtitle or note written yet'}</h6>}
                         {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{removeTags(note?.body || 'No subtitle or note written yet')}</p>}
                     </div>
+
+                    {note?.starred && <DynamicIcon name="TbStarFilled" size={16} strokeWidth={1} className="shrink-0 ml-4 mb-4 text-star" />}
 
                 </Link>
 
