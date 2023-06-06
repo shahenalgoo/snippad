@@ -24,3 +24,22 @@
     visibility: visible;
     opacity: 1;
 }
+
+
+
+
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+}

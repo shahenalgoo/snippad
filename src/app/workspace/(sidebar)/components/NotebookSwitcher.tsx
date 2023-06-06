@@ -33,7 +33,7 @@ const NotebookSwitcher: FC<NotebookSwitcherProps> = ({ className }) => {
 
     return (
         <div className={`relative h-20 flex justify-center items-center py-3 px-3 ${className}`}>
-            <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-5 bg-white border ${!notebookDropdown ? 'border-border-light' : 'border-primary'}`}>
+            <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-5 border ${!notebookDropdown ? 'bg-slate-100 border-transparent' : 'bg-white border-primary'}`}>
                 <span className="text-sm font-semibold text-slate-600">General Notebook</span>
                 <HiOutlineChevronUpDown size={26} strokeWidth={1} className="text-slate-500 ml-auto" />
             </button>
