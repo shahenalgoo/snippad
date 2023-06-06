@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+}
+
+
+
+/* DROPDOWN */
+.dropdown {
+    position: relative;
+}
+
+.dropdown:hover .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+
+
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+}
+
+
+/*//////////////////////////////////////////////////////////////
+    TEXT EDITOR - PROSE MIRROR
+//////////////////////////////////////////////////////////////*/
+
+// HEADINGS
+.ProseMirror {
+
+    h1,
+    h2,
+    h3 {
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    h1:first-child,
+    h2:first-child,
+    h3:first-child {
+        margin-top: 0;
+    }
+
+    h1 {
+        margin-top: 64px;
+        margin-bottom: 16px;
+        font-size: 32px;
+    }
+
+    h2 {
+        margin-top: 48px;
+        margin-bottom: 12px;
+        font-size: 28px;
+    }
+
+    h3 {
+        margin-top: 40px;
+        margin-bottom: 12px;
+        font-size: 24px;
+    }
+}
+
+// LISTS
+.ProseMirror {
+
+    ul,
+    ol {
+        margin-top: 32px;
+        margin-bottom: 32px;
+        margin-left: 48px;
+    }
+
+    ul {
+        list-style: disc;
+    }
+
+    ol {
+        list-style: decimal;
+    }
+
+    li {
+        margin-bottom: 16px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

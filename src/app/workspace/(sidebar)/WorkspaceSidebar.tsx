@@ -136,7 +136,7 @@ const WorkspaceSidebar = () => {
                 &nbsp;
             </button>
 
-            <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transition-all ${!sidebar ? 'invisible lg:visible -left-80 lg:left-0' : 'visible left-0'} bg-white lg:border-r border-slate-200`}>
+            <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transition-all ${!sidebar ? 'invisible lg:visible -left-80 lg:left-0' : 'visible left-0'} bg-white lg:border-r border-border-light`}>
 
                 <div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute w-full h-full cursor-zoom-out backdrop-blur-sm bg-black/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
                     &nbsp;
@@ -144,17 +144,15 @@ const WorkspaceSidebar = () => {
 
                 <NotebookSwitcher className={`relative ${!notebookDropdown ? '' : 'z-50'}`} />
 
-
-
-                <div className="relative flex items-center gap-2 pb-3 px-3 border-b border-border-light z-40">
-                    <Status noteFilter={noteFilter} setNoteStatus={setNoteFilter} />
+                <div className="relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light z-40">
+                    <Status noteStatus={noteStatus} setNoteStatus={setNoteStatus} />
                     <SearchButton />
                     <Filters />
                     <CreateNew />
                 </div>
 
-                <div className={`relative px-3 mt-4 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
-                    <NoteSwitcher noteList={noteList} noteFilter={noteFilter} />
+                <div className={`sidebar-notes-overflow relative h-[calc(100%_-_120px)] overflow-scroll py-4 px-3 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
+                    <NoteSwitcher noteList={noteList} noteStatus={noteStatus} />
                 </div>
 
 
