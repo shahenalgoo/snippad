@@ -7,15 +7,15 @@ import { Note } from "@/types/typings";
 // import { TbNotes, TbCode } from "react-icons/tb";
 import * as Icons from "react-icons/tb";
 import Link from "next/link";
-import { NoteStatus, NoteType } from "@/types/enums";
+import { NoteFilter, NoteStatus, NoteType } from "@/types/enums";
 
 interface NoteSwitcherProps {
     noteList: Note[] | null;
 
-    noteStatus: any;
+    noteFilter: NoteFilter;
 }
 
-const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteStatus }) => {
+const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
 
     // Current path
     //
@@ -35,18 +35,43 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteStatus }) => {
     //
     function noteFilterCondition(note: Note) {
         //switch depending on status
-        switch (noteStatus) {
-            case "all":
+        switch (noteFilter) {
+            case NoteFilter.all:
                 return note.status === NoteStatus.published;
                 break;
-            case "starred":
+            case NoteFilter.starred:
                 return note.status === NoteStatus.published && note.starred;
                 break;
-            case "archived":
+            case NoteFilter.archived:
                 return note.status === NoteStatus.archived;
                 break;
-            case "trashed":
+            case NoteFilter.trash:
                 return note.status === NoteStatus.trashed;
+                break;
+            default:
+                break;
+        }
+    }
+
+    let color = "";
+    // Assign the correct icon for the file type
+    function setLanguageIcon(note: Note) {
+        switch (note.snippet_language) {
+            case 'html':
+                color = "text-html";
+                return "TbBrandHtml5";
+                break;
+            case 'css':
+                color = "text-css";
+                return "TbBrandCss3";
+                break;
+            case 'js':
+                color = "text-js";
+                return "TbBrandJavascript";
+                break;
+            case 'ts':
+                color = "text-ts";
+                return "TbBrandTypescript"
                 break;
             default:
                 break;
@@ -72,10 +97,9 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteStatus }) => {
 
                         {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
 
-                        {note?.type === "code" && note?.snippet_language === 'html' && <DynamicIcon name="TbBrandHtml5" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
-                        {note?.type === "code" && note?.snippet_language === 'css' && <DynamicIcon name="TbBrandCss3" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
-                        {note?.type === "code" && note?.snippet_language === 'js' && <DynamicIcon name="TbBrandJavascript" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
-                        {note?.type === "code" && note?.snippet_language === 'ts' && <DynamicIcon name="TbBrandTypescript" size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />}
+
+                        {/* {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
+                        {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
 
                     </div>
 

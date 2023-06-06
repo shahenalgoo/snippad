@@ -31,7 +31,7 @@ const CreateNew: FC<CreateNewProps> = () => {
     const router = useRouter();
 
     //Notebook data
-    const { activeNotebookId } = useNotebook();
+    const { activeNotebook } = useNotebook();
 
 
     //User data
@@ -45,7 +45,7 @@ const CreateNew: FC<CreateNewProps> = () => {
     const createNote = async (type: NoteType) => {
 
         // If we cannot find the relating notebook, cancel create.
-        if (activeNotebookId === null) {
+        if (activeNotebook === null) {
             return;
         }
 
@@ -55,7 +55,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                     title: "",
                     subtitle: "",
                     body: "",
-                    notebook_related: activeNotebookId,
+                    notebook_related: activeNotebook.$id,
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
