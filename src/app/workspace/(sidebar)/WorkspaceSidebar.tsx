@@ -18,7 +18,7 @@ import { toast } from "react-hot-toast";
 
 import NotebookSwitcher from "./components/NotebookSwitcher";
 // import NotesTest from "../workspace/components/NotesTest";
-// import NotebookTest from "../workspace/components/NotebookTest";
+import NotebookTest from "../components/NotebookTest";
 import NoteSwitcher from "./components/NoteSwitcher";
 import LoadingComponent from "@/components/misc/Loading";
 import { Button } from "@/components";
@@ -31,6 +31,7 @@ const WorkspaceSidebar = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noteList, setNoteList] = useState<Note[] | null>(null);
     const [sidebar, setSidebar] = useGlobalState("sidebar");
+    const [notebookDropdown, setNotebookDropdown] = useGlobalState("notebookSwitcher");
 
 
     // Hooks
@@ -118,9 +119,13 @@ const WorkspaceSidebar = () => {
 
             <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transition-all ${!sidebar ? 'invisible lg:visible -left-80 lg:left-0' : 'visible left-0'} bg-white lg:border-r border-slate-200`}>
 
-                <NotebookSwitcher />
+                <div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute w-full h-full cursor-zoom-out backdrop-blur-sm bg-black/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
+                    &nbsp;
+                </div>
 
-                <div className="px-3 mt-4">
+                <NotebookSwitcher className={`relative ${!notebookDropdown ? '' : 'z-50'}`} />
+
+                <div className={`relative px-3 mt-4 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
                     <NoteSwitcher noteList={noteList} />
 
                     {pathname !== '/workspace' &&
@@ -131,7 +136,7 @@ const WorkspaceSidebar = () => {
                 </div>
 
 
-                {/* <NotebookTest /> */}
+                <NotebookTest />
                 {/* <NotesTest /> */}
             </div>
         </aside >
