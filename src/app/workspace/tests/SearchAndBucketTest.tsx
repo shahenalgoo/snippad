@@ -17,7 +17,7 @@ const SearchTest: FC<SearchTestProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noteList, setNoteList] = useState<Note[] | null>(null);
 
-    const { activeNotebookId } = useNotebook();
+    const { activeNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
     const { user } = useUser();
@@ -31,29 +31,26 @@ const SearchTest: FC<SearchTestProps> = () => {
         try {
 
             // If no active notebook is found, cancel fetch.
-            if (activeNotebookId === null) {
+            if (activeNotebook === null) {
                 return;
             }
 
             // Set query to active notebook only
-            const queries: string[] = [Query.equal('notebook_related', activeNotebookId)]
+            //const queries: string[] = [Query.equal('notebook_related', activeNotebook.$id)]
 
             // Add search options
-            if (searchText) {
-                queries.push(Query.search('body', searchText));
-            }
-
-            // console.log(queries);
-
-            // Query.equal('notebook_related', activeNotebookId),
+            // if (searchText) {
+            //     queries.push(Query.search('body', searchText));
+            // }
 
             // Fetch user's notes
             const res = await databases.listDocuments(
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notes,
                 [
-                    Query.equal('notebook_related', activeNotebookId),
-                    // Query.search('search_index', "human")
+                    Query.equal('notebook_related', activeNotebook.$id) &&
+                    Query.search('search_index', "cat"),
+                    Query.orderDesc('$createdAt')
                 ]
             );
 
@@ -73,7 +70,7 @@ const SearchTest: FC<SearchTestProps> = () => {
             setIsLoading(false);
         }
 
-    }, [activeNotebookId]);
+    }, [activeNotebook]);
 
 
     //Upload image
@@ -132,8 +129,8 @@ const SearchTest: FC<SearchTestProps> = () => {
     return (
         <>
             <input name="firstName" onChange={(e) => fetchNoteList(e.target.value)} />
-            <input type="file" id="uploader" onChange={uploadImage} />
-            <img src={fetchImage()} alt="" />
+            {/* <input type="file" id="uploader" onChange={uploadImage} /> */}
+            {/* <img src={fetchImage()} alt="" /> */}
         </>
     );
 }
