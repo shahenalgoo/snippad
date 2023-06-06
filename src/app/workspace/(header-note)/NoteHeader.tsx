@@ -1,4 +1,9 @@
+'use client';
+
+// React
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+
 import { Button } from "@/components";
 
 import { TbDeviceFloppy, TbLoader2, TbStar, TbStarFilled, TbTrash, TbArchive, TbTrashFilled } from "react-icons/tb";
@@ -12,6 +17,7 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import { useUser } from "@/context/SessionContext";
 import { Permission, Role } from "appwrite";
 
+
 interface NoteHeaderProps {
     editor: any;
     note: Note | null;
@@ -22,12 +28,18 @@ interface NoteHeaderProps {
     isSaving: boolean;
 }
 
+
 const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, setStarred, status, setStatus }) => {
 
+    // States
+    //
     const [isLoadingArchive, setIsLoadingArchive] = useState<boolean>(false);
     const [isLoadingTrash, setIsLoadingTrash] = useState<boolean>(false);
 
+
     // Hooks
+    //
+    const router = useRouter();
     const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
@@ -52,6 +64,14 @@ const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, se
                 onSuccess() {
                     setStatus(newStatus);
                     setLoading(false);
+
+                    if (note.status === NoteStatus.published) {
+                        router.push('/workspace');
+                    } else {
+                        window.location.reload();
+                    }
+
+
                 },
                 onError() {
                     setLoading(false);
@@ -60,6 +80,16 @@ const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, se
         }
     };
 
+
+    // Archive
+    const handleArchive = () => {
+        updateNoteStatus(status === NoteStatus.archived ? NoteStatus.published : NoteStatus.archived, setIsLoadingArchive);
+    }
+
+    // Trash
+    const handleTrash = () => {
+        updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash)
+    }
 
 
     return (
@@ -76,13 +106,13 @@ const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, se
                 isSaving={isSaving}
             />
 
-            <Button variant='bubble' type="button" onClick={() => updateNoteStatus(status === NoteStatus.archived ? NoteStatus.published : NoteStatus.archived, setIsLoadingArchive)} disabled={isSaving}>
+            <Button variant='bubble' type="button" onClick={handleArchive} disabled={isSaving}>
                 {!isLoadingArchive && status !== NoteStatus.archived && <HiOutlineArchiveBox size={20} strokeWidth={1} />}
                 {!isLoadingArchive && status === NoteStatus.archived && <HiArchiveBox size={20} strokeWidth={1} />}
                 {isLoadingArchive && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
             </Button>
 
-            <Button variant='bubble' type="button" onClick={() => updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash)} disabled={isSaving}>
+            <Button variant='bubble' type="button" onClick={handleTrash} disabled={isSaving}>
                 {!isLoadingTrash && status !== NoteStatus.trashed && <TbTrash size={20} strokeWidth={1} />}
                 {!isLoadingTrash && status === NoteStatus.trashed && <TbTrashFilled size={20} strokeWidth={1} />}
                 {isLoadingTrash && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
