@@ -1,4 +1,4 @@
-import './globals.css';
+import './globals.scss';
 
 import SessionProvider from '@/components/context/SessionProvider';
 import { Toaster } from '@/components';
