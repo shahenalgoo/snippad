@@ -23,7 +23,7 @@ const CreateNew: FC<CreateNewProps> = () => {
 
 
     return (
-        <Button onClick={() => router.push('/workspace')} disabled={pathname === '/workspace'} size='square'>
+        <Button onClick={() => router.push('/workspace')} disabled={pathname === '/workspace'} size='square' className="disabled:bg-slate-100">
             <TbPlus size={20} strokeWidth={1.5} />
         </Button>
     );
