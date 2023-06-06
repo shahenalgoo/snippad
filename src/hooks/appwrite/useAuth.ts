@@ -137,7 +137,7 @@ export default function useAuth() {
     const logout = async () => {
 
         setIsLoading(true);
-        toast.loading('Logging in...');
+        toast.loading('Logging out...');
 
         try {
             await account.deleteSession('current');
