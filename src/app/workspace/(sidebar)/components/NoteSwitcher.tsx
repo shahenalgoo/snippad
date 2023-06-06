@@ -52,7 +52,37 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                 color = "text-ts";
                 return "TbBrandTypescript"
                 break;
+            case 'py':
+                color = "text-py";
+                return "TbBrandPython"
+                break;
+            case 'php':
+                color = "text-php";
+                return "TbBrandPhp"
+                break;
+            case 'cs':
+                color = "text-cs";
+                return "TbBrandCSharp"
+                break;
+            case 'cpp':
+                color = "text-cpp";
+                return "TbBrandCpp"
+                break;
+            case 'java':
+                color = "text-java";
+                return "TbCoffee"
+                break;
+            case 'json':
+                color = "text-json";
+                return "TbBraces"
+                break;
+            case 'sql':
+                color = "text-sql";
+                return "TbSql"
+                break;
             default:
+                color = "text-code";
+                return "TbCode"
                 break;
         }
     }
