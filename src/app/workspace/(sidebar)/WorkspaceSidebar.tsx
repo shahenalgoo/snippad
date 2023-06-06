@@ -31,6 +31,7 @@ import Filters from "./components/Filters";
 import CreateNew from "./components/CreateNew";
 import SearchButton from "./components/SearchButton";
 import { NoteFilter, NoteStatus } from "@/types/enums";
+import { log } from "console";
 
 
 const WorkspaceSidebar = () => {
@@ -42,7 +43,6 @@ const WorkspaceSidebar = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noteList, setNoteList] = useState<Note[] | null>(null);
-
     const [noteFilter, setNoteFilter] = useState<NoteFilter>(NoteFilter.all);
 
 
@@ -59,6 +59,8 @@ const WorkspaceSidebar = () => {
 
         setIsLoading(true);
 
+
+
         try {
 
             // If no active notebook is found, cancel fetch.
@@ -66,21 +68,28 @@ const WorkspaceSidebar = () => {
                 return;
             }
 
+            // Fetching notes for the active notebook + active status (published, archived or trashed)
+            let queries: string[] = [
+                Query.equal('notebook_related', activeNotebook.$id),
+                Query.equal('status', getFetchNoteStatus()),
+                Query.orderDesc('$createdAt')
+            ]
+
+            // Add starred to the query if filter is set to starred
+            if (noteFilter === NoteFilter.starred) {
+                queries.push(
+                    Query.equal('starred', true),
+                );
+            }
+
             // Fetch user's notes
             const res = await databases.listDocuments(
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notes,
-                [
-                    Query.equal('notebook_related', activeNotebook.$id),
-                    Query.orderDesc('$createdAt')
-                ]
+                queries
             )
 
-            console.log(res);
-
-
             // Temp code: use to quick delete while developing
-
             // res.documents.forEach(element => {
             //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
             // });
@@ -93,7 +102,31 @@ const WorkspaceSidebar = () => {
             setIsLoading(false);
         }
 
-    }, [activeNotebook]);
+    }, [activeNotebook, noteFilter]);
+
+
+    // Get note status according to the filter set    
+    //
+    function getFetchNoteStatus() {
+        switch (noteFilter) {
+            case NoteFilter.all:
+                return NoteStatus.published
+                break;
+            case NoteFilter.starred:
+                return NoteStatus.published
+                break;
+            case NoteFilter.archived:
+                return NoteStatus.archived
+                break;
+            case NoteFilter.trash:
+                return NoteStatus.trashed
+                break;
+            default:
+                return NoteStatus.published
+                break;
+        }
+    }
+
 
 
     // Set sidebar to false on breakpoint
@@ -147,7 +180,7 @@ const WorkspaceSidebar = () => {
 
 
                 <div className="relative flex items-center gap-2 pb-3 px-3 border-b border-border-light z-40">
-                    <Status noteFilter={noteFilter} setNoteStatus={setNoteFilter} />
+                    <Status noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
                     <SearchButton />
                     <Filters />
                     <CreateNew />

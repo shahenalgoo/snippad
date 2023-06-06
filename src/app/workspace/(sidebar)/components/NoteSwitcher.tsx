@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { usePathname } from 'next/navigation';
 import { Note } from "@/types/typings";
 
@@ -13,6 +13,8 @@ interface NoteSwitcherProps {
     noteList: Note[] | null;
 
     noteFilter: NoteFilter;
+
+    //setNoteStatus: Dispatch<SetStateAction<NoteStatus>>;
 }
 
 const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
@@ -28,29 +30,6 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
 
         const newText = new DOMParser().parseFromString(text, 'text/html');
         return newText.body.textContent?.substring(0, 120) || "";
-    }
-
-
-    // Filter notes by different statuses
-    //
-    function noteFilterCondition(note: Note) {
-        //switch depending on status
-        switch (noteFilter) {
-            case NoteFilter.all:
-                return note.status === NoteStatus.published;
-                break;
-            case NoteFilter.starred:
-                return note.status === NoteStatus.published && note.starred;
-                break;
-            case NoteFilter.archived:
-                return note.status === NoteStatus.archived;
-                break;
-            case NoteFilter.trash:
-                return note.status === NoteStatus.trashed;
-                break;
-            default:
-                break;
-        }
     }
 
     let color = "";
@@ -89,7 +68,7 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
 
     return (
         <>
-            {noteList?.filter((el: Note) => noteFilterCondition(el)).map((note: Note | null) => (
+            {noteList?.map((note: Note | null) => (
                 <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg mb-2 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'bg-slate-50 border-primary' : 'border-transparent'}`}>
                     <div className="shrink-0 w-10 h-10 flex items-center">
                         {/* {note?.type === "note" && <TbNotes size={24} strokeWidth={1} className={`${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-300'}`} />} */}
