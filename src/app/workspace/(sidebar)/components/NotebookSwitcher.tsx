@@ -60,11 +60,11 @@ const NotebookDropdown: FC<NotebookDropdownProps> = ({ className }) => {
 
     // Hooks
     //
-    const { collection: notebookList, total, defaultNotebookId, activeNotebookId, activateNotebook, createNotebook, deleteNotebook } = useNotebook();
+    const { collection: notebookList, total, defaultNotebook, activeNotebook, activateNotebook, createNotebook, deleteNotebook } = useNotebook();
 
 
-    const handleSwitchNotebook = (id: string) => {
-        activateNotebook(id);
+    const handleSwitchNotebook = (notebook: Notebook) => {
+        activateNotebook(notebook);
         setNotebookDropdown(!notebookDropdown)
     }
 
@@ -73,8 +73,8 @@ const NotebookDropdown: FC<NotebookDropdownProps> = ({ className }) => {
             <div className="overflow-hidden w-full bg-white rounded-lg">
 
                 {notebookList?.map((notebook: Notebook) => (
-                    <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook.$id)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
-                        {activeNotebookId === notebook.$id ?
+                    <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
+                        {activeNotebook?.$id === notebook.$id ?
                             <TbCircleCheckFilled size={20} strokeWidth={1} className="mr-3 text-primary" />
                             :
                             <TbCircle size={20} strokeWidth={1} className="mr-3 text-slate-300" />

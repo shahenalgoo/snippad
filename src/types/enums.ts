@@ -8,3 +8,10 @@ export enum NoteStatus {
     archived = "archived",
     trashed = "trashed"
 }
+
+export enum NoteFilter {
+    all = "all",
+    starred = "starred",
+    archived = "archived",
+    trash = "trash"
+}

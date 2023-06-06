@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Note } from "@/types/typings";
 import { useGlobalState } from "@/utils/global-states";
 
-import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, account, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
 
 import { useUser } from "@/context/SessionContext";
@@ -30,7 +30,7 @@ import Status from "./components/Status";
 import Filters from "./components/Filters";
 import CreateNew from "./components/CreateNew";
 import SearchButton from "./components/SearchButton";
-import { NoteStatus } from "@/types/enums";
+import { NoteFilter, NoteStatus } from "@/types/enums";
 
 
 const WorkspaceSidebar = () => {
@@ -43,14 +43,14 @@ const WorkspaceSidebar = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noteList, setNoteList] = useState<Note[] | null>(null);
 
-    const [noteStatus, setNoteStatus] = useState("all");
+    const [noteFilter, setNoteFilter] = useState<NoteFilter>(NoteFilter.all);
 
 
     // Hooks
     //
     const pathname = usePathname();
     const { user } = useUser();
-    const { activeNotebookId } = useNotebook();
+    const { activeNotebook } = useNotebook();
 
 
     // Fetch Notes
@@ -62,7 +62,7 @@ const WorkspaceSidebar = () => {
         try {
 
             // If no active notebook is found, cancel fetch.
-            if (activeNotebookId === null) {
+            if (activeNotebook === null) {
                 return;
             }
 
@@ -71,15 +71,16 @@ const WorkspaceSidebar = () => {
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notes,
                 [
-                    Query.equal('notebook_related', activeNotebookId),
+                    Query.equal('notebook_related', activeNotebook.$id),
                     Query.orderDesc('$createdAt')
-                    // Query.equal('filter_status', NoteStatus.published)
                 ]
-            );
+            )
+
+            console.log(res);
 
 
             // Temp code: use to quick delete while developing
-            //
+
             // res.documents.forEach(element => {
             //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
             // });
@@ -92,7 +93,7 @@ const WorkspaceSidebar = () => {
             setIsLoading(false);
         }
 
-    }, [activeNotebookId]);
+    }, [activeNotebook]);
 
 
     // Set sidebar to false on breakpoint
@@ -113,6 +114,7 @@ const WorkspaceSidebar = () => {
 
         //Fetch Notes
         fetchNoteList();
+
 
         // Subscribe to live changes for the user's notebook collection
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notes}.documents`, res => {
@@ -145,14 +147,14 @@ const WorkspaceSidebar = () => {
 
 
                 <div className="relative flex items-center gap-2 pb-3 px-3 border-b border-border-light z-40">
-                    <Status noteStatus={noteStatus} setNoteStatus={setNoteStatus} />
+                    <Status noteFilter={noteFilter} setNoteStatus={setNoteFilter} />
                     <SearchButton />
                     <Filters />
                     <CreateNew />
                 </div>
 
                 <div className={`relative px-3 mt-4 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
-                    <NoteSwitcher noteList={noteList} noteStatus={noteStatus} />
+                    <NoteSwitcher noteList={noteList} noteFilter={noteFilter} />
                 </div>
 
 
