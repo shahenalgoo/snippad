@@ -1,36 +1,34 @@
 'use client';
 
+// React
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
 
+// Typings
 import { Note } from "@/types/typings";
-import { useGlobalState } from "@/utils/global-states";
+import { NoteFilter } from "@/types/enums";
 
-import { AppwriteIds, account, client, databases } from "@/lib/appwrite-config";
-import { Permission, Query, Role } from "appwrite";
+// Appwrite
+import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
+import { Query } from "appwrite";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
-import { useDocumentCreate } from "@/hooks";
 
-import { toast } from "react-hot-toast";
-
-
-
-
-import NotebookSwitcher from "./components/NotebookSwitcher";
-// import NotesTest from "../workspace/components/NotesTest";
-import NotebookTest from "../components/NotebookTest";
-import NoteSwitcher from "./components/NoteSwitcher";
-import LoadingComponent from "@/components/misc/Loading";
-import { Button } from "@/components";
+// Utils
+import { useGlobalState } from "@/utils/global-states";
 
 // Sidebar Components
+import NotebookSwitcher from "./components/NotebookSwitcher";
 import Status from "./components/Status";
 import Filters from "./components/Filters";
 import CreateNew from "./components/CreateNew";
 import SearchButton from "./components/SearchButton";
-import { NoteFilter, NoteStatus } from "@/types/enums";
+
+import NotebookTest from "../components/NotebookTest";
+import NoteSwitcher from "./components/NoteSwitcher";
+
 
 
 const WorkspaceSidebar = () => {
@@ -145,14 +143,14 @@ const WorkspaceSidebar = () => {
                 <NotebookSwitcher className={`relative ${!notebookDropdown ? '' : 'z-50'}`} />
 
                 <div className="relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light z-40">
-                    <Status noteStatus={noteStatus} setNoteStatus={setNoteStatus} />
+                    <Status noteFilter={noteFilter} setNoteStatus={setNoteFilter} />
                     <SearchButton />
                     <Filters />
                     <CreateNew />
                 </div>
 
                 <div className={`sidebar-notes-overflow relative h-[calc(100%_-_120px)] overflow-scroll py-4 px-3 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
-                    <NoteSwitcher noteList={noteList} noteStatus={noteStatus} />
+                    <NoteSwitcher noteList={noteList} noteFilter={noteFilter} />
                 </div>
 
 
