@@ -259,6 +259,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     <div className="lg:pt-24 lg:pb-24">
 
+                        {/* Visible only when a note is archived or trashed */}
                         {note?.status !== NoteStatus.published &&
                             <Notification variant='danger' className="mb-4">
                                 Cannot be edited while archived or trashed.
