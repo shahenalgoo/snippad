@@ -53,8 +53,6 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
     const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
-    // TODO: Move a Note
-
     // Mark a Note as Published or Archived or Trashed
     //
     const updateNoteStatus = (newStatus: NoteStatus, setLoading: Dispatch<SetStateAction<boolean>>) => {

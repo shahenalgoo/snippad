@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from "react";
 import { Note, Notebook } from "@/types/typings";
 
 import { useUser } from "@/context/SessionContext";
@@ -9,7 +9,7 @@ import { Button } from "@/components";
 import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
 
-import { TbLoader2, TbStar, TbStarFilled, TbStatusChange } from "react-icons/tb";
+import { TbLoader2, TbStatusChange } from "react-icons/tb";
 import { useNotebook } from "@/context/NotebookContext";
 
 
@@ -27,6 +27,7 @@ const MoveNote: FC<MoveNoteProps> = ({
     //
     const [isLoadingMove, setIsLoadingMove] = useState<boolean>(false);
     const [notebookDropdown, setNotebookDropdown] = useState<boolean>(false);
+    const [notebookOptions, setNotebookOptions] = useState<Notebook[]>([]);
 
 
     // Hooks
@@ -35,11 +36,11 @@ const MoveNote: FC<MoveNoteProps> = ({
     const { collection: notebookList, activeNotebook, activateNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
-
-    // Mark a Note as Starred
+    // Move a Note
     //
     const moveNote = (newNotebook: Notebook) => {
         setIsLoadingMove(true);
+        setNotebookDropdown(!notebookDropdown)
 
         if (user && note) {
             updateDocument({
@@ -63,7 +64,6 @@ const MoveNote: FC<MoveNoteProps> = ({
         }
     };
 
-
     return (
         <>
 
@@ -75,13 +75,8 @@ const MoveNote: FC<MoveNoteProps> = ({
             <div className={`absolute left-0 z-50 w-full h-auto p-3 transition-all ${!notebookDropdown ? 'invisible opacity-0 top-8' : 'visible opacity-100 top-16'} `}>
                 <div className="overflow-hidden w-full bg-white rounded-lg">
 
-                    {notebookList?.filter((el: Notebook) => note?.notebook_related != el.$id).map((notebook: Notebook) => (
+                    {!isLoadingMove && notebookList?.filter((el: Notebook) => note?.notebook_related != el.$id).map((notebook: Notebook) => (
                         <button key={notebook.$id} onClick={() => moveNote(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
-                            {/* {activeNotebook?.$id === notebook.$id ?
-                                <TbCircleCheckFilled size={20} strokeWidth={1} className="mr-3 text-primary" />
-                                :
-                                <TbCircle size={20} strokeWidth={1} className="mr-3 text-slate-300" />
-                            } */}
                             <span className="text-sm font-semibold">{notebook.title}</span>
                         </button>
                     ))}

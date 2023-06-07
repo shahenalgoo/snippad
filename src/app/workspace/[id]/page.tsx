@@ -31,6 +31,7 @@ import Dropcursor from "@tiptap/extension-dropcursor";
 import { Notification } from "@/components";
 
 import TextEditor from "../(tip-tap)/TextEditor";
+import { useNotebook } from "@/context/NotebookContext";
 
 
 // Type Definitions
@@ -58,6 +59,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
         body: '',
         snippet_language: ''
     })
+
+    const { activeNotebook } = useNotebook();
 
 
     // Fetch Note
@@ -135,7 +138,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     useEffect(() => {
         fetchNote(id);
-    }, [fetchNote, id]);
+    }, [fetchNote, id, activeNotebook]);
 
 
     // If note note found, return not-found page
