@@ -1,19 +1,31 @@
+/**
+ * Mobile header
+ * 
+ */
+
 'use client';
 
+// React
 import { FC } from "react";
-import { TbMenu } from "react-icons/tb";
-import { useGlobalState } from "@/utils/global-states";
 
+// Icons
+import { TbMenu } from "react-icons/tb";
+
+// Components
 import { Button } from "@/components";
 
-interface WorkspaceHeaderProps {
+// Utils
+import { useGlobalState } from "@/utils/global-states";
+
+interface HeaderMobileProps {
 
 }
 
-const WorkspaceHeader: FC<WorkspaceHeaderProps> = () => {
+const HeaderMobile: FC<HeaderMobileProps> = () => {
 
+    // States
+    //
     const [sidebar, setSidebar] = useGlobalState("sidebar");
-
 
     return (
         <nav className="lg:hidden fixed top-0 left-0 z-40 w-full h-20 px-4 flex items-center bg-white">
@@ -24,4 +36,4 @@ const WorkspaceHeader: FC<WorkspaceHeaderProps> = () => {
     );
 }
 
-export default WorkspaceHeader;
+export default HeaderMobile;

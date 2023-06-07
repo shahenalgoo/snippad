@@ -1,7 +1,18 @@
+/**
+ * The main layout structure of the workspace
+ * - Contains a notebook context to tract the active notebook data across the app
+ * - Contains a user verification wrapper to perform redirects based on user states
+ * - Contains workspace sidebar and mobile header
+ * 
+ */
+
+// Wrappers
 import NotebookProvider from "@/components/context/NotebookProvider";
 import VerifyUserState from "./verify";
-import WorkspaceSidebar from "./(sidebar)/WorkspaceSidebar";
-import WorkspaceHeader from "./(header-mobile)/Header";
+
+// Workspace components
+import HeaderMobile from "./(headers)/HeaderMobile";
+import Sidebar from "./(sidebar)/Sidebar";
 
 export default function Layout({
     children,
@@ -14,9 +25,13 @@ export default function Layout({
             <NotebookProvider>
                 <VerifyUserState>
 
-                    <WorkspaceHeader />
-                    <WorkspaceSidebar />
+                    {/* Mobile header */}
+                    <HeaderMobile />
 
+                    {/* Workspace Sidebar */}
+                    <Sidebar />
+
+                    {/* Workspace Content */}
                     <main className="relative !min-h-full h-full lg:ml-80 xl:ml-96 transition-all">
                         <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] mt-20 lg:mt-0 md:mx-auto px-6">
                             {children}

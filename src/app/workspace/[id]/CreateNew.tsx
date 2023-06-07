@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 import { useRouter } from 'next/navigation';
 
 // Typings
@@ -35,7 +35,7 @@ const CreateNew: FC<CreateNewProps> = () => {
 
 
     //User data
-    const { user, isLoading } = useUser();
+    const { user } = useUser();
 
 
     // Create a new note
@@ -48,6 +48,9 @@ const CreateNew: FC<CreateNewProps> = () => {
         if (activeNotebook === null) {
             return;
         }
+
+        // Return if no user found
+        if (!user) return;
 
         try {
             const res = await createDocument({
@@ -63,9 +66,9 @@ const CreateNew: FC<CreateNewProps> = () => {
                     search_index: ''
                 } as Note,
                 permission: [
-                    Permission.read(Role.user(user?.$id || "")),
-                    Permission.update(Role.user(user?.$id || "")),
-                    Permission.delete(Role.user(user?.$id || "")),
+                    Permission.read(Role.user(user?.$id)),
+                    Permission.update(Role.user(user?.$id)),
+                    Permission.delete(Role.user(user?.$id)),
                 ]
             });
 
@@ -106,8 +109,8 @@ export default CreateNew;
 
 interface CreateNewButtonProps {
     className: string;
-    onClick: any;
-    children: any;
+    onClick: MouseEventHandler<HTMLButtonElement>;
+    children: React.ReactNode;
 }
 
 const CreateNewButton: FC<CreateNewButtonProps> = ({ className, onClick, children }) => {
