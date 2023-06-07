@@ -9,11 +9,11 @@ import { Button } from "@/components";
 // Icons
 import { TbSearch } from 'react-icons/tb';
 
-interface SearchButtonProps {
+interface SearchProps {
     className?: string
 }
 
-const SearchButton: FC<SearchButtonProps> = ({ className }) => {
+const Search: FC<SearchProps> = ({ className }) => {
     return (
         // <Button variant='link' className={`px-2 border border-border-light justify-start ${className}`}>
         //     <TbSearch size={20} strokeWidth={1} className="mr-2" />
@@ -26,4 +26,4 @@ const SearchButton: FC<SearchButtonProps> = ({ className }) => {
     );
 }
 
-export default SearchButton;
+export default Search;

@@ -4,22 +4,31 @@
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
-import { Button } from "@/components";
-
-import { TbDeviceFloppy, TbLoader2, TbStar, TbStarFilled, TbTrash, TbArchive, TbTrashFilled } from "react-icons/tb";
-import { HiOutlineArchiveBox, HiArchiveBox } from "react-icons/hi2";
+// Typings
 import { Note } from "@/types/typings";
 import { NoteStatus } from "@/types/enums";
-import StarNote from "./StarNote";
-import SaveNote from "./SaveNote";
-import { useDocumentUpdate } from "@/hooks";
-import { AppwriteIds } from "@/lib/appwrite-config";
+
+// Hooks
 import { useUser } from "@/context/SessionContext";
+import { useDocumentUpdate } from "@/hooks";
+
+// Components
+import { Button } from "@/components";
+
+// Icons
+import { TbLoader2, TbTrash, TbTrashFilled } from "react-icons/tb";
+import { HiOutlineArchiveBox, HiArchiveBox } from "react-icons/hi2";
+
+// Appwrite
+import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
 
+// Header notes components
+import SaveNote from "./components/SaveNote";
+import StarNote from "./components/StarNote";
 
-interface NoteHeaderProps {
-    editor: any;
+
+interface HeaderNotesProps {
     note: Note | null;
     isStarred: boolean;
     setStarred: Dispatch<SetStateAction<boolean>>;
@@ -29,7 +38,7 @@ interface NoteHeaderProps {
 }
 
 
-const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, setStarred, status, setStatus }) => {
+const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarred, status, setStatus }) => {
 
     // States
     //
@@ -121,4 +130,4 @@ const NoteHeader: FC<NoteHeaderProps> = ({ editor, note, isSaving, isStarred, se
     );
 }
 
-export default NoteHeader;
+export default HeaderNotes;
