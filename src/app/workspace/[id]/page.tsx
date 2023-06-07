@@ -60,9 +60,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
         snippet_language: ''
     })
 
-    const { activeNotebook } = useNotebook();
-
-
     // Fetch Note
     //
     const fetchNote = useCallback(async (id: string) => {
@@ -138,7 +135,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     useEffect(() => {
         fetchNote(id);
-    }, [fetchNote, id, activeNotebook]);
+    }, [fetchNote, id]);
 
 
     // If note note found, return not-found page

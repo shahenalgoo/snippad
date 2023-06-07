@@ -117,15 +117,26 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 }
             }
 
-            // If cookie found is found in fetched notebooks, set saved. If not found, set default as active.
+            let isFound = false;
+            // If cookie found is also in fetched notebooks, set saved. 
             if (lastNotebookUsed) {
-                res.documents.forEach(element => {
-                    if (lastNotebookUsed.$id == element.$id) {
+                for (let i = 0; i < res.documents.length; i++) {
+                    if (lastNotebookUsed.$id == res.documents[i].$id) {
+                        isFound = true;
                         activateNotebook(lastNotebookUsed);
-                    } else {
-                        activateNotebook(res.documents[0] as Notebook);
+                        break;
                     }
-                });
+                }
+
+                //If notebook saved in cookie not found, set default as active and save in cookie
+                if (!isFound) {
+                    activateNotebook(res.documents[0] as Notebook);
+                    cookies.set(cookieNotebookRef, defaultNotebook);
+                }
+
+            } else {
+                //create cookie with default
+                cookies.set(cookieNotebookRef, defaultNotebook);
             }
 
         } catch (error) {
@@ -140,8 +151,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const activateNotebook = async (notebook: Notebook) => {
         setActiveNotebook(notebook);
 
-        // Also set it in cookies
-        cookies.set(cookieNotebookRef, notebook);
+        // Also set it in cookies, check first if cookies exists.
+        if (cookies.get(cookieNotebookRef)) {
+            cookies.set(cookieNotebookRef, notebook);
+        }
     }
 
 
