@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 
 // Components
 import { Button } from "@/components";
@@ -13,10 +13,10 @@ import { NoteFilter } from "@/types/enums";
 
 interface StatusProps {
     noteFilter: NoteFilter;
-    setNoteStatus: any
+    setNoteFilter: Dispatch<SetStateAction<NoteFilter>>
 }
 
-const Status: FC<StatusProps> = ({ noteFilter, setNoteStatus }) => {
+const Status: FC<StatusProps> = ({ noteFilter, setNoteFilter }) => {
 
     return (
         <>
@@ -28,10 +28,10 @@ const Status: FC<StatusProps> = ({ noteFilter, setNoteStatus }) => {
 
                 <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-slate-200`}>
 
-                    <StatusButton onClick={() => setNoteStatus(NoteFilter.all)} icon="TbLayoutList" title="All" />
-                    <StatusButton onClick={() => setNoteStatus(NoteFilter.starred)} icon="TbStar" title="Starred" />
-                    <StatusButton onClick={() => setNoteStatus(NoteFilter.archived)} icon="TbArchive" title="Archived" />
-                    <StatusButton onClick={() => setNoteStatus(NoteFilter.trash)} icon="TbTrash" title="Trashed" />
+                    <StatusButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title="All" />
+                    <StatusButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title="Starred" />
+                    <StatusButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title="Archived" />
+                    <StatusButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title="Trashed" />
 
                 </div>
             </div>

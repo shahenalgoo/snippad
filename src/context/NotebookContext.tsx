@@ -81,6 +81,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     // Init Cookies
     //
     const cookies = new Cookies();
+    let lastNotebookUsed: Notebook;
 
 
     // User data
@@ -107,13 +108,24 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setTotal(res.total);
 
 
-            // The first document in the list is the default one
+            // The first document in the list is the default one: called ''General'
             if (res.total > 0) {
                 setDefaultNotebook(res.documents[0] as Notebook);
 
                 if (!cookies.get(cookieNotebookRef)) {
                     activateNotebook(res.documents[0] as Notebook);
                 }
+            }
+
+            // If cookie found is found in fetched notebooks, set saved. If not found, set default as active.
+            if (lastNotebookUsed) {
+                res.documents.forEach(element => {
+                    if (lastNotebookUsed.$id == element.$id) {
+                        activateNotebook(lastNotebookUsed);
+                    } else {
+                        activateNotebook(res.documents[0] as Notebook);
+                    }
+                });
             }
 
         } catch (error) {
@@ -203,12 +215,9 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         fetchNotebooks();
 
         // Fetch saved active notebook from cookies
-        const lastNotebookUsed: Notebook = cookies.get(cookieNotebookRef);
+        lastNotebookUsed = cookies.get(cookieNotebookRef);
 
-        // If found, set saved as active.
-        if (lastNotebookUsed) {
-            activateNotebook(lastNotebookUsed);
-        }
+
 
         // Subscribe to live changes for the user's notebook collection
         //
