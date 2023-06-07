@@ -31,10 +31,14 @@ const NotebookSwitcher: FC<NotebookSwitcherProps> = ({ className }) => {
     const [notebookDropdown, setNotebookDropdown] = useGlobalState("notebookSwitcher");
 
 
+    const { activeNotebook } = useNotebook();
+    console.log(activeNotebook);
+
+
     return (
         <div className={`relative h-20 flex justify-center items-center py-3 px-3 ${className}`}>
             <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-5 border ${!notebookDropdown ? 'bg-slate-100 border-transparent' : 'bg-white border-primary'}`}>
-                <span className="text-sm font-semibold text-slate-600">General Notebook</span>
+                <span className="text-sm font-semibold text-slate-600">{activeNotebook?.title} Notebook</span>
                 <HiOutlineChevronUpDown size={26} strokeWidth={1} className="text-slate-500 ml-auto" />
             </button>
 
