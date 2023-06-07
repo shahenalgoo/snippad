@@ -87,6 +87,10 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                 color = "text-json";
                 return "TbBraces"
                 break;
+            case 'kt':
+                color = "text-kt";
+                return "TbBrandKotlin"
+                break;
             case 'sql':
                 color = "text-sql";
                 return "TbSql"

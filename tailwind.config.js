@@ -21,7 +21,16 @@ module.exports = {
 				'html': '#e34c26',
 				'css': '#264de4',
 				'js': '#ca8a04',
-				'ts': '#007acc'
+				'ts': '#007acc',
+				'py': '#4b8bbe',
+				'php': '#474a8a',
+				'cs': '#682876',
+				'cpp': '#00549d',
+				'java': '#1565c0',
+				'json': '#000',
+				'kt': '#c757bc',
+				'sql': '#512da8',
+
 			},
 			container: {
 				center: true,
