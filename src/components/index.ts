@@ -11,6 +11,7 @@ export { default as Grid } from "./ui/Grid";
 export { default as Modal } from "./ui//Modal";
 export { default as Notification } from "./ui//Notification";
 export { default as Spinner } from "./ui/Spinner";
+export { default as Title } from "./ui/Title";
 
 // LAYOUT
 export { default as MainFullCentered } from "./layout/MainFullCentered";

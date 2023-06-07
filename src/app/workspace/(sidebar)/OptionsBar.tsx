@@ -14,10 +14,12 @@ import { Button } from "@/components";
 import { TbPlus } from 'react-icons/tb';
 
 // Options bar components
-
 import Filters from "./components/Filters";
 import Search from "./components/Search";
 import Sort from "./components/Sort";
+
+// Utils
+import { useGlobalState } from "@/utils/global-states";
 
 
 interface OptionsBarProps {
@@ -28,6 +30,10 @@ interface OptionsBarProps {
 
 const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
 
+    //States
+    //
+    const [notebookDropdown] = useGlobalState("notebookSwitcher");
+
     // Hooks
     //
     const pathname = usePathname();
@@ -35,7 +41,7 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
 
 
     return (
-        <div className="relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light z-40">
+        <div className={`relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'}`}>
 
             <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
             <Search />

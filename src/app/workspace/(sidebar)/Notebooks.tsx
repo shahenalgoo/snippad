@@ -18,6 +18,9 @@ import { TbNotebook, TbCircle, TbCircleCheckFilled } from "react-icons/tb";
 import { useNotebook } from "@/context/NotebookContext";
 import { Notebook } from "@/types/typings";
 
+// Components
+import { Button } from "@/components";
+
 
 interface NotebooksProps {
 
@@ -57,8 +60,16 @@ const Notebooks: FC<NotebooksProps> = () => {
 
                 {/* Dropdown menu */}
                 <div className={`absolute left-0 z-50 w-full h-auto p-3 transition-all ${!notebookDropdown ? 'invisible opacity-0 top-8' : 'visible opacity-100 top-16'} `}>
-                    <div className="overflow-hidden w-full bg-white rounded-lg">
 
+                    {/* Create new notebook */}
+                    <div className="relative mb-2 flex gap-2" onClick={() => setNotebookDropdown(false)}>
+                        <Button href="/workspace/settings/notebooks" variant='primary' className="flex-1">
+                            Manage Notebooks
+                        </Button>
+                    </div>
+
+                    {/* List all notebooks */}
+                    <div className="overflow-hidden w-full bg-white rounded-lg">
                         {notebookList?.map((notebook: Notebook) => (
                             <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
                                 {activeNotebook?.$id === notebook.$id ?
@@ -69,7 +80,6 @@ const Notebooks: FC<NotebooksProps> = () => {
                                 <span className="text-sm font-semibold">{notebook.title}</span>
                             </button>
                         ))}
-
                     </div>
                 </div>
 
