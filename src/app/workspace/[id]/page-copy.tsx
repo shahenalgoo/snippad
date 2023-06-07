@@ -25,12 +25,10 @@ import TextareaAutosize from 'react-textarea-autosize';
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
-
+import Image from "@tiptap/extension-image";
 import { ID } from "appwrite";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import { Notification } from "@/components";
-
-import TextEditor from "../(tip-tap)/TextEditor";
 
 
 // Type Definitions
@@ -40,6 +38,8 @@ type PageProps = {
         id: string;
     }
 }
+
+
 
 const NotePage = ({ params: { id } }: PageProps) => {
 
@@ -100,9 +100,70 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
-    // Form submit
+    // Text Editor
     //
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            Placeholder.configure({
+                placeholder: 'Write your note...'
+            }),
+            Image,
+            // Dropcursor
+        ],
+        editorProps: {
+            attributes: {
+                class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none disabled:cursor-not-allowed"
+            }
+        },
+
+        onCreate: async ({ editor }) => {
+            // Fetch note data
+            const data = await fetchNote(id);
+
+            // Load note content into editor
+            editor.commands.setContent(`${data?.body}` || null);
+
+            // If note is not published, setEditable to false
+            if (data?.status !== NoteStatus.published) editor?.setEditable(false);
+        },
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            setFormData({ ...formData, body: html })
+        }
+    });
+
+    // Add Image
+    //
+    const addImage = async () => {
+        //console.log("trying to add image");
+
+        const element: HTMLInputElement = document.getElementById('uploader') as HTMLInputElement;
+        if (!element.files) {
+            console.log("no file found");
+            return;
+        }
+        const response = await storage.createFile(
+            AppwriteIds.bucketId_images,
+            ID.unique(),
+            element.files[0]
+        );
+
+
+        const url = storage.getFilePreview(AppwriteIds.bucketId_images, response.$id);
+
+        if (url) {
+            editor?.chain().focus().setImage({ src: url.href }).run()
+        }
+
+        //console.log("image added");
+
+    }
+
+
+    // Save Note
+    //
+    const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSaving(true);
 
@@ -130,12 +191,32 @@ const NotePage = ({ params: { id } }: PageProps) => {
         } finally {
             setIsSaving(false);
         }
-    }
+    }, [formData, id])
+
+
+    // Keyboard Events
+    //
+    const handleKeyDown = useCallback((e: any) => {
+
+        // Save Note - Ctrl + s
+        if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
+            e.preventDefault();
+            onSubmit(e);
+        }
+
+    }, [onSubmit]);
 
 
     useEffect(() => {
-        fetchNote(id);
-    }, [fetchNote, id]);
+
+        // Register keydown events
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            // De-register keydown events
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleKeyDown, note, editor]);
 
 
     // If note note found, return not-found page
@@ -143,6 +224,14 @@ const NotePage = ({ params: { id } }: PageProps) => {
     if (!isLoading && !note) {
         return notFound();
     }
+
+    // if (!isLoading && note?.type === NoteType.code) {
+    //     return (
+    //         <>
+    //             <CodeEditor />
+    //         </>
+    //     )
+    // }
 
     return (
         <>
@@ -162,11 +251,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         setStatus={setStatus}
                     />
 
+                    {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
 
+
+                    <BubbleMenu editor={editor} />
 
                     <div className="lg:pt-24 lg:pb-24">
-
-                        {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
 
                         {/* Visible only when a note is archived or trashed */}
                         {note?.status !== NoteStatus.published &&
@@ -198,15 +288,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         </div>
 
                         <div className="relative">
-
-                            {note?.type === NoteType.note &&
-                                <TextEditor
-                                    id={id}
-                                    note={note}
-                                    formData={formData}
-                                    setFormData={setFormData}
-                                />
-                            }
+                            {note?.type === NoteType.note && <EditorContent editor={editor} />}
 
                             {note?.type === NoteType.code &&
                                 <SnippetEditor

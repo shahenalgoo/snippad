@@ -3,7 +3,7 @@
  * 
  */
 
-import { Client, Account, Databases } from 'appwrite';
+import { Client, Account, Databases, Storage } from 'appwrite';
 
 
 /**
@@ -15,6 +15,7 @@ export const AppwriteIds = {
     collectionId_notebook: process.env.NEXT_PUBLIC_COLLECTION_NOTEBOOKS_ID as string,
     collectionId_notes: process.env.NEXT_PUBLIC_COLLECTION_NOTES_ID as string,
     collectionId_test_notes: process.env.NEXT_PUBLIC_COLLECTION_TEST_NOTES_ID as string,
+    bucketId_images: process.env.NEXT_PUBLIC_BUCKET_IMAGES_ID as string,
 }
 
 
@@ -39,3 +40,9 @@ export const account = new Account(client);
  * 
  */
 export const databases = new Databases(client);
+
+/**
+ * Initiate Bucket
+ * 
+ */
+export const storage = new Storage(client);

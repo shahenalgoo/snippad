@@ -5,7 +5,7 @@
  */
 
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { Notebook } from "@/types/typings";
+import { Note, Notebook } from "@/types/typings";
 
 import { useUser } from "./SessionContext";
 import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
@@ -24,10 +24,10 @@ type NotebookContextType = {
     collection: Notebook[] | null;
     total: number;
 
-    defaultNotebookId: string | null;
-    activeNotebookId: string | null;
+    defaultNotebook: Notebook | null;
+    activeNotebook: Notebook | null;
 
-    activateNotebook: (id: string) => void;
+    activateNotebook: (note: Notebook) => void;
     createNotebook: (id: string) => Promise<void>;
     updateNotebook: (document_id: string, title: string) => Promise<void>;
     deleteNotebook: (id: string) => void;
@@ -68,19 +68,20 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [collection, setCollection] = useState<Notebook[] | null>(null);
     const [total, setTotal] = useState<number>(0);
-    const [defaultNotebookId, setDefaultNotebookId] = useState<string | null>(null);
-    const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
+    const [defaultNotebook, setDefaultNotebook] = useState<Notebook | null>(null);
+    const [activeNotebook, setActiveNotebook] = useState<Notebook | null>(null);
 
 
     // Default Names
     //
-    const defaultNotebookName = "Personal Notebook";
-    const cookieNotebookRef = "activeNotebookId";
+    const defaultNotebookName = "General";
+    const cookieNotebookRef = "activeNotebookRef";
 
 
     // Init Cookies
     //
     const cookies = new Cookies();
+    let lastNotebookUsed: Notebook;
 
 
     // User data
@@ -107,13 +108,24 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setTotal(res.total);
 
 
-            // The first document in the list is the default one
+            // The first document in the list is the default one: called ''General'
             if (res.total > 0) {
-                setDefaultNotebookId(res.documents[0].$id);
+                setDefaultNotebook(res.documents[0] as Notebook);
 
                 if (!cookies.get(cookieNotebookRef)) {
-                    activateNotebook(res.documents[0].$id);
+                    activateNotebook(res.documents[0] as Notebook);
                 }
+            }
+
+            // If cookie found is found in fetched notebooks, set saved. If not found, set default as active.
+            if (lastNotebookUsed) {
+                res.documents.forEach(element => {
+                    if (lastNotebookUsed.$id == element.$id) {
+                        activateNotebook(lastNotebookUsed);
+                    } else {
+                        activateNotebook(res.documents[0] as Notebook);
+                    }
+                });
             }
 
         } catch (error) {
@@ -125,11 +137,11 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     // Set selected notebook as active
     //
-    const activateNotebook = async (id: string) => {
-        setActiveNotebookId(id);
+    const activateNotebook = async (notebook: Notebook) => {
+        setActiveNotebook(notebook);
 
         // Also set it in cookies
-        cookies.set(cookieNotebookRef, id);
+        cookies.set(cookieNotebookRef, notebook);
     }
 
 
@@ -189,8 +201,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         deleteDocument({ document_id: id })
 
         // Switch active notebook to 'personal' IF the active notebook has been deleted
-        if (activeNotebookId === id && defaultNotebookId) {
-            activateNotebook(defaultNotebookId);
+        if (activeNotebook?.$id === id && defaultNotebook?.$id) {
+            activateNotebook(defaultNotebook);
         }
     }
 
@@ -203,12 +215,9 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         fetchNotebooks();
 
         // Fetch saved active notebook from cookies
-        const lastNotebookUsed: string = cookies.get(cookieNotebookRef);
+        lastNotebookUsed = cookies.get(cookieNotebookRef);
 
-        // If found, set saved as active.
-        if (lastNotebookUsed) {
-            activateNotebook(lastNotebookUsed);
-        }
+
 
         // Subscribe to live changes for the user's notebook collection
         //
@@ -228,8 +237,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         isLoading,
         collection: collection as Notebook[] | null,
         total,
-        defaultNotebookId,
-        activeNotebookId,
+        defaultNotebook,
+        activeNotebook,
         activateNotebook,
         createNotebook,
         updateNotebook,

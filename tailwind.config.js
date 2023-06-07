@@ -15,7 +15,13 @@ module.exports = {
 				'primary': '#34d399',
 				'danger': '#f43f5e',
 				'success': '#4ade80',
-				'border-light': ''
+				'border-light': '#e2e8f0',
+				// 'border-light': 'red'
+				'star': '#f59e0b',
+				'html': '#e34c26',
+				'css': '#264de4',
+				'js': '#ca8a04',
+				'ts': '#007acc'
 			},
 			container: {
 				center: true,

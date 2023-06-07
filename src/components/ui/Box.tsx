@@ -12,10 +12,11 @@ const boxVariants = cva(
                 transparent: ''
             },
             rounded: {
-                default: 'rounded-2xl'
+                default: 'rounded-2xl',
+                xl: 'rounded-xl'
             },
             space: {
-                default: 'p-4 sm:p-6'
+                default: 'p-4 sm:p-6',
             }
         },
         defaultVariants: {

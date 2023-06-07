@@ -68,7 +68,7 @@ const StarNote: FC<StarNoteProps> = ({
     return (
         <Button variant='bubble' type="button" onClick={starNote} disabled={isSaving}>
             {!isLoadingStarred && !isStarred && <TbStar size={20} strokeWidth={1} />}
-            {!isLoadingStarred && isStarred && <TbStarFilled size={20} strokeWidth={1} className="text-amber-500" />}
+            {!isLoadingStarred && isStarred && <TbStarFilled size={20} strokeWidth={1} className="text-star" />}
             {isLoadingStarred && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
         </Button>
     );

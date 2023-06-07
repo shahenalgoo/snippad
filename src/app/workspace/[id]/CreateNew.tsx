@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 import { useRouter } from 'next/navigation';
 
 // Typings
@@ -31,11 +31,11 @@ const CreateNew: FC<CreateNewProps> = () => {
     const router = useRouter();
 
     //Notebook data
-    const { activeNotebookId } = useNotebook();
+    const { activeNotebook } = useNotebook();
 
 
     //User data
-    const { user, isLoading } = useUser();
+    const { user } = useUser();
 
 
     // Create a new note
@@ -45,9 +45,12 @@ const CreateNew: FC<CreateNewProps> = () => {
     const createNote = async (type: NoteType) => {
 
         // If we cannot find the relating notebook, cancel create.
-        if (activeNotebookId === null) {
+        if (activeNotebook === null) {
             return;
         }
+
+        // Return if no user found
+        if (!user) return;
 
         try {
             const res = await createDocument({
@@ -55,7 +58,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                     title: "",
                     subtitle: "",
                     body: "",
-                    notebook_related: activeNotebookId,
+                    notebook_related: activeNotebook.$id,
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
@@ -63,9 +66,9 @@ const CreateNew: FC<CreateNewProps> = () => {
                     search_index: ''
                 } as Note,
                 permission: [
-                    Permission.read(Role.user(user?.$id || "")),
-                    Permission.update(Role.user(user?.$id || "")),
-                    Permission.delete(Role.user(user?.$id || "")),
+                    Permission.read(Role.user(user?.$id)),
+                    Permission.update(Role.user(user?.$id)),
+                    Permission.delete(Role.user(user?.$id)),
                 ]
             });
 
@@ -106,8 +109,8 @@ export default CreateNew;
 
 interface CreateNewButtonProps {
     className: string;
-    onClick: any;
-    children: any;
+    onClick: MouseEventHandler<HTMLButtonElement>;
+    children: React.ReactNode;
 }
 
 const CreateNewButton: FC<CreateNewButtonProps> = ({ className, onClick, children }) => {
