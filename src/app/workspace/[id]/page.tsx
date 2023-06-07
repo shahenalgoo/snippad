@@ -9,16 +9,12 @@ import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType } from "@/types/enums";
 
 // Database
-import { AppwriteIds, databases, storage } from "@/lib/appwrite-config";
+import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
 import HeaderNotes from "../(headers)/HeaderNotes";
 
 // Text Editor
-import { useEditor, EditorContent, FloatingMenu, Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from "@tiptap/extension-placeholder";
-import BubbleMenu from "../(tip-tap)/BubbleMenu";
 import TextareaAutosize from 'react-textarea-autosize';
 
 // Utils
@@ -26,11 +22,11 @@ import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
 
-import { ID } from "appwrite";
-import Dropcursor from "@tiptap/extension-dropcursor";
 import { Notification } from "@/components";
 
 import TextEditor from "../(tip-tap)/TextEditor";
+import DeleteTrash from "./DeleteTrash";
+import { resourceUsage } from "process";
 
 
 // Type Definitions
@@ -58,7 +54,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
         body: '',
         snippet_language: ''
     })
-
 
     // Fetch Note
     //
@@ -150,7 +145,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 <LoadingComponent />
             }
 
+            {!isLoading && note?.status === NoteStatus.trashed &&
+                <DeleteTrash note={note} />
+            }
+
             {!isLoading &&
+
+
                 <form onSubmit={onSubmit} className="font-body">
 
                     <HeaderNotes

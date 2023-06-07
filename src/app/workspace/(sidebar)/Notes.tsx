@@ -35,12 +35,13 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
     const pathname = usePathname();
 
 
-    // Remove HTML tags from string
-    const removeTags = (text: string | undefined) => {
-        if (text == null || undefined || '') return '';
+    // Remove HTML tags from string for non-HTML bodies (in sidebar preview)
+    const removeTags = (note: Note | null) => {
+        if (note?.body == null || undefined || '') return '';
+        if (note?.type === "code" && note?.snippet_language === 'html') return note?.body.substring(0, 120);
 
-        const newText = new DOMParser().parseFromString(text, 'text/html');
-        return newText.body.textContent?.substring(0, 120) || "";
+        const newText = new DOMParser().parseFromString(note?.body, 'text/html');
+        return newText.body.textContent?.substring(0, 120);
     }
 
     let color = "";
@@ -87,6 +88,10 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                 color = "text-json";
                 return "TbBraces"
                 break;
+            case 'kt':
+                color = "text-kt";
+                return "TbBrandKotlin"
+                break;
             case 'sql':
                 color = "text-sql";
                 return "TbSql"
@@ -127,7 +132,8 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
                             <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
                         </h5>
                         {note?.subtitle && <h6 className="text-xs text-slate-500 line-clamp-2">{note?.subtitle || 'No subtitle or note written yet'}</h6>}
-                        {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{removeTags(note?.body || 'No subtitle or note written yet')}</p>}
+                        {/* {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{note?.body.substring(0, 120) || 'No subtitle or note written yet'}</p>} */}
+                        {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{removeTags(note)}</p>}
                     </div>
 
                     {/* If starred */}

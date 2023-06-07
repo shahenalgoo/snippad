@@ -19,8 +19,6 @@ type SessionContextType = {
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
     user: Models.User<Models.Preferences> | null;
     setUser: React.Dispatch<React.SetStateAction<Models.User<Models.Preferences> | null>>;
-    //session: Models.Session | null;
-    //setSession: React.Dispatch<React.SetStateAction<Models.Session | null>>;
 };
 
 type SessionProviderProps = {
@@ -58,17 +56,19 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
-    // const [session, setSession] = useState<Models.Session | null>(null);
 
-
-    // Fetch User
+    // Fetch User & set login status
     //
     const fetchUser = async () => {
         setIsLoading(true);
         try {
-            const promise = await account.get();
+            //check session first
+            const sessionInfo = await account.getSession('current');
+            if (!sessionInfo) return;
+
             setIsLoggedIn(true);
-            setUser(promise);
+            const userInfo = await account.get();
+            setUser(userInfo);
         } catch (error) {
             console.log("PLEASE LOG IN TO CONTINUE.");
             console.log(error);
