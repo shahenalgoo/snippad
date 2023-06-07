@@ -10,11 +10,14 @@ interface DeleteTrashProps {
 
 const DeleteTrash: FC<DeleteTrashProps> = ({ note }) => {
 
-    const router = useRouter();
 
+    // Hooks
+    //
+    const router = useRouter();
     const { deleteDocument } = useDocumentDelete(AppwriteIds.collectionId_notes);
 
-
+    // Delete a trashed note permanently
+    //
     const permanentDelete = () => {
         deleteDocument({
             document_id: note.$id,
