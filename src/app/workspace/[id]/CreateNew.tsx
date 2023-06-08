@@ -62,6 +62,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
+                    status_last_update: new Date(),
                     snippet_language: 'html',
                     search_index: ''
                 } as Note,

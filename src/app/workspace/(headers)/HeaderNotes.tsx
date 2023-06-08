@@ -62,7 +62,8 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
             updateDocument({
                 document_id: note.$id,
                 data: {
-                    status: newStatus
+                    status: newStatus,
+                    status_last_update: new Date(),
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user.$id)),
@@ -87,7 +88,6 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
             });
         }
     };
-
 
     // Archive
     const handleArchive = () => {

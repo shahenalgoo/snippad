@@ -5,7 +5,7 @@
  */
 
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { Note, Notebook } from "@/types/typings";
+import { Notebook } from "@/types/typings";
 
 import { useUser } from "./SessionContext";
 import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
@@ -15,6 +15,8 @@ import { Permission, Role } from "appwrite";
 
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
+
+import { useRouter } from "next/navigation";
 
 
 // Notebook typings
@@ -27,8 +29,8 @@ type NotebookContextType = {
     defaultNotebook: Notebook | null;
     activeNotebook: Notebook | null;
 
-    activateNotebook: (note: Notebook) => void;
-    createNotebook: (id: string) => Promise<void>;
+    activateNotebook: (note: Notebook, backToWorkspace?: boolean) => void;
+    createNotebook: (id: string, isFirst?: boolean) => Promise<void>;
     updateNotebook: (document_id: string, title: string) => Promise<void>;
     deleteNotebook: (id: string) => void;
 };
@@ -72,11 +74,11 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [activeNotebook, setActiveNotebook] = useState<Notebook | null>(null);
 
 
-    // Default Names
+    // Default Names/Amounts
     //
-    const defaultNotebookName = "General";
+    const defaultNotebookName = "General Notebook";
     const cookieNotebookRef = "activeNotebookRef";
-
+    const notebookLimit = 3;
 
     // Init Cookies
     //
@@ -84,9 +86,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     let lastNotebookUsed: Notebook;
 
 
-    // User data
+    // Hooks
     //
     const { user } = useUser();
+    const router = useRouter();
 
 
     // Fetch notebooks
@@ -148,12 +151,16 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     // Set selected notebook as active
     //
-    const activateNotebook = async (notebook: Notebook) => {
+    const activateNotebook = async (notebook: Notebook, backToWorkspace?: boolean) => {
         setActiveNotebook(notebook);
 
         // Also set it in cookies, check first if cookies exists.
         if (cookies.get(cookieNotebookRef)) {
             cookies.set(cookieNotebookRef, notebook);
+        }
+
+        if (backToWorkspace) {
+            router.push('/workspace');
         }
     }
 
@@ -162,28 +169,42 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     //
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
 
-    const createNotebook = async (title: string) => {
+    const createNotebook = async (title: string, isFirst?: boolean) => {
+        // Abort if user not found
+        if (!user) return
+
         // New notebook cannot be the same name as default notebook
-        // if (title === defaultNotebookName) {
-        //     const msg: string = "'" + defaultNotebookName + "'" + " already exists"
-        //     toast.error(msg);
-        //     return;
-        // }
-
-        if (user) {
-            createDocument({
-                data: {
-                    title: title,
-                } as Notebook,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ]
-            });
+        if (title === defaultNotebookName && !isFirst) {
+            const msg: string = "Choose another name."
+            toast.error(msg);
+            return;
         }
-    }
 
+        //check limit
+        if (total >= notebookLimit) {
+            toast.error("Notebook Limit Reached");
+            return;
+        }
+
+        // The first notebook is named by default and can only be read.
+        const permissions: string[] = [
+            Permission.read(Role.user(user.$id)),
+        ]
+
+        // If not first notebook, allow user to update and delete it
+        if (!isFirst) {
+            permissions.push(Permission.update(Role.user(user.$id)));
+            permissions.push(Permission.delete(Role.user(user.$id)));
+        }
+
+        createDocument({
+            data: {
+                title: isFirst ? defaultNotebookName : title,
+            } as Notebook,
+            permission: permissions
+        });
+
+    }
 
     // Update a notebook
     //
@@ -242,6 +263,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         );
 
     }, []);
+
 
 
     // Variables made available from context
