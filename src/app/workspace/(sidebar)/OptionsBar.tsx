@@ -34,6 +34,7 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
     //
     const [notebookDropdown] = useGlobalState("notebookSwitcher");
     const [searchActive, setSearchActive] = useState<boolean>(false);
+    const [sortActive, setSortActive] = useState<boolean>(false);
 
 
     // Hooks
@@ -43,26 +44,30 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
 
 
     return (
-        <div className={`relative flex items-center gap-2 h-14 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'}`}>
+        <div className={`relative flex items-center gap-2 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'} ${!sortActive ? 'h-14' : 'h-auto'}`}>
 
-            {!searchActive &&
+            {!searchActive && !sortActive &&
                 <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
             }
 
-            <Search
-                searchActive={searchActive}
-                setSearchActive={setSearchActive}
-            />
+            {!sortActive &&
+                <Search
+                    searchActive={searchActive}
+                    setSearchActive={setSearchActive}
+                />
+            }
 
             {!searchActive &&
-                <>
-                    <Sort />
+                <Sort
+                    sortActive={sortActive}
+                    setSortActive={setSortActive}
+                />
+            }
 
-                    {/* Create new button - goes to workspace */}
-                    <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
-                        <TbPlus size={20} strokeWidth={1.5} />
-                    </Button>
-                </>
+            {!searchActive && !sortActive &&
+                <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
+                    <TbPlus size={20} strokeWidth={1.5} />
+                </Button>
             }
         </div>
     );

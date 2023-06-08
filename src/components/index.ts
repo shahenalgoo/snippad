@@ -19,6 +19,7 @@ export { default as MainFullCentered } from "./layout/MainFullCentered";
 // FORMS
 export { default as InputField } from "./form/InputField";
 export { default as InputLabel } from "./form/InputLabel";
+export { default as Select } from "./form/Select";
 
 // MISC
 export { default as Separator } from "./misc/Separator";

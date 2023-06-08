@@ -12,7 +12,7 @@ import { Note, NoteFormData, SnippetLanguage } from "@/types/typings";
 import { NoteStatus } from "@/types/enums";
 
 // Code Editor
-import { languages } from "./languages";
+import { languages } from "@/data/languages";
 import "@uiw/react-textarea-code-editor/dist.css";
 const CodeEditor = dynamic(
     () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
