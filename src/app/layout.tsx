@@ -1,7 +1,9 @@
 import './globals.scss';
 
-import SessionProvider from '@/components/context/SessionProvider';
+import SessionProvider from '@/components/wrappers/SessionProvider';
 import { Toaster } from '@/components';
+import BodyWrap from '@/components/wrappers/BodyWrap';
+
 
 export const metadata = {
 	title: 'Snippad Notepad',
@@ -13,15 +15,14 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode
 }) {
+
 	return (
 		<>
 			<SessionProvider>
-				<html lang="en" className='!min-h-full h-full'>
-					<body className='relative !min-h-full h-full'>
-						{children}
-						<Toaster />
-					</body>
-				</html>
+				<BodyWrap>
+					{children}
+					<Toaster />
+				</BodyWrap>
 			</SessionProvider>
 		</>
 	)
