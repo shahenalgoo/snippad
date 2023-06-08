@@ -15,7 +15,6 @@ import { useDocumentUpdate } from "@/hooks";
 
 // Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
-import { Permission, Role } from "appwrite";
 import { toast } from "react-hot-toast";
 
 interface MoveNoteProps {
@@ -37,15 +36,14 @@ const MoveNote: FC<MoveNoteProps> = ({
 
     // Hooks
     //
-    const { user } = useUser();
     const { collection: notebookList, activateNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
-  
+
     // Move Note
     //
-    const moveNote = (newNotebook: Notebook) => {
-        if (!user || !note) return;
+    const moveNote = async (newNotebook: Notebook) => {
+        if (!note) return;
 
         setIsLoadingMove(true);
         setNotebookDropdown(!notebookDropdown);

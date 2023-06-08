@@ -168,23 +168,20 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        saveNote();
+        saveNote(true);
     }
 
     // Keyboard Events
     //
-    let keyPress = false;
     const handleKeyDown = useCallback((e: any) => {
         // Save Note - Ctrl + s
         if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
             e.preventDefault();
-            // onSubmit(e);
-            keyPress = true;
-            saveNote();
+            saveNote(true);
         }
+    }, []);
 
-    }, [keyPress]);
-
+    // Use effect - Save notes
     useEffect(() => {
 
         // Register keydown events
@@ -201,9 +198,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
         };
     }, [handleKeyDown]);
 
-
+    // Use effect - Fetch notes
     useEffect(() => {
-        // useCtrlS();
         fetchNote(id);
 
     }, [fetchNote, id, activeNotebook]);

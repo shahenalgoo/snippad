@@ -196,21 +196,21 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
 
         // The first notebook is named by default and can only be read.
-        const permissions: string[] = [
-            Permission.read(Role.user(user.$id)),
-        ]
+        // const permissions: string[] = [
+        //     Permission.read(Role.user(user.$id)),
+        // ]
 
-        // If not first notebook, allow user to update and delete it
-        if (!isFirst) {
-            permissions.push(Permission.update(Role.user(user.$id)));
-            permissions.push(Permission.delete(Role.user(user.$id)));
-        }
+        // // If not first notebook, allow user to update and delete it
+        // if (!isFirst) {
+        //     permissions.push(Permission.update(Role.user(user.$id)));
+        //     permissions.push(Permission.delete(Role.user(user.$id)));
+        // }
 
         createDocument({
             data: {
                 title: isFirst ? defaultNotebookName : title,
             } as Notebook,
-            permission: permissions
+            permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
         });
 
     }
@@ -294,8 +294,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
         // Fetch notebooks
         fetchNotebooks();
-
-        // createNotebook("Cool Codes")
 
         // Fetch saved active notebook from cookies
         lastNotebookUsed = cookies.get(cookieNotebookRef);
