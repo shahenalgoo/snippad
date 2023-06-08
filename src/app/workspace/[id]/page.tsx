@@ -27,6 +27,7 @@ import { Notification } from "@/components";
 import TextEditor from "../(tip-tap)/TextEditor";
 import DeleteTrash from "./DeleteTrash";
 import { resourceUsage } from "process";
+import { useNotebook } from "@/context/NotebookContext";
 
 
 // Type Definitions
@@ -54,6 +55,10 @@ const NotePage = ({ params: { id } }: PageProps) => {
         body: '',
         snippet_language: ''
     })
+
+    //Hooks
+    //
+    const { activeNotebook } = useNotebook();
 
     // Fetch Note
     //
@@ -130,7 +135,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     useEffect(() => {
         fetchNote(id);
-    }, [fetchNote, id]);
+    }, [fetchNote, id, activeNotebook]);
 
 
     // If note note found, return not-found page

@@ -9,6 +9,7 @@ import { Note, Notebook } from "@/types/typings";
 
 import { useUser } from "./SessionContext";
 import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
@@ -16,8 +17,6 @@ import { Permission, Query, Role } from "appwrite";
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 
-import { useRouter } from "next/navigation";
-import { NoteStatus } from "@/types/enums";
 
 
 // Notebook typings
