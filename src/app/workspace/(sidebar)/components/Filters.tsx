@@ -20,18 +20,16 @@ const Filters: FC<FiltersProps> = ({ noteFilter, setNoteFilter }) => {
 
     return (
         <div className="dropdown group flex-1 relative">
-            <Button variant='gray' className="w-full justify-between transition-all bg-slate-100 group-hover:bg-slate-200">
+            <Button variant='border' className="w-full justify-between group-hover:bg-neutral-100">
                 <span className="capitalize">{noteFilter}</span>
                 <TbChevronDown />
             </Button>
 
-            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-slate-200`}>
-
+            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-white border border-neutral-300 shadow-md`}>
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title="All" />
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title="Starred" />
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title="Archived" />
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title="Trashed" />
-
             </div>
         </div>
     );
@@ -57,9 +55,9 @@ const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title }) => {
     }
 
     return (
-        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-slate-50">
-            <DynamicIcon icon={icon} className="mr-3" size={14} strokeWidth={1} />
-            <span className="text-sm font-semibold">{title}</span>
+        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
+            <DynamicIcon icon={icon} className="mr-3" size={18} strokeWidth={1} />
+            <span className="font-semibold">{title}</span>
         </button>
     );
 }

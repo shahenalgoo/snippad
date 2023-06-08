@@ -51,10 +51,10 @@ const Notebooks: FC<NotebooksProps> = () => {
             <div className={`relative h-20 flex justify-center items-center py-3 px-3 ${!notebookDropdown ? '' : 'z-50'}`}>
 
                 {/* Button with active notebook title */}
-                <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-5 text-slate-600 border ${!notebookDropdown ? 'bg-slate-100 border-transparent' : 'bg-white border-primary'}`}>
+                <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-4 text-neutral-600 border ${!notebookDropdown ? ' border-transparent' : 'bg-white border-black'}`}>
                     <TbNotebook size={24} strokeWidth={1} className="mr-2 " />
-                    <span className="text-sm font-semibold">{activeNotebook?.title}</span>
-                    <HiOutlineChevronUpDown size={26} strokeWidth={1} className="ml-auto opacity-50" />
+                    <span className="font-semibold">{activeNotebook?.title}</span>
+                    <HiOutlineChevronUpDown size={26} strokeWidth={1} className="ml-auto opacity-30" />
                 </button>
 
 
@@ -63,7 +63,7 @@ const Notebooks: FC<NotebooksProps> = () => {
 
                     {/* Create new notebook */}
                     <div className="relative mb-2 flex gap-2" onClick={() => setNotebookDropdown(false)}>
-                        <Button href="/workspace/settings/notebooks" variant='primary' className="flex-1">
+                        <Button href="/workspace/settings/notebooks" variant='black' className="flex-1">
                             Manage Notebooks
                         </Button>
                     </div>
@@ -71,13 +71,13 @@ const Notebooks: FC<NotebooksProps> = () => {
                     {/* List all notebooks */}
                     <div className="overflow-hidden w-full bg-white rounded-lg">
                         {notebookList?.map((notebook: Notebook) => (
-                            <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
+                            <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-neutral-100">
                                 {activeNotebook?.$id === notebook.$id ?
-                                    <TbCircleCheckFilled size={20} strokeWidth={1} className="mr-3 text-primary" />
+                                    <TbCircleCheckFilled size={24} strokeWidth={1} className="mr-3 text-primary" />
                                     :
-                                    <TbCircle size={20} strokeWidth={1} className="mr-3 text-slate-300" />
+                                    <TbCircle size={24} strokeWidth={1} className="mr-3 text-neutral-300" />
                                 }
-                                <span className="text-sm font-semibold">{notebook.title}</span>
+                                <span className="font-semibold">{notebook.title}</span>
                             </button>
                         ))}
                     </div>
@@ -86,7 +86,7 @@ const Notebooks: FC<NotebooksProps> = () => {
             </div>
 
             {/* Notebook backdrop */}
-            <div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute top-0 left-0 w-full h-full cursor-zoom-out backdrop-blur-sm bg-black/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
+            <div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute top-0 left-0 w-full h-full cursor-zoom-out backdrop-blur-lg bg-black/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
                 &nbsp;
             </div>
         </>

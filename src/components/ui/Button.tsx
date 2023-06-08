@@ -11,8 +11,13 @@ const buttonVariants = cva(
             variant: {
                 primary: 'bg-primary',
                 danger: 'bg-danger',
-                gray: 'bg-slate-100 hover:bg-slate-200',
+
+                gray: 'bg-neutral-100 hover:bg-neutral-200',
+                black: 'bg-black hover:bg-neutral-950 text-white',
+
+                border: 'border border-border-light',
                 link: 'text-slate-500 hover:bg-slate-100',
+
                 github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
                 hamburger: '!w-12 !h-12 bg-white !px-0 drop-shadow-lg',
                 bubble: '!w-12 !h-12 !px-0 !text-lg bg-transparent',

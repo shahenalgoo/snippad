@@ -116,7 +116,7 @@ const NoteSwitcher: FC<NoteSwitcherProps> = ({ noteList, noteFilter }) => {
         <div className={`sidebar-notes-overflow relative h-[calc(100%_-_120px)] overflow-scroll py-4 px-3 transition-opacity ${!notebookDropdown ? '' : 'z-30 opacity-10'}`}>
             {noteList?.map((note: Note | null) => (
 
-                <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg my-1 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'bg-slate-50 border-primary' : 'border-transparent'}`}>
+                <Link key={note?.$id} href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg my-1 py-4 px-4 border  ${pathname === `/workspace/${note?.$id}` ? 'border-primary' : 'border-transparent'}`}>
 
                     {/* Icons */}
                     <div className="shrink-0 w-10 h-10 flex items-center">
