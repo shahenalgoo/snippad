@@ -36,7 +36,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
     }, [canEdit, ref]);
 
     return (
-        <Box key={notebook.$id} variant='border' rounded='default' className={`py-0 mb-4 last:mb-0 ${canEdit ? 'border-primary' : ''}`}>
+        <Box variant='border' rounded='default' className={`py-0 mb-4 last:mb-0 ${canEdit ? 'border-primary' : ''}`}>
             <form className="flex items-center justify-between">
                 <div className="flex-1 flex items-center text-sm font-semibold">
                     <TbNotebook size={24} strokeWidth={1} className="mr-2 " />

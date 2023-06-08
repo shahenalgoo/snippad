@@ -11,15 +11,14 @@ import { NoteFilter } from "@/types/enums";
 import { Button } from "@/components";
 
 // Icons
-import { TbPlus } from 'react-icons/tb';
+import { TbPlus, TbSearch } from 'react-icons/tb';
 
 // Options bar components
 import Filters from "./components/Filters";
-import Search from "./components/Search";
 import Sort from "./components/Sort";
 
 // Utils
-import { useGlobalState } from "@/utils/global-states";
+import { useGlobalState, setGlobalState } from "@/utils/global-states";
 
 
 interface OptionsBarProps {
@@ -33,7 +32,7 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
     //States
     //
     const [notebookDropdown] = useGlobalState("notebookSwitcher");
-    const [searchActive, setSearchActive] = useState<boolean>(false);
+    const [searchModal] = useGlobalState("searchModal");
     const [sortActive, setSortActive] = useState<boolean>(false);
 
 
@@ -46,25 +45,22 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
     return (
         <div className={`relative flex items-center gap-2 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'} ${!sortActive ? 'h-14' : 'h-auto'}`}>
 
-            {!searchActive && !sortActive &&
+            {!sortActive &&
                 <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
             }
 
+            <Sort
+                sortActive={sortActive}
+                setSortActive={setSortActive}
+            />
+
             {!sortActive &&
-                <Search
-                    searchActive={searchActive}
-                    setSearchActive={setSearchActive}
-                />
+                <Button onClick={() => setGlobalState('searchModal', !searchModal)} variant='gray' size='square'>
+                    <TbSearch size={20} strokeWidth={1} />
+                </Button>
             }
 
-            {!searchActive &&
-                <Sort
-                    sortActive={sortActive}
-                    setSortActive={setSortActive}
-                />
-            }
-
-            {!searchActive && !sortActive &&
+            {!sortActive &&
                 <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
                     <TbPlus size={20} strokeWidth={1.5} />
                 </Button>

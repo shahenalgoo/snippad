@@ -6,7 +6,7 @@ const spinnerVariants = cva(
     {
         variants: {
             variant: {
-                primary: 'fill-primary',
+                default: 'fill-black',
                 accent: 'fill-accent',
                 success: 'fill-success'
             },
@@ -16,11 +16,11 @@ const spinnerVariants = cva(
                 lg: 'w-8 h-8 mx-1',
             },
             bg: {
-                default: 'text-slate-200'
+                default: 'text-neutral-200'
             }
         },
         defaultVariants: {
-            variant: 'primary',
+            variant: 'default',
             size: 'sm',
             bg: 'default'
         }

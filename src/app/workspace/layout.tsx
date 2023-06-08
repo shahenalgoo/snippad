@@ -7,12 +7,16 @@
  */
 
 // Wrappers
-import NotebookProvider from "@/components/context/NotebookProvider";
+import NotebookProvider from "@/components/wrappers/NotebookProvider";
 import VerifyUserState from "./verify";
 
 // Workspace components
 import HeaderMobile from "./(headers)/HeaderMobile";
 import Sidebar from "./(sidebar)/Sidebar";
+
+// Modals
+import SearchModal from "./(search-modal)/SearchModal";
+
 
 export default function Layout({
     children,
@@ -37,6 +41,9 @@ export default function Layout({
                             {children}
                         </div>
                     </main>
+
+                    {/* Search Modal */}
+                    <SearchModal />
 
                 </VerifyUserState>
             </NotebookProvider>
