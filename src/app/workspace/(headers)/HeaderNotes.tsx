@@ -109,10 +109,14 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred
 
     return (
         <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-neutral-200">
-            <SaveNote
-                note={note}
-                isSaving={isSaving}
-            />
+
+            {note?.status === NoteStatus.published &&
+                <SaveNote
+                    note={note}
+                    isSaving={isSaving}
+                />
+            }
+
 
             <MoveNote
                 note={note}

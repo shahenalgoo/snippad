@@ -185,6 +185,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, [keyPress]);
 
+
     useEffect(() => {
 
         // Register keydown events
