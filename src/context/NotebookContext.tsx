@@ -115,7 +115,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setCollection(res.documents as Notebook[]);
             setTotal(res.total);
 
-            console.log("fetched notebooks");
+            // console.log("fetched notebooks");
+            // res.documents.forEach(element => {
+            //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notebook, element.$id)
+            // });
 
             // The first document in the list is the default one: called ''General'
             if (res.total > 0) {

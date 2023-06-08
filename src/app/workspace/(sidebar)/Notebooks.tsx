@@ -12,7 +12,7 @@ import { useGlobalState } from "@/utils/global-states";
 
 // Icons
 import { HiOutlineChevronUpDown } from "react-icons/hi2";
-import { TbNotebook, TbCircle, TbCircleCheckFilled, TbPlus } from "react-icons/tb";
+import { TbNotebook, TbCircle, TbCircleCheckFilled } from "react-icons/tb";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
@@ -22,9 +22,7 @@ import { Notebook } from "@/types/typings";
 import { Button } from "@/components";
 
 
-interface NotebooksProps {
-
-}
+interface NotebooksProps { }
 
 
 const Notebooks: FC<NotebooksProps> = () => {
@@ -46,28 +44,29 @@ const Notebooks: FC<NotebooksProps> = () => {
         setNotebookDropdown(!notebookDropdown)
     }
 
-    //Create the first notebook
-    //
-    const handleFirstNotebook = () => {
-        createNotebook("", true);
-    }
-
     return (
         <>
             <div className={`relative h-20 flex justify-center items-center py-3 px-3 ${!notebookDropdown ? '' : 'z-50'}`}>
 
                 {/* Button with active notebook title */}
-                {!isLoading && total > 0 && <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-4 text-neutral-600 border ${!notebookDropdown ? ' border-transparent' : 'bg-white border-black'}`}>
-                    <TbNotebook size={24} strokeWidth={1} className="mr-2 " />
-                    <span className="font-semibold">{activeNotebook?.title}</span>
-                    <HiOutlineChevronUpDown size={26} strokeWidth={1} className="ml-auto opacity-30" />
-                </button>}
+                {!isLoading && total > 0 &&
+                    <button onClick={() => setNotebookDropdown(!notebookDropdown)} className={`flex justify-between items-center rounded-lg w-full h-full px-4 text-neutral-600 border ${!notebookDropdown ? ' border-transparent' : 'bg-white border-black'}`}>
+                        <TbNotebook size={24} strokeWidth={1} className="mr-2 " />
+                        <span className="font-semibold">{activeNotebook?.title}</span>
+                        <HiOutlineChevronUpDown size={26} strokeWidth={1} className="ml-auto opacity-30" />
+                    </button>
+                }
 
-                {!isLoading && total == 0 && <button onClick={handleFirstNotebook} className={`flex justify-between items-center rounded-lg w-full h-full px-4 text-neutral-600 border ${!notebookDropdown ? ' border-transparent' : 'bg-white border-black'}`}>
-                    <TbPlus size={24} strokeWidth={1} className="mr-2 " />
-                    <span className="font-semibold">Create your first Notebook!</span>
-                    <HiOutlineChevronUpDown size={26} strokeWidth={1} className="ml-auto opacity-30" />
-                </button>}
+                {/* Create First Notebook */}
+                {!isLoading && total === 0 &&
+                    <Button onClick={() => createNotebook("", true)} variant='black' size='full' className="overflow-hidden">
+                        <span className="relative flex h-3 w-3 mr-4">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-90"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-primary opacity-30"></span>
+                        </span>
+                        Create Notebook
+                    </Button>
+                }
 
 
                 {/* Dropdown menu */}

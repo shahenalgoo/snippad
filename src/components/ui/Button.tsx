@@ -5,7 +5,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const buttonVariants = cva(
-    'relative inline-flex justify-center items-center shrink-0 font-sans font-medium transition-all focus:outline-none bg-white disabled:opacity-50 disabled:pointer-events-none',
+    'relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all focus:outline-none bg-white disabled:opacity-50 disabled:pointer-events-none',
     {
         variants: {
             variant: {
