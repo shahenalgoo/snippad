@@ -7,6 +7,8 @@ import { useState } from "react";
 import { IUpdateDocument } from "@/types/typings";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
+import { useUser } from "@/context/SessionContext";
+import { Permission, Role } from "appwrite";
 
 
 /**
@@ -22,6 +24,7 @@ export default function useDocumentUpdate(collection_id: string) {
     // States
     //
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { user } = useUser();
 
 
     /**
@@ -41,9 +44,9 @@ export default function useDocumentUpdate(collection_id: string) {
         onSuccess,
         onError
     }: IUpdateDocument) => {
+        if (!user) return;
 
         setIsLoading(true);
-
         try {
             // Update document with the arguments: collection_id, document_id, data & permissions
             const res = await databases.updateDocument(
@@ -51,7 +54,11 @@ export default function useDocumentUpdate(collection_id: string) {
                 collection_id,
                 document_id,
                 data,
-                permission ? permission : []
+                permission ? permission : [
+                    Permission.read(Role.user(user.$id)),
+                    Permission.update(Role.user(user.$id)),
+                    Permission.delete(Role.user(user.$id)),
+                ]
             );
 
             // Execute OnSuccess, if any

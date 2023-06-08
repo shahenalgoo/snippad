@@ -28,6 +28,8 @@ import TextEditor from "../(tip-tap)/TextEditor";
 import DeleteTrash from "./DeleteTrash";
 import { resourceUsage } from "process";
 import { useNotebook } from "@/context/NotebookContext";
+import { log } from "console";
+import { useDocumentUpdate } from "@/hooks";
 
 
 // Type Definitions
@@ -49,6 +51,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
+    const beforeSave = useRef<NoteFormData>({
+        title: '',
+        subtitle: '',
+        body: '',
+        snippet_language: ''
+    })
 
     const formData = useRef<NoteFormData>({
         title: '',
@@ -60,6 +68,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //Hooks
     //
     const { activeNotebook } = useNotebook();
+    const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
     // Fetch Note
     //
@@ -81,9 +90,16 @@ const NotePage = ({ params: { id } }: PageProps) => {
             formData.current = {
                 title: res.title,
                 subtitle: res.subtitle,
-                body: res.body
+                body: res.body,
+                snippet_language: res.snippet_language
             }
 
+            beforeSave.current = {
+                title: res.title,
+                subtitle: res.subtitle,
+                body: res.body,
+                snippet_language: res.snippet_language
+            }
 
             return res;
         } catch (error) {
@@ -96,6 +112,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Save Note
     async function saveNote() {
+        if (isSaving) return;
+
         setIsSaving(true);
 
         // Disable save if note is empty
@@ -104,23 +122,50 @@ const NotePage = ({ params: { id } }: PageProps) => {
             return toast.error('Please write a note first.');
         }
 
-        try {
 
-            await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
+        // If no change happened, no need to save
+        if (!noteChanged()) {
+            setIsSaving(false);
+            return toast.error('No changes found');
+        }
+
+        updateDocument({
+            document_id: id,
+            data: {
                 title: formData?.current.title,
                 subtitle: formData?.current.subtitle,
                 body: formData?.current.body,
                 snippet_language: formData.current.snippet_language,
                 search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
-            } as Note);
+            } as Note,
+            onSuccess() {
+                //updating before save data
+                beforeSave.current.title = formData.current.title;
+                beforeSave.current.subtitle = formData.current.subtitle;
+                beforeSave.current.body = formData.current.body;
+                beforeSave.current.snippet_language = formData.current.snippet_language;
 
-            toast.success("Note saved!");
+                toast.success("Note saved!");
+                setIsSaving(false);
+            },
+            onError() {
+                toast.error("Unable to save note");
+                setIsSaving(false);
+            }
+        });
+    }
 
-        } catch (error) {
-            console.log(error);
-            toast.error("Unable to save note");
-        } finally {
-            setIsSaving(false);
+
+    //Check if any changes occured in the text
+    const noteChanged = () => {
+        if (formData.current.title == beforeSave.current.title &&
+            formData.current.subtitle == beforeSave.current.subtitle &&
+            formData.current.body == beforeSave.current.body &&
+            formData.current.snippet_language == beforeSave.current.snippet_language
+        ) {
+            return false;
+        } else {
+            return true
         }
     }
 
@@ -194,7 +239,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         status={status}
                         setStatus={setStatus}
                     />
-
 
 
                     <div className="lg:pt-24 lg:pb-24">

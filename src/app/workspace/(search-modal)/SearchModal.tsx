@@ -3,22 +3,27 @@
 // React
 import { Dispatch, FC, FormEventHandler, MouseEventHandler, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 
+// Typings
+import { Note } from "@/types/typings";
+
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
+
 // Components
 import { Button, Grid, Modal, Spinner } from "@/components";
+import NoteCard from "../components/NoteCard";
 
 // Icons
 import { TbSearch, TbX } from 'react-icons/tb';
 
 // Utils
 import { useGlobalState, setGlobalState } from "@/utils/global-states";
-
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
-import { Note } from "@/types/typings";
+import { containsOnlySpaces } from "@/utils/form-validation";
 import { toast } from "react-hot-toast";
-import { containsOnlySpaces, containsSpecialChars } from "@/utils/form-validation";
-import NoteCard from "../components/NoteCard";
+
+// Appwrite
+import { AppwriteIds, databases } from "@/lib/appwrite-config";
 import { Query } from "appwrite";
-import { useNotebook } from "@/context/NotebookContext";
 
 
 interface SearchModalProps { }
@@ -100,7 +105,7 @@ const SearchModal: FC<SearchModalProps> = () => {
 
 
     // Search Notes
-    const searchNotes = async (e: React.FormEvent<HTMLFormElement>) => {
+    const searchNotes = async (e: React.FormEvent<HTMLFormElement>, searchGlobal?: boolean) => {
         e.preventDefault();
         setIsLoading(true);
 
@@ -116,12 +121,6 @@ const SearchModal: FC<SearchModalProps> = () => {
             return toast.error('Query cannot contain only spaces');
         }
 
-        // Search query cannot contain special characters
-        if (containsSpecialChars(searchQuery)) {
-            setIsLoading(false);
-            return toast.error('Query cannot contain special characters');
-        }
-
         // Search query must contain at least 3 characters
         if (searchQuery?.length < 3) {
             setIsLoading(false);
@@ -132,10 +131,13 @@ const SearchModal: FC<SearchModalProps> = () => {
         if (activeNotebook === null) return
 
         let queries: string[] = [
-            Query.equal('notebook_related', activeNotebook.$id) &&
             Query.search('search_index', searchQuery)
         ]
 
+        // Search only in active notebook, if not global
+        if (!searchGlobal) {
+            queries.push(Query.equal('notebook_related', activeNotebook.$id));
+        }
 
         try {
             const res = await databases.listDocuments(
