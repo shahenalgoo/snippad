@@ -16,6 +16,7 @@ import { useDocumentUpdate } from "@/hooks";
 // Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
+import { toast } from "react-hot-toast";
 
 interface MoveNoteProps {
     note: Note | null
@@ -40,13 +41,14 @@ const MoveNote: FC<MoveNoteProps> = ({
     const { collection: notebookList, activateNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
+  
     // Move Note
     //
     const moveNote = (newNotebook: Notebook) => {
         if (!user || !note) return;
 
         setIsLoadingMove(true);
-        setNotebookDropdown(!notebookDropdown)
+        setNotebookDropdown(!notebookDropdown);
 
         saveNote(false);
 
@@ -55,20 +57,16 @@ const MoveNote: FC<MoveNoteProps> = ({
             data: {
                 notebook_related: newNotebook.$id,
             } as Note,
-            permission: [
-                Permission.read(Role.user(user.$id)),
-                Permission.update(Role.user(user.$id)),
-                Permission.delete(Role.user(user.$id)),
-            ],
             onSuccess() {
                 setIsLoadingMove(false);
                 activateNotebook(newNotebook);
+                toast.success('Successfully moved');
             },
             onError() {
                 setIsLoadingMove(false);
+                toast.error('Unable to move note');
             }
         });
-
     };
 
     return (
@@ -78,20 +76,17 @@ const MoveNote: FC<MoveNoteProps> = ({
                 {isLoadingMove && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
             </Button>
 
-            <div className={`absolute left-0 z-50 w-full h-auto p-3 transition-all ${!notebookDropdown ? 'invisible opacity-0 top-8' : 'visible opacity-100 top-16'} `}>
-                <div className="overflow-hidden w-full bg-white rounded-lg">
-                    {!isLoadingMove && notebookList?.map((notebook: Notebook) => (
-                        <button key={notebook.$id} onClick={() => moveNote(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light last:border-none hover:bg-slate-100">
-                            {note?.notebook_related === notebook.$id ?
-                                <TbCircleCheckFilled size={20} strokeWidth={1} className="mr-3 text-primary" />
-                                :
-                                <TbCircle size={20} strokeWidth={1} className="mr-3 text-slate-300" />
-                            }
-                            <span className="text-sm font-semibold">{notebook.title}</span>
-                        </button>
-                    ))}
-
-                </div>
+            <div className={`absolute left-0 z-50 w-[300px] h-auto p-1 transition-all rounded-lg bg-white border border-neutral-300 shadow-md ${!notebookDropdown ? 'invisible opacity-0 top-8' : 'visible opacity-100 top-16'} `}>
+                {!isLoadingMove && notebookList?.map((notebook: Notebook) => (
+                    <button key={notebook.$id} onClick={() => moveNote(notebook)} className="flex items-center w-full py-3 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
+                        {note?.notebook_related === notebook.$id ?
+                            <TbCircleCheckFilled size={20} strokeWidth={1} className="mr-3 text-primary" />
+                            :
+                            <TbCircle size={20} strokeWidth={1} className="mr-3 text-slate-300" />
+                        }
+                        <span className="text-sm font-semibold font-sans">{notebook.title}</span>
+                    </button>
+                ))}
             </div>
         </>
 
