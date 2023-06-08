@@ -4,19 +4,20 @@
  * 
  */
 
-import React, { createContext, useState, useEffect, useContext } from "react";
-import { Notebook } from "@/types/typings";
+import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
+import { Note, Notebook } from "@/types/typings";
 
 import { useUser } from "./SessionContext";
 import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
 
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
-import { Permission, Role } from "appwrite";
+import { Permission, Query, Role } from "appwrite";
 
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 
 import { useRouter } from "next/navigation";
+import { NoteStatus } from "@/types/enums";
 
 
 // Notebook typings
@@ -33,6 +34,10 @@ type NotebookContextType = {
     createNotebook: (id: string, isFirst?: boolean) => Promise<void>;
     updateNotebook: (document_id: string, title: string) => Promise<void>;
     deleteNotebook: (id: string) => void;
+
+    allNotes: Note[] | null;
+    isLoadingAllNotes: boolean;
+    fetchNotes: () => Promise<void>;
 };
 
 type NotebookProviderProps = {
@@ -72,7 +77,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [total, setTotal] = useState<number>(0);
     const [defaultNotebook, setDefaultNotebook] = useState<Notebook | null>(null);
     const [activeNotebook, setActiveNotebook] = useState<Notebook | null>(null);
-
+    const [allNotes, setAllNotes] = useState<Note[] | null>(null);
+    const [isLoadingAllNotes, setIsLoadingAllNotes] = useState<boolean>(true);
 
     // Default Names/Amounts
     //
@@ -110,6 +116,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setCollection(res.documents as Notebook[]);
             setTotal(res.total);
 
+            console.log("fetched notebooks");
 
             // The first document in the list is the default one: called ''General'
             if (res.total > 0) {
@@ -240,6 +247,44 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+    //Fetch all notes for active notebook, for limit controls and stat display
+    const fetchNotes = useCallback(async () => {
+        // Fetch only if activeNotebook has been set
+        if (!activeNotebook) return;
+
+        setIsLoadingAllNotes(true);
+
+        try {
+            const res = await databases.listDocuments(
+                AppwriteIds.databaseId,
+                AppwriteIds.collectionId_notes,
+                [
+                    Query.equal("notebook_related", activeNotebook.$id)
+                ]
+            );
+            //console.log(res.documents);
+
+            // Temp code: use to quick delete while developing
+            // res.documents.forEach(element => {
+            //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, element.$id)
+            // });
+
+            // Set state
+            setAllNotes(res.documents as Note[])
+
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setIsLoadingAllNotes(false);
+        }
+
+    }, [activeNotebook]);
+
+
+
+
+
 
     // Use effect
     //
@@ -248,10 +293,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         // Fetch notebooks
         fetchNotebooks();
 
+        // createNotebook("Cool Codes")
+
         // Fetch saved active notebook from cookies
         lastNotebookUsed = cookies.get(cookieNotebookRef);
-
-
 
         // Subscribe to live changes for the user's notebook collection
         //
@@ -265,6 +310,13 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }, []);
 
 
+    //Use effect to update ALL notes for active notebook
+    useEffect(() => {
+        // Fetch notes for when active notebook is changed or found (first time)
+        fetchNotes();
+
+    }, [fetchNotes]);
+
 
     // Variables made available from context
     //
@@ -277,7 +329,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         activateNotebook,
         createNotebook,
         updateNotebook,
-        deleteNotebook
+        deleteNotebook,
+        allNotes,
+        isLoadingAllNotes,
+        fetchNotes
     }
 
 
