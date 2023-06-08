@@ -48,7 +48,7 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
             <Sort />
 
             {/* Create new button - goes to workspace */}
-            <Button onClick={() => router.push('/workspace')} disabled={pathname === '/workspace'} size='square' className="disabled:bg-slate-100">
+            <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
                 <TbPlus size={20} strokeWidth={1.5} />
             </Button>
         </div>

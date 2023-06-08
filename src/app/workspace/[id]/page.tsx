@@ -193,7 +193,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
                                 onChange={onFieldChange}
-                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-slate-500 disabled:cursor-not-allowed"
+                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
                         </div>

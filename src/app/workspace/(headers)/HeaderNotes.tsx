@@ -101,7 +101,7 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
 
 
     return (
-        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-slate-200">
+        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-neutral-200">
             <SaveNote
                 note={note}
                 isSaving={isSaving}
