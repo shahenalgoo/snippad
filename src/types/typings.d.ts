@@ -52,7 +52,7 @@ export type Note = Models.Document & {
     type: NoteType;
     starred: boolean;
     status: NoteStatus;
-    status_last_update: string;
+    status_last_update: Date;
     snippet_language: string;
     search_index: string;
 }

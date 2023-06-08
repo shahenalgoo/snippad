@@ -1,3 +1,8 @@
+/**
+ * Displays a header with options: save, move to, star, archive, trash
+ * 
+ */
+
 'use client';
 
 // React
@@ -11,6 +16,7 @@ import { NoteStatus } from "@/types/enums";
 // Hooks
 import { useUser } from "@/context/SessionContext";
 import { useDocumentUpdate } from "@/hooks";
+import { useNotebook } from "@/context/NotebookContext";
 
 // Components
 import { Button } from "@/components";
@@ -52,6 +58,7 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
     const router = useRouter();
     const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
+    const { fetchNotes } = useNotebook();
 
     // Mark a Note as Published or Archived or Trashed
     //
@@ -62,7 +69,8 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
             updateDocument({
                 document_id: note.$id,
                 data: {
-                    status: newStatus
+                    status: newStatus,
+                    status_last_update: new Date(),
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user.$id)),
@@ -72,14 +80,13 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
                 onSuccess() {
                     setStatus(newStatus);
                     setLoading(false);
+                    fetchNotes();
 
-                    if (note.status === NoteStatus.published) {
-                        router.push('/workspace');
+                    if (note.status !== NoteStatus.published) {
+                        newStatus === NoteStatus.published ? window.location.reload() : router.push('/workspace');
                     } else {
-                        window.location.reload();
+                        router.push('/workspace');
                     }
-
-
                 },
                 onError() {
                     setLoading(false);
@@ -88,7 +95,6 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
         }
     };
 
-
     // Archive
     const handleArchive = () => {
         updateNoteStatus(status === NoteStatus.archived ? NoteStatus.published : NoteStatus.archived, setIsLoadingArchive);
@@ -96,7 +102,7 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
 
     // Trash
     const handleTrash = () => {
-        updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash)
+        updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash);
     }
 
 

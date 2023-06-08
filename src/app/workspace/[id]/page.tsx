@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
@@ -27,6 +27,7 @@ import { Notification } from "@/components";
 import TextEditor from "../(tip-tap)/TextEditor";
 import DeleteTrash from "./DeleteTrash";
 import { resourceUsage } from "process";
+import { useNotebook } from "@/context/NotebookContext";
 
 
 // Type Definitions
@@ -48,12 +49,17 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
-    const [formData, setFormData] = useState<NoteFormData>({
+
+    const formData = useRef<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
         snippet_language: ''
     })
+
+    //Hooks
+    //
+    const { activeNotebook } = useNotebook();
 
     // Fetch Note
     //
@@ -72,11 +78,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
             setStarred(res.starred);
             setStatus(res.status);
 
-            setFormData({
+            formData.current = {
                 title: res.title,
                 subtitle: res.subtitle,
                 body: res.body
-            });
+            }
+
 
             return res;
         } catch (error) {
@@ -87,22 +94,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, []);
 
-
-    // Handle state changes on form
-    //
-    const onFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
-    }
-
-
-    // Form submit
-    //
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    // Save Note
+    async function saveNote() {
         setIsSaving(true);
 
         // Disable save if note is empty
-        if (formData.body === "") {
+        if (formData.current.body === "") {
             setIsSaving(false);
             return toast.error('Please write a note first.');
         }
@@ -110,11 +107,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
         try {
 
             await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
-                title: formData?.title,
-                subtitle: formData?.subtitle,
-                body: formData?.body,
-                snippet_language: formData.snippet_language,
-                search_index: formData?.title + ' ' + formData?.subtitle + ' ' + formData?.body
+                title: formData?.current.title,
+                subtitle: formData?.current.subtitle,
+                body: formData?.current.body,
+                snippet_language: formData.current.snippet_language,
+                search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
             } as Note);
 
             toast.success("Note saved!");
@@ -128,9 +125,44 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
+    // Form submit
+    //
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        saveNote();
+    }
+
+    // Keyboard Events
+    //
+    let keyPress = false;
+    const handleKeyDown = useCallback((e: any) => {
+        // Save Note - Ctrl + s
+        if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
+            e.preventDefault();
+            // onSubmit(e);
+            keyPress = true;
+            saveNote();
+        }
+
+    }, [keyPress]);
+
     useEffect(() => {
+
+        // Register keydown events
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            // De-register keydown events
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleKeyDown]);
+
+
+    useEffect(() => {
+        // useCtrlS();
         fetchNote(id);
-    }, [fetchNote, id]);
+
+    }, [fetchNote, id, activeNotebook]);
 
 
     // If note note found, return not-found page
@@ -181,7 +213,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="title"
                                 placeholder="Title"
                                 defaultValue={note?.title}
-                                onChange={onFieldChange}
+                                onChange={(e) => formData.current.title = e.target.value}
                                 className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
@@ -192,7 +224,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="subtitle"
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
-                                onChange={onFieldChange}
+                                onChange={(e) => formData.current.subtitle = e.target.value}
+
                                 className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
@@ -205,7 +238,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                     id={id}
                                     note={note}
                                     formData={formData}
-                                    setFormData={setFormData}
+                                //setFormData={setFormData}
                                 />
                             }
 
@@ -213,7 +246,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 <SnippetEditor
                                     note={note}
                                     formData={formData}
-                                    setFormData={setFormData}
+                                //setFormData={setFormData}
                                 />
                             }
                         </div>
