@@ -21,11 +21,13 @@ import { toast } from "react-hot-toast";
 interface MoveNoteProps {
     note: Note | null
     isSaving: boolean
+    saveNote: (manualSave?: boolean) => void;
 }
 
 const MoveNote: FC<MoveNoteProps> = ({
     note,
-    isSaving
+    isSaving,
+    saveNote
 }) => {
 
     // States
@@ -36,37 +38,35 @@ const MoveNote: FC<MoveNoteProps> = ({
     // Hooks
     //
     const { user } = useUser();
-    const { collection: notebookList, activeNotebook, activateNotebook } = useNotebook();
+    const { collection: notebookList, activateNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
+  
     // Move Note
     //
     const moveNote = (newNotebook: Notebook) => {
+        if (!user || !note) return;
+
         setIsLoadingMove(true);
         setNotebookDropdown(!notebookDropdown);
 
-        if (user && note) {
-            updateDocument({
-                document_id: note.$id,
-                data: {
-                    notebook_related: newNotebook.$id,
-                } as Note,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ],
-                onSuccess() {
-                    setIsLoadingMove(false);
-                    activateNotebook(newNotebook);
-                    toast.success('Successfully moved');
-                },
-                onError() {
-                    setIsLoadingMove(false);
-                    toast.error('Unable to move note');
-                }
-            });
-        }
+        saveNote(false);
+
+        updateDocument({
+            document_id: note.$id,
+            data: {
+                notebook_related: newNotebook.$id,
+            } as Note,
+            onSuccess() {
+                setIsLoadingMove(false);
+                activateNotebook(newNotebook);
+                toast.success('Successfully moved');
+            },
+            onError() {
+                setIsLoadingMove(false);
+                toast.error('Unable to move note');
+            }
+        });
     };
 
     return (
