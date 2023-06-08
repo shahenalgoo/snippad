@@ -1,26 +1,75 @@
+// React
+import { MouseEventHandler } from "react";
 
+// Components
 import Button from "./Button";
-import { IoCloseOutline } from "react-icons/io5";
+import Box from "./Box";
 
-interface ModalProps {
+// Icons
+import { TbX } from "react-icons/tb";
+
+// Utils
+import { VariantProps, cva } from 'class-variance-authority';
+import { overridableClasses } from '@/utils/override-classes';
+
+
+const modalVariants = cva(
+    'w-full ',
+    {
+        variants: {
+            variant: {
+                default: 'max-w-[500px] px-4',
+                full: 'h-full max-w-[640px] py-6 px-4 md:px-0'
+            }
+        },
+        defaultVariants: {
+            variant: 'default'
+        }
+    }
+)
+
+export interface Props
+    extends React.HTMLAttributes<HTMLElement | HTMLButtonElement>,
+    VariantProps<typeof modalVariants> {
+
     modalActive?: any;
-    onClose?: any;
-    children?: any;
+    onClose?: MouseEventHandler<HTMLDivElement | HTMLButtonElement>;
+
+    title: string;
+    customHeader?: any;
     closeButton?: boolean;
 }
 
-export default function Modal({ modalActive, onClose, children, closeButton = true }: ModalProps) {
+
+export default function Modal({ className, variant, modalActive, onClose, children, closeButton = true, title, customHeader, ...props }: Props) {
 
     return modalActive ? (
-        <div onClick={onClose} className="fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-95 flex justify-center items-center over">
+        <div className="fixed top-0 left-0 z-50 w-full h-full flex justify-center items-center">
+            <div className={overridableClasses(modalVariants({ className, variant }))} {...props}>
+                <Box variant='white' className="relative z-50 w-full h-full shadow-xl overflow-hidden p-0">
 
-            {closeButton &&
-                <Button onClick={onClose} className="absolute top-5 right-5 z-50 w-[50px] h-[50px] px-0">
-                    <IoCloseOutline size={24} className='' />
-                </Button>
-            }
+                    {!customHeader &&
+                        <div className="flex items-center justify-between p-4">
+                            <h3 className="text-xl font-bold uppercase">{title}</h3>
+                            {closeButton &&
+                                <Button variant='black' size='square' onClick={onClose}>
+                                    <TbX size={20} strokeWidth={1} />
+                                </Button>
+                            }
+                        </div>
+                    }
 
-            {children}
+                    {customHeader}
+
+
+                    <div className="h-[calc(100%_-_60px)] overflow-auto">
+                        {children}
+                    </div>
+
+                </Box>
+
+                <div onClick={onClose} className="absolute top-0 left-0 -z-0 w-full h-full backdrop-blur-lg bg-black/30">&nbsp;</div>
+            </div>
         </div>
     ) : null;
 

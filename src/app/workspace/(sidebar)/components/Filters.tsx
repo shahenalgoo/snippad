@@ -1,7 +1,20 @@
+/**
+ * Sidedar display - A dropdown for 4 filter types: all, starred, archived, trash
+ * Allows user to switch between filters
+ * Calculate total for each filter
+ * 
+ */
+
 'use client';
 
 // React
-import { Dispatch, FC, MouseEventHandler, SetStateAction } from "react";
+import { Dispatch, FC, MouseEventHandler, SetStateAction, useEffect, useState } from "react";
+
+//Typings
+import { NoteFilter, NoteStatus } from "@/types/enums";
+
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
 
 // Components
 import { Button } from "@/components";
@@ -9,7 +22,6 @@ import { Button } from "@/components";
 // Icons
 import { TbChevronDown } from "react-icons/tb"
 import * as Icons from "react-icons/tb"
-import { NoteFilter } from "@/types/enums";
 
 interface FiltersProps {
     noteFilter: NoteFilter;
@@ -18,20 +30,89 @@ interface FiltersProps {
 
 const Filters: FC<FiltersProps> = ({ noteFilter, setNoteFilter }) => {
 
+    //States
+    //
+    const [allTotal, setAllTotal] = useState<number>(0);
+    const [starredTotal, setStarredTotal] = useState<number>(0);
+    const [archivedTotal, setArchivedTotal] = useState<number>(0);
+    const [trashTotal, setTrashTotal] = useState<number>(0);
+
+
+    // Hooks
+    const { activeNotebook, allNotes } = useNotebook();
+
+
+    // Calculate each filter's total
+    const calculateFiltersAmount = () => {
+        let all = 0;
+        let starred = 0;
+        let archived = 0;
+        let trash = 0;
+
+        allNotes?.forEach(element => {
+            switch (element.status) {
+                case NoteStatus.published:
+                    all++;
+                    if (element.starred) starred++;
+                    break;
+                case NoteStatus.archived:
+                    archived++;
+                    break;
+                case NoteStatus.trashed:
+                    trash++;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        // Set states
+        setAllTotal(all);
+        setStarredTotal(starred);
+        setArchivedTotal(archived);
+        setTrashTotal(trash);
+    };
+
+
+    // Show correct total for the currently active filter
+    const activeFilterTotal = () => {
+        switch (noteFilter) {
+            case NoteFilter.all:
+                return allTotal;
+                break;
+            case NoteFilter.starred:
+                return starredTotal;
+                break;
+            case NoteFilter.archived:
+                return archivedTotal;
+                break;
+            case NoteFilter.trash:
+                return trashTotal;
+                break;
+        }
+    }
+
+
+    // Use effect
+    //
+    useEffect(() => {
+
+        calculateFiltersAmount();
+    }, [allNotes, activeNotebook]);
+
+
     return (
         <div className="dropdown group flex-1 relative">
-            <Button variant='gray' className="w-full justify-between transition-all bg-slate-100 group-hover:bg-slate-200">
-                <span className="capitalize">{noteFilter}</span>
+            <Button variant='border' className="w-full justify-between group-hover:bg-neutral-100">
+                <span className="capitalize">{noteFilter + " (" + activeFilterTotal() + ")"}</span>
                 <TbChevronDown />
             </Button>
 
-            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-slate-200`}>
-
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title="All" />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title="Starred" />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title="Archived" />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title="Trashed" />
-
+            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-white border border-neutral-300 shadow-md`}>
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title={"All (" + allTotal + ")"} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title={"Starred (" + starredTotal + ")"} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title={"Archived (" + archivedTotal + ")"} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title={"Trash (" + trashTotal + ")"} />
             </div>
         </div>
     );
@@ -57,9 +138,9 @@ const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title }) => {
     }
 
     return (
-        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-slate-50">
-            <DynamicIcon icon={icon} className="mr-3" size={14} strokeWidth={1} />
-            <span className="text-sm font-semibold">{title}</span>
+        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
+            <DynamicIcon icon={icon} className="mr-3" size={18} strokeWidth={1} />
+            <span className="font-semibold">{title}</span>
         </button>
     );
 }

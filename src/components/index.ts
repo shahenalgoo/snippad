@@ -11,6 +11,7 @@ export { default as Grid } from "./ui/Grid";
 export { default as Modal } from "./ui//Modal";
 export { default as Notification } from "./ui//Notification";
 export { default as Spinner } from "./ui/Spinner";
+export { default as Title } from "./ui/Title";
 
 // LAYOUT
 export { default as MainFullCentered } from "./layout/MainFullCentered";
@@ -18,6 +19,7 @@ export { default as MainFullCentered } from "./layout/MainFullCentered";
 // FORMS
 export { default as InputField } from "./form/InputField";
 export { default as InputLabel } from "./form/InputLabel";
+export { default as Select } from "./form/Select";
 
 // MISC
 export { default as Separator } from "./misc/Separator";

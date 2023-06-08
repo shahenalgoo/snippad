@@ -3,20 +3,20 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const boxVariants = cva(
-    'relative',
+    'shrink-0 relative',
     {
         variants: {
             variant: {
                 solid: 'bg-slate-100',
-                border: 'border border-slate-200',
-                transparent: ''
+                border: 'border border-border-light',
+                white: 'bg-white'
             },
             rounded: {
-                default: 'rounded-2xl',
+                default: 'rounded-lg',
                 xl: 'rounded-xl'
             },
             space: {
-                default: 'p-4 sm:p-6',
+                default: 'p-4',
             }
         },
         defaultVariants: {

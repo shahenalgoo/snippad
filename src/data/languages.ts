@@ -52,6 +52,10 @@ export const languages = [
         alias: 'rust'
     },
     {
+        name: 'Kotlin',
+        alias: 'kt'
+    },
+    {
         name: 'Go',
         alias: 'go'
     },

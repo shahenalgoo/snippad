@@ -19,6 +19,7 @@ import { Permission, Role } from "appwrite";
 
 // Icons
 import { TbNotes, TbCode } from "react-icons/tb";
+import toast from "react-hot-toast";
 
 interface CreateNewProps {
 
@@ -31,11 +32,15 @@ const CreateNew: FC<CreateNewProps> = () => {
     const router = useRouter();
 
     //Notebook data
-    const { activeNotebook } = useNotebook();
+    const { activeNotebook, allNotes, fetchNotes } = useNotebook();
 
 
     //User data
     const { user } = useUser();
+
+
+    // Notes limit in a notebook
+    const notesLimit = 20;
 
 
     // Create a new note
@@ -44,13 +49,16 @@ const CreateNew: FC<CreateNewProps> = () => {
 
     const createNote = async (type: NoteType) => {
 
-        // If we cannot find the relating notebook, cancel create.
-        if (activeNotebook === null) {
+        // If we cannot find the relating notebook or all notes or user, cancel create.
+        if (activeNotebook === null || !allNotes || !user) {
             return;
         }
 
-        // Return if no user found
-        if (!user) return;
+        // If note limit has been reached, inform user
+        if (allNotes?.length >= notesLimit) {
+            toast.error("Notes limit reached in " + activeNotebook.title);
+            return;
+        }
 
         try {
             const res = await createDocument({
@@ -62,6 +70,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
+                    status_last_update: new Date(),
                     snippet_language: 'html',
                     search_index: ''
                 } as Note,
@@ -69,7 +78,10 @@ const CreateNew: FC<CreateNewProps> = () => {
                     Permission.read(Role.user(user?.$id)),
                     Permission.update(Role.user(user?.$id)),
                     Permission.delete(Role.user(user?.$id)),
-                ]
+                ],
+                onSuccess() {
+                    fetchNotes();
+                }
             });
 
             if (res) {
@@ -85,18 +97,22 @@ const CreateNew: FC<CreateNewProps> = () => {
         <>
             <div className="w-full h-full flex flex-col justify-center items-center">
 
-                <h1 className="mb-8 text-xl text-slate-400">Create New</h1>
+                {allNotes && allNotes.length < notesLimit &&
+                    <h1 className="mb-8 text-xl text-slate-400">Create New</h1>}
 
                 <div className="flex gap-6">
-                    <CreateNewButton className="bg-emerald-100" onClick={() => createNote(NoteType.note)}>
+                    {allNotes && allNotes.length < notesLimit && <CreateNewButton className="bg-emerald-100" onClick={() => createNote(NoteType.note)}>
                         <TbNotes size={30} strokeWidth={1} />
                         Note
-                    </CreateNewButton>
+                    </CreateNewButton>}
 
-                    <CreateNewButton className="bg-blue-100" onClick={() => createNote(NoteType.code)}>
+                    {allNotes && allNotes.length < notesLimit && <CreateNewButton className="bg-blue-100" onClick={() => createNote(NoteType.code)}>
                         <TbCode size={30} strokeWidth={1} />
                         Code
-                    </CreateNewButton>
+                    </CreateNewButton>}
+
+                    {allNotes && allNotes.length >= notesLimit &&
+                        <h1 className="text-lg text-danger">Notes limit reached in {activeNotebook?.title}</h1>}
                 </div>
 
             </div>

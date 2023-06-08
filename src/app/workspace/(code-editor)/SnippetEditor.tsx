@@ -4,7 +4,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FC, MutableRefObject, SetStateAction, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 // Typings
@@ -12,7 +12,7 @@ import { Note, NoteFormData, SnippetLanguage } from "@/types/typings";
 import { NoteStatus } from "@/types/enums";
 
 // Code Editor
-import { languages } from "./languages";
+import { languages } from "@/data/languages";
 import "@uiw/react-textarea-code-editor/dist.css";
 const CodeEditor = dynamic(
     () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
@@ -25,17 +25,16 @@ import { TbChevronDown } from "react-icons/tb";
 
 interface SnippetEditorProps {
     note: Note | null;
-    formData: NoteFormData,
-    setFormData: Dispatch<SetStateAction<NoteFormData>>;
+    formData: MutableRefObject<NoteFormData>;
 }
 
 
-const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData, setFormData }) => {
+const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData }) => {
 
     const [language, setLanguage] = useState('html');
 
     const handleLanguage = (e: any) => {
-        setFormData({ ...formData, snippet_language: e.target.value })
+        formData.current.snippet_language = e.target.value;
         setLanguage(e.target.value)
     }
 
@@ -52,7 +51,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData, setFormData }) 
                     id="countries"
                     defaultValue={note?.snippet_language}
                     onChange={handleLanguage}
-                    className="block w-full mb-4 p-2.5 bg-slate-200  border border-transparent focus:border-slate-300 text-gray-900 font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
+                    className="block w-full mb-4 p-2.5 bg-neutral-50 border border-border-light focus:border-neutral-500 text-gray-900 font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
                     disabled={note?.status !== NoteStatus.published}
                 >
                     {languages.map((language: SnippetLanguage, i) => (
@@ -66,7 +65,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData, setFormData }) 
                 <CodeEditor
                     value={note?.body}
                     language={language}
-                    onChange={(e) => setFormData({ ...formData, body: e.target.value })}
+                    onChange={(e) => formData.current.body = e.target.value}
                     placeholder={`Write your ${language.toUpperCase()} code...`}
                     padding={32}
                     style={{

@@ -10,6 +10,7 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
 
 import { TbLoader2, TbStar, TbStarFilled } from "react-icons/tb";
+import { useNotebook } from "@/context/NotebookContext";
 
 
 interface StarNoteProps {
@@ -35,7 +36,7 @@ const StarNote: FC<StarNoteProps> = ({
     //
     const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
-
+    const { fetchNotes } = useNotebook();
 
     // Mark a Note as Starred
     //
@@ -56,6 +57,7 @@ const StarNote: FC<StarNoteProps> = ({
                 onSuccess() {
                     setStarred((prev) => !prev);
                     setIsLoadingStarred(false);
+                    fetchNotes();
                 },
                 onError() {
                     setIsLoadingStarred(false);
