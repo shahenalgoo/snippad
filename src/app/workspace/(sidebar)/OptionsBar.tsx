@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 // Typings
@@ -33,6 +33,8 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
     //States
     //
     const [notebookDropdown] = useGlobalState("notebookSwitcher");
+    const [searchActive, setSearchActive] = useState<boolean>(false);
+
 
     // Hooks
     //
@@ -41,16 +43,27 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
 
 
     return (
-        <div className={`relative flex items-center gap-2 py-2 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'}`}>
+        <div className={`relative flex items-center gap-2 h-14 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'}`}>
 
-            <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
-            <Search />
-            <Sort />
+            {!searchActive &&
+                <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
+            }
 
-            {/* Create new button - goes to workspace */}
-            <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
-                <TbPlus size={20} strokeWidth={1.5} />
-            </Button>
+            <Search
+                searchActive={searchActive}
+                setSearchActive={setSearchActive}
+            />
+
+            {!searchActive &&
+                <>
+                    <Sort />
+
+                    {/* Create new button - goes to workspace */}
+                    <Button onClick={() => router.push('/workspace')} size='square' variant='black' disabled={pathname === '/workspace'} className="disabled:bg-slate-400">
+                        <TbPlus size={20} strokeWidth={1.5} />
+                    </Button>
+                </>
+            }
         </div>
     );
 }

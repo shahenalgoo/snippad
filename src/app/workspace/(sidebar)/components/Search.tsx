@@ -1,28 +1,59 @@
 'use client';
 
 // React
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction, useRef, useEffect } from "react";
 
 // Components
 import { Button } from "@/components";
 
 // Icons
-import { TbSearch } from 'react-icons/tb';
+import { TbSearch, TbX } from 'react-icons/tb';
 
 interface SearchProps {
-    className?: string
+    className?: string;
+    searchActive: boolean;
+    setSearchActive: Dispatch<SetStateAction<boolean>>
 }
 
-const Search: FC<SearchProps> = ({ className }) => {
-    return (
-        // <Button variant='link' className={`px-2 border border-border-light justify-start ${className}`}>
-        //     <TbSearch size={20} strokeWidth={1} className="mr-2" />
-        //     Search...
-        // </Button>
+const Search: FC<SearchProps> = ({
+    className,
+    searchActive,
+    setSearchActive
+}) => {
 
-        <Button variant='gray' size='square'>
-            <TbSearch size={20} strokeWidth={1} />
-        </Button>
+    // Ref
+    const ref = useRef<any>(null);
+
+    useEffect(() => {
+
+        // Autofocus on field
+        if (ref && ref.current && searchActive === true) {
+            ref.current.focus();
+        }
+    }, [searchActive, ref]);
+
+    return (
+        <>
+            {searchActive &&
+                <form className="flex-1 h-full flex items-center">
+                    <input
+                        ref={ref}
+                        type="text"
+                        placeholder="Type and hit enter to search..."
+                        className="w-full h-full outline-none font-semibold placeholder:text-sm placeholder:font-normal"
+                    />
+                    {/* 
+                    <Button type="submit" variant='primary' size='square'>
+                        <TbSearch size={20} strokeWidth={1} />
+                    </Button> */}
+                </form>
+            }
+
+            <Button onClick={() => setSearchActive(!searchActive)} variant='gray' size='square'>
+                {!searchActive && <TbSearch size={20} strokeWidth={1} />}
+                {searchActive && <TbX size={20} strokeWidth={1} />}
+            </Button>
+        </>
     );
 }
 
