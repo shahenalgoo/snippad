@@ -20,11 +20,13 @@ import { Permission, Role } from "appwrite";
 interface MoveNoteProps {
     note: Note | null
     isSaving: boolean
+    saveNote: (manualSave?: boolean) => void;
 }
 
 const MoveNote: FC<MoveNoteProps> = ({
     note,
-    isSaving
+    isSaving,
+    saveNote
 }) => {
 
     // States
@@ -35,35 +37,38 @@ const MoveNote: FC<MoveNoteProps> = ({
     // Hooks
     //
     const { user } = useUser();
-    const { collection: notebookList, activeNotebook, activateNotebook } = useNotebook();
+    const { collection: notebookList, activateNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
     // Move Note
     //
     const moveNote = (newNotebook: Notebook) => {
+        if (!user || !note) return;
+
         setIsLoadingMove(true);
         setNotebookDropdown(!notebookDropdown)
 
-        if (user && note) {
-            updateDocument({
-                document_id: note.$id,
-                data: {
-                    notebook_related: newNotebook.$id,
-                } as Note,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ],
-                onSuccess() {
-                    setIsLoadingMove(false);
-                    activateNotebook(newNotebook);
-                },
-                onError() {
-                    setIsLoadingMove(false);
-                }
-            });
-        }
+        saveNote(false);
+
+        updateDocument({
+            document_id: note.$id,
+            data: {
+                notebook_related: newNotebook.$id,
+            } as Note,
+            permission: [
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id)),
+            ],
+            onSuccess() {
+                setIsLoadingMove(false);
+                activateNotebook(newNotebook);
+            },
+            onError() {
+                setIsLoadingMove(false);
+            }
+        });
+
     };
 
     return (

@@ -37,15 +37,16 @@ import MoveNote from "./components/MoveNote";
 
 interface HeaderNotesProps {
     note: Note | null;
+    isSaving: boolean;
+    saveNote: (manualSave?: boolean) => void;
     isStarred: boolean;
     setStarred: Dispatch<SetStateAction<boolean>>;
     status: NoteStatus | null;
     setStatus: Dispatch<SetStateAction<NoteStatus | null>>;
-    isSaving: boolean;
 }
 
 
-const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarred, status, setStatus }) => {
+const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
 
     // States
     //
@@ -116,6 +117,7 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
             <MoveNote
                 note={note}
                 isSaving={isSaving}
+                saveNote={saveNote}
             />
 
             <StarNote

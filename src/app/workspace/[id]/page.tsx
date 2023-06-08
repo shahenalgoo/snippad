@@ -111,22 +111,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }, []);
 
     // Save Note
-    async function saveNote() {
+    async function saveNote(manualSave?: boolean) {
         if (isSaving) return;
 
         setIsSaving(true);
 
-        // Disable save if note is empty
-        if (formData.current.body === "") {
-            setIsSaving(false);
-            return toast.error('Please write a note first.');
-        }
-
-
         // If no change happened, no need to save
         if (!noteChanged()) {
             setIsSaving(false);
-            return toast.error('No changes found');
+            return manualSave ? toast.error('No changes found') : null;
         }
 
         updateDocument({
@@ -145,7 +138,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 beforeSave.current.body = formData.current.body;
                 beforeSave.current.snippet_language = formData.current.snippet_language;
 
-                toast.success("Note saved!");
+                if (manualSave) toast.success("Note saved!");
                 setIsSaving(false);
             },
             onError() {
@@ -157,6 +150,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
 
     //Check if any changes occured in the text
+    //
     const noteChanged = () => {
         if (formData.current.title == beforeSave.current.title &&
             formData.current.subtitle == beforeSave.current.subtitle &&
@@ -199,6 +193,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
         return () => {
             // De-register keydown events
             window.removeEventListener("keydown", handleKeyDown);
+
+            console.log("page unmounts");
+
+            saveNote();
+
         };
     }, [handleKeyDown]);
 
@@ -234,6 +233,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     <HeaderNotes
                         note={note}
                         isSaving={isSaving}
+                        saveNote={saveNote}
                         isStarred={starred}
                         setStarred={setStarred}
                         status={status}
@@ -282,7 +282,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                     id={id}
                                     note={note}
                                     formData={formData}
-                                //setFormData={setFormData}
                                 />
                             }
 
@@ -290,7 +289,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 <SnippetEditor
                                     note={note}
                                     formData={formData}
-                                //setFormData={setFormData}
                                 />
                             }
                         </div>
