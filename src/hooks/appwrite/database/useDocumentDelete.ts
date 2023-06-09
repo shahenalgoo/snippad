@@ -50,14 +50,14 @@ export default function useDocumentDelete(collection_id: string) {
             if (onSuccess) onSuccess();
 
             toast.dismiss();
-            toast.success('Delete Successful');
+            toast.success('Deleted');
 
         } catch (error) {
             // Execute OnError, if any
             if (onError) onError();
 
             toast.dismiss();
-            toast.error('Unable to Delete');
+            toast.error('Unable to delete');
 
         } finally {
             setIsLoading(false);

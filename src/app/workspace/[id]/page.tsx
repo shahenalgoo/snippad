@@ -24,15 +24,14 @@ import TextEditor from "../(tip-tap)/TextEditor";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 // Components
-import { Notification } from "@/components";
+import { Button, Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 
 //Permanent Delete
-import DeleteTrash from "./DeleteTrash";
-
+import DeletePermanently from "./DeletePermanently";
 
 
 // Type Definitions
@@ -224,10 +223,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 <LoadingComponent />
             }
 
-            {!isLoading && note?.status === NoteStatus.trashed &&
-                <DeleteTrash note={note} />
-            }
-
             {!isLoading &&
 
 
@@ -250,8 +245,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                         {/* Visible only when a note is archived or trashed */}
                         {note?.status !== NoteStatus.published &&
-                            <Notification variant='danger' className="mb-4">
-                                Cannot be edited while archived or trashed.
+                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
+                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
+                                {note?.status === NoteStatus.trashed &&
+                                    <DeletePermanently note={note} />
+                                }
                             </Notification>
                         }
 
