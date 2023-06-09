@@ -33,6 +33,7 @@ import { toast } from "react-hot-toast";
 //Permanent Delete
 import DeletePermanently from "./DeletePermanently";
 import useUnsavedChangesWarning from "@/hooks/useUnsavedChangesWarning";
+import { daysLeft } from "@/utils/dates-difference-in-days";
 
 
 // Type Definitions
@@ -297,13 +298,22 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                         {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
 
-                        {/* Visible only when a note is archived or trashed */}
-                        {note?.status !== NoteStatus.published &&
+                        {/* Display amount of days left for trashed notes */}
+                        {note?.status === NoteStatus.trashed &&
+
                             <Notification variant='danger' className="mb-4 flex justify-between items-center">
-                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
+                                Trashed notes are automatically deleted after 30 days. This note has {daysLeft(note.status_last_update)} days left.
                                 {note?.status === NoteStatus.trashed &&
                                     <DeletePermanently note={note} />
                                 }
+                            </Notification>
+                        }
+
+                        {/* Visible only when a note is archived or trashed */}
+                        {note?.status !== NoteStatus.published &&
+
+                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
+                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
                             </Notification>
                         }
 
