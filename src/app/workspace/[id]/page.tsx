@@ -294,7 +294,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     />
 
 
-                    <div className="lg:pt-24 lg:pb-24">
+                    <div className="py-28">
 
                         {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
 
@@ -323,7 +323,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 placeholder="Title"
                                 defaultValue={note?.title}
                                 onChange={(e) => onUpdateFormTitle(e, "title")}
-                                className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
+                                className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
@@ -335,7 +335,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 defaultValue={note?.subtitle}
                                 onChange={(e) => onUpdateFormTitle(e, "subtitle")}
 
-                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
+                                className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
