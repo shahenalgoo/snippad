@@ -25,16 +25,18 @@ import { TbChevronDown } from "react-icons/tb";
 
 interface SnippetEditorProps {
     note: Note | null;
-    formData: MutableRefObject<NoteFormData>;
+    updateFormBody: (newBody: string) => void;
+    updateFormLanguage: (newLanguage: string) => void;
+
 }
 
 
-const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData }) => {
+const SnippetEditor: FC<SnippetEditorProps> = ({ note, updateFormBody, updateFormLanguage }) => {
 
     const [language, setLanguage] = useState('html');
 
     const handleLanguage = (e: any) => {
-        formData.current.snippet_language = e.target.value;
+        updateFormLanguage(e.target.value);
         setLanguage(e.target.value)
     }
 
@@ -65,7 +67,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, formData }) => {
                 <CodeEditor
                     value={note?.body}
                     language={language}
-                    onChange={(e) => formData.current.body = e.target.value}
+                    onChange={(e) => updateFormBody(e.target.value)}
                     placeholder={`Write your ${language.toUpperCase()} code...`}
                     padding={32}
                     style={{

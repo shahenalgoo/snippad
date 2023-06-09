@@ -66,7 +66,7 @@ export const useNotebook = (): NotebookContextType => {
 
 /**
  * Notebook Provider
- * Used to wrap the /workspace
+ * Used to wrap the /workspace and make notebooks' data easily available everywhere
  * 
  */
 export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: any) => {
@@ -92,7 +92,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const cookies = new Cookies();
     let lastNotebookUsed: Notebook;
 
-
     // Hooks
     //
     const { user } = useUser();
@@ -102,7 +101,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
 
     const { createNoteExamples } = useNoteExamples();
-
 
 
     // Fetch notebooks
@@ -196,7 +194,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             return;
         }
 
-        //check limit
+        // Check limit
         if (total >= notebookLimit) {
             toast.error("Notebook Limit Reached");
             return;
@@ -219,7 +217,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }
 
     // Update a notebook
-
+    //
     const updateNotebook = async (document_id: string, title: string) => {
         if (user) {
             updateDocument({
@@ -239,13 +237,14 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const deleteNotebook = (id: string) => {
         deleteDocument({ document_id: id })
 
-        // Switch active notebook to 'personal' IF the active notebook has been deleted
+        // Switch active notebook to 'personal' If the active notebook has been deleted
         if (activeNotebook?.$id === id && defaultNotebook?.$id) {
             activateNotebook(defaultNotebook);
         }
     }
 
     //Fetch all notes for active notebook, for limit controls and stat display
+    //
     const fetchNotes = useCallback(async () => {
         // Fetch only if activeNotebook has been set
         if (!activeNotebook) return;
@@ -302,6 +301,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
 
     //Use effect to update ALL notes for active notebook
+    //
     useEffect(() => {
         // Fetch notes for when active notebook is changed or found (first time)
         fetchNotes();
