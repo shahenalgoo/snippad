@@ -27,6 +27,6 @@ export const containsOnlySpaces = (str: string) => {
  * @returns boolean
  */
 export const containsSpecialChars = (str: string) => {
-    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const specialChars = /[`@#$%^&*()\=\[\]{};:"\\|<>\/?~]/;
     return specialChars.test(str);
 } 

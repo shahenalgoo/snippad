@@ -302,7 +302,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         {note?.status === NoteStatus.trashed &&
 
                             <Notification variant='danger' className="mb-4 flex justify-between items-center">
-                                Trashed notes are automatically deleted after 30 days. This note has {daysLeft(note.status_last_update)} days left.
+                                Trashed notes are automatically deleted after 30 days. This note has {daysLeft(note.status_last_update)} day(s) left.
                                 {note?.status === NoteStatus.trashed &&
                                     <DeletePermanently note={note} />
                                 }
