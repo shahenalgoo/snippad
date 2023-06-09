@@ -17,6 +17,7 @@ import { Permission, Query, Role } from "appwrite";
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 import { NoteStatus, NoteType } from "@/types/enums";
+import useNoteExamples from "@/hooks/noteExamples";
 
 
 
@@ -99,6 +100,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
     const { createDocument: createFirstNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
+
+    const { createNoteExamples } = useNoteExamples();
 
 
 
@@ -206,26 +209,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
         });
 
-        // Automatically create the first notebook for the first 'General Notebook'
-        if (isFirst) {
-
-            const firstNote = await createFirstNote({
-                data: {
-                    title: "Welcome to Snippad!",
-                    subtitle: "This note serves as a short tutorial!",
-                    body: "Write tutorial here!",
-                    notebook_related: newNotebook?.$id,
-                    type: NoteType.note,
-                    starred: false,
-                    status: NoteStatus.published,
-                    status_last_update: new Date(),
-                    snippet_language: 'html',
-                    search_index: ''
-                } as Note,
-
-            })
-
-            router.push('/workspace/' + firstNote?.$id);
+        // Automatically create some tutorial/example notes for the first 'General Notebook'
+        if (isFirst && newNotebook) {
+            const welcomeNoteId = await createNoteExamples(newNotebook.$id);
+            router.push('/workspace/' + welcomeNoteId);
         }
 
     }
@@ -291,11 +278,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }, [activeNotebook]);
 
 
-
-
-
-
-    // Use effect
+    // Use effect for notebooks
     //
     useEffect(() => {
 

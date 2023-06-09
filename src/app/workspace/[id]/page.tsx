@@ -53,24 +53,30 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
 
+
+
     const beforeSave = useRef<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
-        snippet_language: ''
-    })
+        snippet_language: '',
+        status: NoteStatus.published
+    });
 
     const formData = useRef<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
-        snippet_language: ''
-    })
+        snippet_language: '',
+        status: NoteStatus.published
+    });
+
 
     //Hooks
     //
     const { activeNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
+
 
     // Fetch Note
     //
@@ -93,14 +99,17 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 title: res.title,
                 subtitle: res.subtitle,
                 body: res.body,
-                snippet_language: res.snippet_language
+                snippet_language: res.snippet_language,
+                status: res.status
             }
 
             beforeSave.current = {
                 title: res.title,
                 subtitle: res.subtitle,
                 body: res.body,
-                snippet_language: res.snippet_language
+                snippet_language: res.snippet_language,
+                status: res.status
+
             }
 
             return res;
@@ -113,8 +122,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }, []);
 
     // Save Note
+    //
     async function saveNote(manualSave?: boolean) {
         if (isSaving) return;
+
+        // Prevent save attempt when permanently deleting a note since saveNote triggers on unmount
+        if (formData.current.status != NoteStatus.published) return;
 
         setIsSaving(true);
 
@@ -134,11 +147,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
             } as Note,
             onSuccess() {
-                //updating before save data
+                // Updating before save data
                 beforeSave.current.title = formData.current.title;
                 beforeSave.current.subtitle = formData.current.subtitle;
                 beforeSave.current.body = formData.current.body;
                 beforeSave.current.snippet_language = formData.current.snippet_language;
+                beforeSave.current.status = formData.current.status;
 
                 if (manualSave) toast.success("Note saved!");
                 setIsSaving(false);
@@ -198,6 +212,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
             // Save note when leaving (unmounts)
             saveNote();
+
+            console.log("unmount happens");
+
 
         };
     }, [handleKeyDown]);
