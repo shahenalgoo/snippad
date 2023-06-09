@@ -224,7 +224,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 document_id: document_id,
                 data: {
                     title: title,
-                } as Notebook
+                } as Notebook,
+                onSuccess() {
+
+                }
             });
         }
     }
@@ -284,6 +287,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
         // Fetch notebooks
         fetchNotebooks();
+        // createNotebook("Snippad")
 
         // Fetch saved active notebook from cookies
         lastNotebookUsed = cookies.get(cookieNotebookRef);

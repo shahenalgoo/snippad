@@ -1,11 +1,15 @@
+import { FC } from "react";
 
+interface SettingsPageProps {
 
-const page = () => {
+}
+
+const SettingsPage: FC<SettingsPageProps> = () => {
     return (
-        <div>
+        <>
 
-        </div>
+        </>
     );
 }
 
-export default page;
+export default SettingsPage;

@@ -54,7 +54,6 @@ const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, setResults, onCl
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
-
     }
 
     useEffect(() => {

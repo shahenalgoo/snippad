@@ -41,7 +41,6 @@ export interface IDeleteDocument {
 
 export type Notebook = Models.Document & {
     title: string;
-    notes_related: string[];
 }
 
 export type Note = Models.Document & {

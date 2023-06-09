@@ -12,8 +12,8 @@ module.exports = {
 				'body': ['Roboto Slab', 'Arial', 'sans-serif'],
 			},
 			colors: {
-				'primary': '#34d399',
-				'danger': '#f43f5e',
+				'primary': '#2dd4bf',
+				'danger': '#fb7185',
 				'success': '#4ade80',
 				'border-light': '#e2e8f0',
 				// 'border-light': 'red'
