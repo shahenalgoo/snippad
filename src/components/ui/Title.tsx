@@ -3,11 +3,11 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const titleVariants = cva(
-    'mb-6 md:mb-10 font-semibold',
+    'mb-6 md:mb-10 font-bold',
     {
         variants: {
             variant: {
-                h1: 'text-2xl md:text-4xl',
+                h1: 'text-2xl md:text-2xl',
             },
             align: {
                 left: 'text-left',

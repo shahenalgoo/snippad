@@ -5,7 +5,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const buttonVariants = cva(
-    'relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all focus:outline-none bg-white disabled:opacity-50 disabled:pointer-events-none',
+    'relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all outline-none focus:outline-none bg-white disabled:opacity-50 disabled:pointer-events-none',
     {
         variants: {
             variant: {
@@ -16,7 +16,7 @@ const buttonVariants = cva(
                 black: 'bg-black hover:bg-neutral-950 text-white',
 
                 border: 'border border-border-light',
-                link: 'text-slate-500 hover:bg-slate-100',
+                link: 'bg-transparent hover:bg-neutral-100 text-slate-500',
 
                 github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
                 hamburger: '!w-12 !h-12 bg-white !px-0 drop-shadow-lg',

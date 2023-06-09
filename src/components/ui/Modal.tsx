@@ -38,10 +38,11 @@ export interface Props
     title: string;
     customHeader?: any;
     closeButton?: boolean;
+    closeWithBackdrop?: boolean;
 }
 
 
-export default function Modal({ className, variant, modalActive, onClose, children, closeButton = true, title, customHeader, ...props }: Props) {
+export default function Modal({ className, variant, modalActive, onClose, closeWithBackdrop = true, children, closeButton = true, title, customHeader, ...props }: Props) {
 
     return modalActive ? (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex justify-center items-center">
@@ -68,7 +69,7 @@ export default function Modal({ className, variant, modalActive, onClose, childr
 
                 </Box>
 
-                <div onClick={onClose} className="absolute top-0 left-0 -z-0 w-full h-full backdrop-blur-lg bg-black/30">&nbsp;</div>
+                <div onClick={closeWithBackdrop ? onClose : () => null} className="absolute top-0 left-0 -z-0 w-full h-full backdrop-blur-lg bg-black/30">&nbsp;</div>
             </div>
         </div>
     ) : null;

@@ -2,27 +2,22 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const spinnerVariants = cva(
-    'animate-spin',
+    'animate-spin ',
     {
         variants: {
             variant: {
-                default: 'fill-black',
-                accent: 'fill-accent',
-                success: 'fill-success'
+                default: 'fill-black text-neutral-200',
+                button: 'fill-black text-black text-opacity-20',
             },
             size: {
                 sm: 'w-4 h-4 mx-1',
                 md: 'w-6 h-6 mx-1',
                 lg: 'w-8 h-8 mx-1',
-            },
-            bg: {
-                default: 'text-neutral-200'
             }
         },
         defaultVariants: {
             variant: 'default',
-            size: 'sm',
-            bg: 'default'
+            size: 'sm'
         }
     }
 )
