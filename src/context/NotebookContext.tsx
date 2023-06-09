@@ -17,7 +17,7 @@ import { Permission, Query, Role } from "appwrite";
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 import { NoteStatus, NoteType } from "@/types/enums";
-import useNoteExamples from "@/hooks/noteExamples";
+import useNoteExamples from "@/hooks/useNoteExamples";
 
 
 
@@ -137,6 +137,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             }
 
             let isFound = false;
+
             // If cookie found is also in fetched notebooks, set saved. 
             if (lastNotebookUsed) {
                 for (let i = 0; i < res.documents.length; i++) {

@@ -1,17 +1,26 @@
 /**
- * This script auto-creates a few new notes as tutorials for new users
+ * Auto-creates a few new notes as tutorials for new users
  */
 
-import { useUser } from "@/context/SessionContext";
-import { tutorialNotes } from "@/data/tutorialNotes";
+// React
 import { useState } from "react";
-import useDocumentCreate from "./appwrite/database/useDocumentCreate";
-import { AppwriteIds } from "@/lib/appwrite-config";
-import { NoteStatus, NoteType } from "@/types/enums";
+
+// Typings/Enums
+import { NoteStatus } from "@/types/enums";
 import { Note } from "@/types/typings";
 
+// Tutorial Notes
+import { tutorialNotes } from "@/data/tutorialNotes";
+
+// Hooks
+import useDocumentCreate from "./appwrite/database/useDocumentCreate";
+
+// Appwrite
+import { AppwriteIds } from "@/lib/appwrite-config";
+
+
 /**
- * 
+ * This hook creates all notes found in @/data/tutorialNotes.ts
  * @param notebook_id id of parent notebook of the notes
  * @returns createExamples function
  * @returns isLoading state
@@ -25,6 +34,8 @@ export default function useNoteExamples() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { createDocument: createNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
+    //Create Notes Function
+    //
     const createNoteExamples = async (notebook_id: string) => {
         setIsLoading(true);
         let welcomeNoteId: string = "";
@@ -50,6 +61,7 @@ export default function useNoteExamples() {
                 } as Note,
             })
 
+            // Set id of welcoming note so we can route the user to it
             if (i == 0) welcomeNoteId = note?.$id || "";
         }
 
