@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, MutableRefObject, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, FC, MutableRefObject, SetStateAction } from 'react';
 
 // Typings
 import { Note, NoteFormData } from '@/types/typings';
@@ -19,11 +19,11 @@ import BubbleMenu from './BubbleMenu';
 interface TextEditorProps {
     id: string;
     note: Note;
-    formData: MutableRefObject<NoteFormData>;
+    updateFormBody: (newBody: string) => void;
 }
 
 
-const TextEditor: FC<TextEditorProps> = ({ id, note, formData }) => {
+const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
 
     // Text Editor
     //
@@ -51,7 +51,8 @@ const TextEditor: FC<TextEditorProps> = ({ id, note, formData }) => {
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            formData.current.body = html;
+            // formData.current.body = html;
+            updateFormBody(html);
         }
     });
 

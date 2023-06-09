@@ -1,12 +1,16 @@
 'use client';
 
 // React
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Ref, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
 import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType } from "@/types/enums";
+
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
+import { useDocumentUpdate } from "@/hooks";
 
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
@@ -16,18 +20,19 @@ import HeaderNotes from "../(headers)/HeaderNotes";
 
 // Text Editor
 import TextareaAutosize from 'react-textarea-autosize';
+import TextEditor from "../(tip-tap)/TextEditor";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
+
+// Components
+import { Button, Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
-import SnippetEditor from "../(code-editor)/SnippetEditor";
 
-import { Notification } from "@/components";
-
-import TextEditor from "../(tip-tap)/TextEditor";
-import DeleteTrash from "./DeleteTrash";
-import { resourceUsage } from "process";
-import { useNotebook } from "@/context/NotebookContext";
+//Permanent Delete
+import DeletePermanently from "./DeletePermanently";
+import useUnsavedChangesWarning from "@/hooks/useUnsavedChangesWarning";
 
 
 // Type Definitions
@@ -48,18 +53,32 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [note, setNote] = useState<Note | null>(null);
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
+    const [hasTextChanged, setHasTextChanged] = useState<boolean>(false);
 
+
+
+    const beforeSave = useRef<NoteFormData>({
+        title: '',
+        subtitle: '',
+        body: '',
+        snippet_language: '',
+        status: NoteStatus.published
+    });
 
     const formData = useRef<NoteFormData>({
         title: '',
         subtitle: '',
         body: '',
-        snippet_language: ''
-    })
+        snippet_language: '',
+        status: NoteStatus.published
+    });
+
 
     //Hooks
     //
     const { activeNotebook } = useNotebook();
+    const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
+
 
     // Fetch Note
     //
@@ -81,9 +100,19 @@ const NotePage = ({ params: { id } }: PageProps) => {
             formData.current = {
                 title: res.title,
                 subtitle: res.subtitle,
-                body: res.body
+                body: res.body,
+                snippet_language: res.snippet_language,
+                status: res.status
             }
 
+            beforeSave.current = {
+                title: res.title,
+                subtitle: res.subtitle,
+                body: res.body,
+                snippet_language: res.snippet_language,
+                status: res.status
+
+            }
 
             return res;
         } catch (error) {
@@ -95,57 +124,123 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }, []);
 
     // Save Note
-    async function saveNote() {
+    //
+    async function saveNote(manualSave?: boolean) {
+        if (isSaving) return;
+
+        // Prevent save attempt when permanently deleting a note since saveNote triggers on unmount
+        if (formData.current.status != NoteStatus.published) return;
+
         setIsSaving(true);
 
-        // Disable save if note is empty
-        if (formData.current.body === "") {
+        // If no change happened, no need to save
+        if (!noteChanged()) {
             setIsSaving(false);
-            return toast.error('Please write a note first.');
+            return manualSave ? toast.error('No changes found') : null;
         }
 
-        try {
-
-            await databases.updateDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notes, id, {
+        updateDocument({
+            document_id: id,
+            data: {
                 title: formData?.current.title,
                 subtitle: formData?.current.subtitle,
                 body: formData?.current.body,
                 snippet_language: formData.current.snippet_language,
                 search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
-            } as Note);
+            } as Note,
+            onSuccess() {
+                // Updating before save data
+                beforeSave.current.title = formData.current.title;
+                beforeSave.current.subtitle = formData.current.subtitle;
+                beforeSave.current.body = formData.current.body;
+                beforeSave.current.snippet_language = formData.current.snippet_language;
+                beforeSave.current.status = formData.current.status;
 
-            toast.success("Note saved!");
+                setHasTextChanged(false);
+                noteChanged();
 
-        } catch (error) {
-            console.log(error);
-            toast.error("Unable to save note");
-        } finally {
-            setIsSaving(false);
+                if (manualSave) toast.success("Note saved!");
+                setIsSaving(false);
+            },
+            onError() {
+                toast.error("Unable to save note");
+                setIsSaving(false);
+            }
+        });
+    }
+
+
+    // Check if any changes occured in note
+    //
+    const noteChanged = () => {
+        if (formData.current.title == beforeSave.current.title &&
+            formData.current.subtitle == beforeSave.current.subtitle &&
+            formData.current.body == beforeSave.current.body &&
+            formData.current.snippet_language == beforeSave.current.snippet_language
+        ) {
+            return false;
+        } else {
+            return true
         }
     }
 
+
+    // Adding before unloading warning event, in case there are unsaved changes.
+    //
+    useUnsavedChangesWarning(hasTextChanged);
+
+
+    // Update Form Titles, and detect text state changes
+    //
+    const updateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
+        switch (target) {
+            case "title":
+                formData.current.title = e.target.value;
+                break;
+            case "subtitle":
+                formData.current.subtitle = e.target.value;
+                break;
+            default:
+                break;
+        }
+
+        setHasTextChanged(noteChanged() ? true : false)
+    }
+
+    // Update Form Body, and detect text state changes
+    //
+    const updateFormBody = (newBody: string) => {
+        formData.current.body = newBody;
+        setHasTextChanged(noteChanged() ? true : false)
+    }
+    // Update Form Code Language, and detect text state changes
+    //
+    const updateFormLanguage = (newLanguage: string) => {
+        formData.current.snippet_language = newLanguage;
+        setHasTextChanged(noteChanged() ? true : false)
+    }
 
     // Form submit
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        saveNote();
+        saveNote(true);
     }
+
 
     // Keyboard Events
     //
-    let keyPress = false;
     const handleKeyDown = useCallback((e: any) => {
         // Save Note - Ctrl + s
         if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
             e.preventDefault();
-            // onSubmit(e);
-            keyPress = true;
-            saveNote();
+            saveNote(true);
         }
+    }, []);
 
-    }, [keyPress]);
 
+    // Use effect - Save notes
+    //
     useEffect(() => {
 
         // Register keydown events
@@ -154,12 +249,16 @@ const NotePage = ({ params: { id } }: PageProps) => {
         return () => {
             // De-register keydown events
             window.removeEventListener("keydown", handleKeyDown);
+
+            // Save note when leaving (unmounts)
+            saveNote();
         };
     }, [handleKeyDown]);
 
 
+    // Use effect - Fetch notes
+    //
     useEffect(() => {
-        // useCtrlS();
         fetchNote(id);
 
     }, [fetchNote, id, activeNotebook]);
@@ -171,14 +270,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
         return notFound();
     }
 
+
     return (
         <>
             {isLoading &&
                 <LoadingComponent />
-            }
-
-            {!isLoading && note?.status === NoteStatus.trashed &&
-                <DeleteTrash note={note} />
             }
 
             {!isLoading &&
@@ -189,12 +285,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     <HeaderNotes
                         note={note}
                         isSaving={isSaving}
+                        saveNote={saveNote}
                         isStarred={starred}
                         setStarred={setStarred}
                         status={status}
                         setStatus={setStatus}
                     />
-
 
 
                     <div className="lg:pt-24 lg:pb-24">
@@ -203,8 +299,11 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                         {/* Visible only when a note is archived or trashed */}
                         {note?.status !== NoteStatus.published &&
-                            <Notification variant='danger' className="mb-4">
-                                Cannot be edited while archived or trashed.
+                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
+                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
+                                {note?.status === NoteStatus.trashed &&
+                                    <DeletePermanently note={note} />
+                                }
                             </Notification>
                         }
 
@@ -213,7 +312,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="title"
                                 placeholder="Title"
                                 defaultValue={note?.title}
-                                onChange={(e) => formData.current.title = e.target.value}
+                                onChange={(e) => updateFormTitle(e, "title")}
                                 className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
@@ -224,7 +323,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="subtitle"
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
-                                onChange={(e) => formData.current.subtitle = e.target.value}
+                                onChange={(e) => updateFormTitle(e, "subtitle")}
 
                                 className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
@@ -237,16 +336,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 <TextEditor
                                     id={id}
                                     note={note}
-                                    formData={formData}
-                                //setFormData={setFormData}
+                                    updateFormBody={updateFormBody}
                                 />
                             }
 
                             {note?.type === NoteType.code &&
                                 <SnippetEditor
                                     note={note}
-                                    formData={formData}
-                                //setFormData={setFormData}
+                                    updateFormBody={updateFormBody}
+                                    updateFormLanguage={updateFormLanguage}
                                 />
                             }
                         </div>

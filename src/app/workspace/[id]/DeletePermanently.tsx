@@ -4,12 +4,13 @@ import { Note } from "@/types/typings";
 import { FC } from "react";
 import { useRouter } from "next/navigation"
 import { useNotebook } from "@/context/NotebookContext";
+import { Button } from "@/components";
 
-interface DeleteTrashProps {
-    note: Note;
+interface DeletePermanentlyProps {
+    note: Note | null;
 }
 
-const DeleteTrash: FC<DeleteTrashProps> = ({ note }) => {
+const DeletePermanently: FC<DeletePermanentlyProps> = ({ note }) => {
 
 
     // Hooks
@@ -22,7 +23,7 @@ const DeleteTrash: FC<DeleteTrashProps> = ({ note }) => {
     //
     const permanentDelete = () => {
         deleteDocument({
-            document_id: note.$id,
+            document_id: note?.$id,
             onSuccess() {
                 fetchNotes();
                 router.push('/workspace');
@@ -32,9 +33,11 @@ const DeleteTrash: FC<DeleteTrashProps> = ({ note }) => {
 
     return (
         <>
-            <button onClick={permanentDelete}>Permanent Delete</button>
+            <Button onClick={permanentDelete} variant='danger' rounded='full'>
+                Delete Permanently
+            </Button>
         </>
     );
 }
 
-export default DeleteTrash;
+export default DeletePermanently;

@@ -37,7 +37,7 @@ export default function Layout({
 
                     {/* Workspace Content */}
                     <main className="relative !min-h-full h-full lg:ml-80 xl:ml-96 transition-all">
-                        <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] mt-20 lg:mt-0 md:mx-auto px-6">
+                        <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] md:mx-auto px-6">
                             {children}
                         </div>
                     </main>

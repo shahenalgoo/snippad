@@ -18,8 +18,9 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
 
 // Icons
-import { TbNotes, TbCode } from "react-icons/tb";
+import { TbNotes, TbCode, TbPlus, TbHandRock } from "react-icons/tb";
 import toast from "react-hot-toast";
+import { Button } from "@/components";
 
 interface CreateNewProps {
 
@@ -32,7 +33,7 @@ const CreateNew: FC<CreateNewProps> = () => {
     const router = useRouter();
 
     //Notebook data
-    const { activeNotebook, allNotes, fetchNotes } = useNotebook();
+    const { activeNotebook, allNotes, fetchNotes, total: notebookCount, isLoading: isLoadingNotebook, createNotebook } = useNotebook();
 
 
     //User data
@@ -50,7 +51,7 @@ const CreateNew: FC<CreateNewProps> = () => {
     const createNote = async (type: NoteType) => {
 
         // If we cannot find the relating notebook or all notes or user, cancel create.
-        if (activeNotebook === null || !allNotes || !user) {
+        if (!activeNotebook || !allNotes || !user) {
             return;
         }
 
@@ -97,23 +98,46 @@ const CreateNew: FC<CreateNewProps> = () => {
         <>
             <div className="w-full h-full flex flex-col justify-center items-center">
 
+                {/* Create First Notebook */}
+                {!isLoadingNotebook && notebookCount === 0 &&
+                    <>
+                        <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-slate-100 text-slate-500">
+                            <TbHandRock size={50} strokeWidth={0.5} />
+                        </div>
+                        <h1 className="mb-1 text-2xl font-bold">Welcome to Snippad!</h1>
+                        <p className="mb-6">
+                            Create your first notebook <span className="hidden lg:inline">in the sidebar.</span>
+                        </p>
+                        <Button onClick={() => createNotebook("", true)} variant='black' size='full' className="lg:hidden max-w-[300px]">
+                            <TbPlus size={24} strokeWidth={1.5} className="mr-2" />
+                            Create First Notebook
+                        </Button>
+                    </>
+                }
+
+                {/* Create new notes */}
                 {allNotes && allNotes.length < notesLimit &&
-                    <h1 className="mb-8 text-xl text-slate-400">Create New</h1>}
+                    <>
+                        <h1 className="mb-8 text-xl text-slate-400">Create New</h1>
 
-                <div className="flex gap-6">
-                    {allNotes && allNotes.length < notesLimit && <CreateNewButton className="bg-emerald-100" onClick={() => createNote(NoteType.note)}>
-                        <TbNotes size={30} strokeWidth={1} />
-                        Note
-                    </CreateNewButton>}
+                        <div className="flex gap-6">
+                            <CreateNewButton className="bg-emerald-100" onClick={() => createNote(NoteType.note)}>
+                                <TbNotes size={30} strokeWidth={1} />
+                                Note
+                            </CreateNewButton>
 
-                    {allNotes && allNotes.length < notesLimit && <CreateNewButton className="bg-blue-100" onClick={() => createNote(NoteType.code)}>
-                        <TbCode size={30} strokeWidth={1} />
-                        Code
-                    </CreateNewButton>}
+                            <CreateNewButton className="bg-blue-100" onClick={() => createNote(NoteType.code)}>
+                                <TbCode size={30} strokeWidth={1} />
+                                Code
+                            </CreateNewButton>
+                        </div>
+                    </>
+                }
 
-                    {allNotes && allNotes.length >= notesLimit &&
-                        <h1 className="text-lg text-danger">Notes limit reached in {activeNotebook?.title}</h1>}
-                </div>
+                {/* Note limit reached */}
+                {allNotes && allNotes.length >= notesLimit &&
+                    <h1 className="text-lg text-danger">Notes limit reached in {activeNotebook?.title}</h1>
+                }
 
             </div>
         </>

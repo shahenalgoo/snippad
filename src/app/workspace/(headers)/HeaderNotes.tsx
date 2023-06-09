@@ -6,7 +6,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import { useRouter } from 'next/navigation';
 
 // Typings
@@ -14,7 +14,6 @@ import { Note } from "@/types/typings";
 import { NoteStatus } from "@/types/enums";
 
 // Hooks
-import { useUser } from "@/context/SessionContext";
 import { useDocumentUpdate } from "@/hooks";
 import { useNotebook } from "@/context/NotebookContext";
 
@@ -22,12 +21,11 @@ import { useNotebook } from "@/context/NotebookContext";
 import { Button } from "@/components";
 
 // Icons
-import { TbLoader2, TbTrash, TbTrashFilled } from "react-icons/tb";
-import { HiOutlineArchiveBox, HiArchiveBox } from "react-icons/hi2";
+import { TbCheck, TbLoader2, TbRotateRectangle, TbTrash } from "react-icons/tb";
+import { HiOutlineArchiveBox } from "react-icons/hi2";
 
 // Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
-import { Permission, Role } from "appwrite";
 
 // Header notes components
 import SaveNote from "./components/SaveNote";
@@ -37,15 +35,16 @@ import MoveNote from "./components/MoveNote";
 
 interface HeaderNotesProps {
     note: Note | null;
+    isSaving: boolean;
+    saveNote: (manualSave?: boolean) => void;
     isStarred: boolean;
     setStarred: Dispatch<SetStateAction<boolean>>;
     status: NoteStatus | null;
     setStatus: Dispatch<SetStateAction<NoteStatus | null>>;
-    isSaving: boolean;
 }
 
 
-const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarred, status, setStatus }) => {
+const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
 
     // States
     //
@@ -56,43 +55,38 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
     // Hooks
     //
     const router = useRouter();
-    const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
     const { fetchNotes } = useNotebook();
+
 
     // Mark a Note as Published or Archived or Trashed
     //
     const updateNoteStatus = (newStatus: NoteStatus, setLoading: Dispatch<SetStateAction<boolean>>) => {
         setLoading(true);
 
-        if (user && note) {
-            updateDocument({
-                document_id: note.$id,
-                data: {
-                    status: newStatus,
-                    status_last_update: new Date(),
-                } as Note,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ],
-                onSuccess() {
-                    setStatus(newStatus);
-                    setLoading(false);
-                    fetchNotes();
+        if (!note) return;
 
-                    if (note.status !== NoteStatus.published) {
-                        newStatus === NoteStatus.published ? window.location.reload() : router.push('/workspace');
-                    } else {
-                        router.push('/workspace');
-                    }
-                },
-                onError() {
-                    setLoading(false);
+        updateDocument({
+            document_id: note.$id,
+            data: {
+                status: newStatus,
+                status_last_update: new Date(),
+            } as Note,
+            onSuccess() {
+                setStatus(newStatus);
+                setLoading(false);
+                fetchNotes();
+
+                if (note.status !== NoteStatus.published) {
+                    newStatus === NoteStatus.published ? window.location.reload() : router.push('/workspace');
+                } else {
+                    router.push('/workspace');
                 }
-            });
-        }
+            },
+            onError() {
+                setLoading(false);
+            }
+        });
     };
 
     // Archive
@@ -107,15 +101,33 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
 
 
     return (
-        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-neutral-200">
-            <SaveNote
-                note={note}
-                isSaving={isSaving}
-            />
+        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-neutral-200 flex items-center">
+
+            {note?.status === NoteStatus.published &&
+                <SaveNote
+                    note={note}
+                    isSaving={isSaving}
+                />
+            }
+
+            {note?.status === NoteStatus.archived &&
+                <Button onClick={handleArchive} variant='black' rounded='full' className="mr-2">
+                    <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingArchive && 'animate-spin'}`} />
+                    Recover
+                </Button>
+            }
+
+            {note?.status === NoteStatus.trashed &&
+                <Button onClick={handleTrash} variant='black' rounded='full' className="mr-2">
+                    <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingTrash && 'animate-spin'}`} />
+                    Recover
+                </Button>
+            }
 
             <MoveNote
                 note={note}
                 isSaving={isSaving}
+                saveNote={saveNote}
             />
 
             <StarNote
@@ -125,17 +137,21 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, isStarred, setStarr
                 isSaving={isSaving}
             />
 
-            <Button variant='bubble' type="button" onClick={handleArchive} disabled={isSaving}>
-                {!isLoadingArchive && status !== NoteStatus.archived && <HiOutlineArchiveBox size={20} strokeWidth={1} />}
-                {!isLoadingArchive && status === NoteStatus.archived && <HiArchiveBox size={20} strokeWidth={1} />}
-                {isLoadingArchive && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
-            </Button>
+            {note?.status !== NoteStatus.archived &&
+                <Button variant='bubble' type="button" onClick={handleArchive} disabled={isSaving}>
+                    {!isLoadingArchive && status !== NoteStatus.archived && <HiOutlineArchiveBox size={20} strokeWidth={1} />}
+                    {!isLoadingArchive && status === NoteStatus.archived && <TbCheck size={20} strokeWidth={1} />}
+                    {isLoadingArchive && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
+                </Button>
+            }
 
-            <Button variant='bubble' type="button" onClick={handleTrash} disabled={isSaving}>
-                {!isLoadingTrash && status !== NoteStatus.trashed && <TbTrash size={20} strokeWidth={1} />}
-                {!isLoadingTrash && status === NoteStatus.trashed && <TbTrashFilled size={20} strokeWidth={1} />}
-                {isLoadingTrash && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
-            </Button>
+            {note?.status !== NoteStatus.trashed &&
+                <Button variant='bubble' type="button" onClick={handleTrash} disabled={isSaving}>
+                    {!isLoadingTrash && status !== NoteStatus.trashed && <TbTrash size={20} strokeWidth={1} />}
+                    {!isLoadingTrash && status === NoteStatus.trashed && <TbCheck size={20} strokeWidth={2} />}
+                    {isLoadingTrash && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
+                </Button>
+            }
         </div>
     );
 }

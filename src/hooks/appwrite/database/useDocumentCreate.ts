@@ -7,7 +7,8 @@ import { useState } from "react";
 import { ICreateDocument } from "@/types/typings";
 
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
-import { ID } from "appwrite";
+import { ID, Permission, Role } from "appwrite";
+import { useUser } from "@/context/SessionContext";
 
 
 /**
@@ -21,7 +22,7 @@ export default function useDocumentCreate(collection_id: string) {
     // States
     //
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
+    const { user } = useUser();
 
     /**
      * CREATE NEW DOCUMENT
@@ -38,6 +39,7 @@ export default function useDocumentCreate(collection_id: string) {
         onSuccess,
         onError
     }: ICreateDocument) => {
+        if (!user) return;
 
         setIsLoading(true);
 
@@ -49,7 +51,11 @@ export default function useDocumentCreate(collection_id: string) {
                 collection_id,
                 ID.unique(),
                 data,
-                permission ? permission : []
+                permission ? permission : [
+                    Permission.read(Role.user(user.$id)),
+                    Permission.update(Role.user(user.$id)),
+                    Permission.delete(Role.user(user.$id)),
+                ]
             );
 
             // Execute OnSuccess, if any

@@ -96,7 +96,6 @@ const Filters: FC<FiltersProps> = ({ noteFilter, setNoteFilter }) => {
     // Use effect
     //
     useEffect(() => {
-
         calculateFiltersAmount();
     }, [allNotes, activeNotebook]);
 
@@ -104,15 +103,16 @@ const Filters: FC<FiltersProps> = ({ noteFilter, setNoteFilter }) => {
     return (
         <div className="dropdown group flex-1 relative">
             <Button variant='border' className="w-full justify-between group-hover:bg-neutral-100">
-                <span className="capitalize">{noteFilter + " (" + activeFilterTotal() + ")"}</span>
+                <span className="capitalize">
+                    {noteFilter} ({activeFilterTotal()})</span>
                 <TbChevronDown />
             </Button>
 
-            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[101%] w-full p-1 rounded-lg transition-all bg-white border border-neutral-300 shadow-md`}>
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title={"All (" + allTotal + ")"} />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title={"Starred (" + starredTotal + ")"} />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title={"Archived (" + archivedTotal + ")"} />
-                <FilterButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title={"Trash (" + trashTotal + ")"} />
+            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[110%] w-[215px] p-1 rounded-lg transition-all bg-white border border-neutral-300 shadow-md`}>
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title="All" total={allTotal} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title="Starred" total={starredTotal} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title="Archived" total={archivedTotal} />
+                <FilterButton onClick={() => setNoteFilter(NoteFilter.trash)} icon="TbTrash" title="Trash" total={trashTotal} />
             </div>
         </div>
     );
@@ -126,9 +126,10 @@ interface FilterButtonProps {
     onClick: MouseEventHandler<HTMLButtonElement>;
     icon: string;
     title: string;
+    total: number;
 }
 
-const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title }) => {
+const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title, total }) => {
 
     //@ts-ignore
     const DynamicIcon = ({ icon, className, size, strokeWidth }) => {
@@ -141,6 +142,8 @@ const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title }) => {
         <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
             <DynamicIcon icon={icon} className="mr-3" size={18} strokeWidth={1} />
             <span className="font-semibold">{title}</span>
+            &nbsp;
+            <span className="font-semibold text-neutral-400">({total})</span>
         </button>
     );
 }
