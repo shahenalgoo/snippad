@@ -5,6 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+body {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
