@@ -76,7 +76,7 @@ const Sidebar = () => {
         try {
 
             // If no active notebook is found, cancel fetch.
-            if (activeNotebook === null) return
+            if (!activeNotebook) return
 
             // Fetching notes for the active notebook + active status (published, archived or trashed)
             let queries: string[] = [
@@ -117,7 +117,6 @@ const Sidebar = () => {
 
     // Use effect
     useEffect(() => {
-
         //Fetch Notes
         fetchNoteList();
 

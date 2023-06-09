@@ -8,6 +8,10 @@ import { notFound } from "next/navigation";
 import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType } from "@/types/enums";
 
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
+import { useDocumentUpdate } from "@/hooks";
+
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
@@ -16,20 +20,17 @@ import HeaderNotes from "../(headers)/HeaderNotes";
 
 // Text Editor
 import TextareaAutosize from 'react-textarea-autosize';
+import TextEditor from "../(tip-tap)/TextEditor";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
+
+// Components
+import { Button, Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
-import SnippetEditor from "../(code-editor)/SnippetEditor";
 
-import { Button, Notification } from "@/components";
-
-import TextEditor from "../(tip-tap)/TextEditor";
-import DeleteTrash from "./DeletePermanently";
-import { resourceUsage } from "process";
-import { useNotebook } from "@/context/NotebookContext";
-import { log } from "console";
-import { useDocumentUpdate } from "@/hooks";
+//Permanent Delete
 import DeletePermanently from "./DeletePermanently";
 
 
@@ -165,28 +166,27 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
+
     // Form submit
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        saveNote();
+        saveNote(true);
     }
 
     // Keyboard Events
     //
-    let keyPress = false;
     const handleKeyDown = useCallback((e: any) => {
         // Save Note - Ctrl + s
         if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
             e.preventDefault();
-            // onSubmit(e);
-            keyPress = true;
-            saveNote();
+            saveNote(true);
         }
+    }, []);
 
-    }, [keyPress]);
 
-
+    // Use effect - Save notes
+    //
     useEffect(() => {
 
         // Register keydown events
@@ -196,16 +196,16 @@ const NotePage = ({ params: { id } }: PageProps) => {
             // De-register keydown events
             window.removeEventListener("keydown", handleKeyDown);
 
-            console.log("page unmounts");
-
+            // Save note when leaving (unmounts)
             saveNote();
 
         };
     }, [handleKeyDown]);
 
 
+    // Use effect - Fetch notes
+    //
     useEffect(() => {
-        // useCtrlS();
         fetchNote(id);
 
     }, [fetchNote, id, activeNotebook]);
