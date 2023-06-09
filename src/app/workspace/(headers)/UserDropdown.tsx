@@ -31,8 +31,8 @@ const UserDropdown: FC<UserDropdownProps> = () => {
     return (
         <>
             <div className="relative">
-                <button onClick={() => setDropdownActive(!dropdownActive)} className="overflow-hidden w-12 h-12 rounded-full flex items-center justify-center bg-primary shadow-md">
-                    <TbUser size={26} strokeWidth={1} />
+                <button type="button" onClick={() => setDropdownActive(!dropdownActive)} className="overflow-hidden w-12 h-12 rounded-full flex items-center justify-center bg-neutral-100">
+                    <TbUser size={24} strokeWidth={1} />
                 </button>
 
                 <Dropdown variant='right' className={dropdownActive ? 'block' : 'hidden'}>
