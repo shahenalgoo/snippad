@@ -36,7 +36,7 @@ export default function Layout({
                     <Sidebar />
 
                     {/* Workspace Content */}
-                    <main className="relative !min-h-full h-full lg:ml-80 xl:ml-96 transition-all">
+                    <main className="relative !min-h-full h-full lg:ml-80 xl:ml-96 transition-all duration-300">
                         <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] md:mx-auto px-6">
                             {children}
                         </div>

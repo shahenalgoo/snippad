@@ -43,7 +43,7 @@ const SidebarWrapper: FC<SidebarWrapperProps> = ({ children }) => {
     return (
         <aside>
             {/* Sidebar Content */}
-            <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transform-gpu transition-all duration-300 ${!sidebar ? 'invisible opacity-0 -left-40' : 'visible opacity-100 left-0'} bg-white lg:border-r border-border-light`}>
+            <div className={`fixed top-0 z-50 w-80 xl:w-96 h-full transform-gpu transition-all duration-300 ${!sidebar ? 'invisible opacity-0 -left-40' : 'visible opacity-100 left-0'} lg:visible lg:left-0 lg:opacity-100 bg-white lg:border-r border-border-light`}>
                 {children}
             </div>
 
