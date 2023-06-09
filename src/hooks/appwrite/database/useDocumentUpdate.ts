@@ -63,7 +63,7 @@ export default function useDocumentUpdate(collection_id: string) {
 
             // Execute OnSuccess, if any
             if (onSuccess) onSuccess();
-
+            return res;
         } catch (error) {
             console.log(error);
 

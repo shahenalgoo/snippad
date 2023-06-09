@@ -109,6 +109,9 @@ const SearchModal: FC<SearchModalProps> = () => {
         e.preventDefault();
         setIsLoading(true);
 
+        // If no active notebook is found, cancel fetch.
+        if (!activeNotebook) return
+
         // Search query cannot be empty
         if (searchQuery === null || searchQuery === "") {
             setIsLoading(false);
@@ -126,9 +129,6 @@ const SearchModal: FC<SearchModalProps> = () => {
             setIsLoading(false);
             return toast.error('Must contain at least 3 characters');
         }
-
-        // If no active notebook is found, cancel fetch.
-        if (activeNotebook === null) return
 
         let queries: string[] = [
             Query.search('search_index', searchQuery)

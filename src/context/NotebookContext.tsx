@@ -16,6 +16,7 @@ import { Permission, Query, Role } from "appwrite";
 
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 
 
@@ -95,6 +96,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     //
     const { user } = useUser();
     const router = useRouter();
+    const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
+    const { createDocument: createFirstNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
+    const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
+
 
 
     // Fetch notebooks
@@ -115,18 +120,17 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setCollection(res.documents as Notebook[]);
             setTotal(res.total);
 
-            // console.log("fetched notebooks");
             // res.documents.forEach(element => {
             //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notebook, element.$id)
             // });
 
-            // The first document in the list is the default one: called ''General'
-            if (res.total > 0) {
-                setDefaultNotebook(res.documents[0] as Notebook);
 
-                if (!cookies.get(cookieNotebookRef)) {
-                    activateNotebook(res.documents[0] as Notebook);
-                }
+            if (res.total == 0) return;
+            // The first document in the list is the default one: called ''General'
+            setDefaultNotebook(res.documents[0] as Notebook);
+
+            if (!cookies.get(cookieNotebookRef)) {
+                activateNotebook(res.documents[0] as Notebook);
             }
 
             let isFound = false;
@@ -161,6 +165,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     // Set selected notebook as active
     //
     const activateNotebook = async (notebook: Notebook, backToWorkspace?: boolean) => {
+
         setActiveNotebook(notebook);
 
         // Also set it in cookies, check first if cookies exists.
@@ -176,8 +181,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     // Create a new notebook
     //
-    const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
-
     const createNotebook = async (title: string, isFirst?: boolean) => {
         // Abort if user not found
         if (!user) return
@@ -195,29 +198,39 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             return;
         }
 
-        // The first notebook is named by default and can only be read.
-        // const permissions: string[] = [
-        //     Permission.read(Role.user(user.$id)),
-        // ]
-
-        // // If not first notebook, allow user to update and delete it
-        // if (!isFirst) {
-        //     permissions.push(Permission.update(Role.user(user.$id)));
-        //     permissions.push(Permission.delete(Role.user(user.$id)));
-        // }
-
-        createDocument({
+        // If first notebook, give permission to read only
+        const newNotebook = await createDocument({
             data: {
                 title: isFirst ? defaultNotebookName : title,
             } as Notebook,
-            permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
+            permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
         });
+
+        // Automatically create the first notebook for the first 'General Notebook'
+        if (isFirst) {
+
+            const firstNote = await createFirstNote({
+                data: {
+                    title: "Welcome to Snippad!",
+                    subtitle: "This note serves as a short tutorial!",
+                    body: "Write tutorial here!",
+                    notebook_related: newNotebook?.$id,
+                    type: NoteType.note,
+                    starred: false,
+                    status: NoteStatus.published,
+                    status_last_update: new Date(),
+                    snippet_language: 'html',
+                    search_index: ''
+                } as Note,
+
+            })
+
+            router.push('/workspace/' + firstNote?.$id);
+        }
 
     }
 
     // Update a notebook
-    //
-    const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
 
     const updateNotebook = async (document_id: string, title: string) => {
         if (user) {
@@ -225,12 +238,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 document_id: document_id,
                 data: {
                     title: title,
-                } as Notebook,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ]
+                } as Notebook
             });
         }
     }
@@ -264,7 +272,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                     Query.equal("notebook_related", activeNotebook.$id)
                 ]
             );
-            //console.log(res.documents);
 
             // Temp code: use to quick delete while developing
             // res.documents.forEach(element => {

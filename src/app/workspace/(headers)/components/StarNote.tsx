@@ -34,36 +34,30 @@ const StarNote: FC<StarNoteProps> = ({
 
     // Hooks
     //
-    const { user } = useUser();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
     const { fetchNotes } = useNotebook();
 
     // Mark a Note as Starred
     //
     const starNote = () => {
+        if (!note) return;
+
         setIsLoadingStarred(true);
 
-        if (user && note) {
-            updateDocument({
-                document_id: note.$id,
-                data: {
-                    starred: !isStarred,
-                } as Note,
-                permission: [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ],
-                onSuccess() {
-                    setStarred((prev) => !prev);
-                    setIsLoadingStarred(false);
-                    fetchNotes();
-                },
-                onError() {
-                    setIsLoadingStarred(false);
-                }
-            });
-        }
+        updateDocument({
+            document_id: note.$id,
+            data: {
+                starred: !isStarred,
+            } as Note,
+            onSuccess() {
+                setStarred((prev) => !prev);
+                setIsLoadingStarred(false);
+                fetchNotes();
+            },
+            onError() {
+                setIsLoadingStarred(false);
+            }
+        });
     };
 
 

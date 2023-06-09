@@ -51,7 +51,7 @@ const CreateNew: FC<CreateNewProps> = () => {
     const createNote = async (type: NoteType) => {
 
         // If we cannot find the relating notebook or all notes or user, cancel create.
-        if (activeNotebook === null || !allNotes || !user) {
+        if (!activeNotebook || !allNotes || !user) {
             return;
         }
 

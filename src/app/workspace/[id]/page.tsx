@@ -8,6 +8,10 @@ import { notFound } from "next/navigation";
 import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType } from "@/types/enums";
 
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
+import { useDocumentUpdate } from "@/hooks";
+
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
@@ -16,20 +20,19 @@ import HeaderNotes from "../(headers)/HeaderNotes";
 
 // Text Editor
 import TextareaAutosize from 'react-textarea-autosize';
+import TextEditor from "../(tip-tap)/TextEditor";
+import SnippetEditor from "../(code-editor)/SnippetEditor";
+
+// Components
+import { Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
-import SnippetEditor from "../(code-editor)/SnippetEditor";
 
-import { Notification } from "@/components";
-
-import TextEditor from "../(tip-tap)/TextEditor";
+//Permanent Delete
 import DeleteTrash from "./DeleteTrash";
-import { resourceUsage } from "process";
-import { useNotebook } from "@/context/NotebookContext";
-import { log } from "console";
-import { useDocumentUpdate } from "@/hooks";
+
 
 
 // Type Definitions
@@ -164,6 +167,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
+
     // Form submit
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -181,7 +185,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
     }, []);
 
+
     // Use effect - Save notes
+    //
     useEffect(() => {
 
         // Register keydown events
@@ -191,14 +197,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
             // De-register keydown events
             window.removeEventListener("keydown", handleKeyDown);
 
-            console.log("page unmounts");
-
+            // Save note when leaving (unmounts)
             saveNote();
 
         };
     }, [handleKeyDown]);
 
+
     // Use effect - Fetch notes
+    //
     useEffect(() => {
         fetchNote(id);
 
