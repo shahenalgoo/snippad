@@ -11,7 +11,7 @@ import NotebookProvider from "@/components/wrappers/NotebookProvider";
 import VerifyUserState from "./verify";
 
 // Workspace components
-import HeaderMobile from "./(headers)/HeaderMobile";
+import Header from "./(headers)/Header";
 import Sidebar from "./(sidebar)/Sidebar";
 
 // Modals
@@ -30,7 +30,7 @@ export default function Layout({
                 <VerifyUserState>
 
                     {/* Mobile header */}
-                    <HeaderMobile />
+                    <Header />
 
                     {/* Workspace Sidebar */}
                     <Sidebar />

@@ -69,7 +69,7 @@ const MoveNote: FC<MoveNoteProps> = ({
 
     return (
         <>
-            <Button variant='bubble' type="button" onClick={() => setNotebookDropdown(!notebookDropdown)} disabled={isSaving}>
+            <Button variant='inverted' type="button" onClick={() => setNotebookDropdown(!notebookDropdown)} disabled={isSaving}>
                 {!isLoadingMove && <TbArrowsLeftRight size={20} strokeWidth={1} />}
                 {isLoadingMove && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
             </Button>

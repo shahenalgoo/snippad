@@ -4,7 +4,7 @@
  * 
  */
 
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
 
 import { account } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
@@ -59,12 +59,14 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
 
     // Fetch User & set login status
     //
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         setIsLoading(true);
         try {
             //check session first
             const sessionInfo = await account.getSession('current');
             if (!sessionInfo) return;
+
+            console.log('session found');
 
             setIsLoggedIn(true);
             const userInfo = await account.get();
@@ -76,14 +78,16 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
         } finally {
             setIsLoading(false);
         }
-    }
+    }, []);
 
 
     // Use effect
     //
     useEffect(() => {
+        console.log('uef fires');
+
         fetchUser();
-    }, []);
+    }, [fetchUser]);
 
 
     // Variables made available from context
