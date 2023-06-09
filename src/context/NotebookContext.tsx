@@ -28,6 +28,9 @@ type NotebookContextType = {
     collection: Notebook[] | null;
     total: number;
 
+    defaultNotebookName: string;
+    notebookLimit: number;
+
     defaultNotebook: Notebook | null;
     activeNotebook: Notebook | null;
 
@@ -319,6 +322,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         isLoading,
         collection: collection as Notebook[] | null,
         total,
+        defaultNotebookName,
+        notebookLimit,
         defaultNotebook,
         activeNotebook,
         activateNotebook,

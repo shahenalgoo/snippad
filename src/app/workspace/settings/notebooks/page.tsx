@@ -10,11 +10,13 @@ import { Notebook } from "@/types/typings";
 import { useNotebook } from "@/context/NotebookContext";
 
 // Icons
-import { TbDeviceFloppy, TbEdit, TbNotebook, TbPlus, TbTrash, TbTrashX, TbTrashXFilled, TbX } from "react-icons/tb";
-import { Box, Button, Modal, Spinner } from "@/components";
+import { TbDeviceFloppy, TbEdit, TbNotebook, TbPlus, TbTrash, TbTrashX, TbX } from "react-icons/tb";
+import { Box, Button, Spinner } from "@/components";
 import { useDocumentUpdate, useToggle } from "@/hooks";
 import { toast } from "react-hot-toast";
 import { AppwriteIds } from "@/lib/appwrite-config";
+import { containsMinChars, containsOnlySpaces, containsSpecialChars } from "@/utils/form-validation";
+import { ConfirmationModal } from "@/components/misc/ConfirmationModal";
 
 
 
@@ -32,14 +34,13 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
     //
     const [canEdit, setCanEdit] = useState<boolean>(false);
     const [notebookTitle, setNotebookTitle] = useState<string>(notebook.title);
-
-    // console.log(notebookTitle);
-
+    const [modalActive, setModalActive] = useToggle();
 
     // Hooks
     //
     const ref = useRef<any>(null);
     const { isLoading, updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
+    const { defaultNotebookName, deleteNotebook } = useNotebook();
 
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNotebookTitle(e.target.value);
@@ -56,6 +57,31 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // Title cannot be empty
+        if (notebookTitle === null || notebookTitle === "") {
+            return toast.error('Type something... 😓')
+        };
+
+        // Title cannot contain only spaces
+        if (containsOnlySpaces(notebookTitle)) {
+            return toast.error('Query cannot contain only spaces');
+        }
+
+        // Title must contain at least 3 characters
+        if (containsMinChars(notebookTitle, 3)) {
+            return toast.error('Must contain at least 3 characters');
+        }
+
+        // Title cannot contain special characters
+        if (containsSpecialChars(notebookTitle)) {
+            return toast.error('Cannot contain special characters');
+        }
+
+        //Title cannot be the same name as default General notebook
+        if (notebookTitle === defaultNotebookName) {
+            return toast.error('This notebook already exists');
+        }
+
         updateDocument({
             document_id: notebook.$id,
             data: {
@@ -70,6 +96,10 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
             },
         });
 
+    }
+
+    const onDelete = () => {
+        deleteNotebook(notebook.$id);
     }
 
     useEffect(() => {
@@ -104,8 +134,23 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
                                 <TbEdit size={20} strokeWidth={1} />
                             </Button>
 
-                            <DeleteModal
-                                notebookTitle={notebook.title}
+                            <ConfirmationModal
+                                confirmationMessage={
+                                    <p>All notes in <span className="font-extrabold">{notebookTitle || 'this item'}</span> will be deleted.</p>
+                                }
+                                confirmationButton={
+                                    <Button variant='danger' type="button" onClick={onDelete}>
+                                        <TbTrashX size={20} strokeWidth={1.5} className="mr-2" />
+                                        Delete Permanently
+                                    </Button>
+                                }
+                                modalButton={
+                                    <Button onClick={() => setModalActive(!modalActive)} type="button" variant='gray' size='square'>
+                                        <TbTrash size={20} strokeWidth={1} />
+                                    </Button>
+                                }
+                                modalActive={modalActive}
+                                setModalActive={setModalActive}
                             />
                         </>
                     }
@@ -129,62 +174,30 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
 }
 
 
-
-/**
- * DELETE MODAL
- * 
- */
-interface DeleteModalProps {
-    notebookTitle: string;
-}
-
-const DeleteModal: FC<DeleteModalProps> = ({ notebookTitle }) => {
-
-    const [modalActive, setModalActive] = useToggle();
-
-    return (
-        <>
-            <Button onClick={() => setModalActive(!modalActive)} type="button" variant='gray' size='square'>
-                <TbTrash size={20} strokeWidth={1} />
-            </Button>
-
-            <Modal title="Are you sure?" modalActive={modalActive} onClose={() => setModalActive(!modalActive)} closeButton={false} closeWithBackdrop={false}>
-                <div className="p-4 pt-0">
-                    <p>All notes in <span className="font-extrabold">{notebookTitle || 'this notebook'}</span> will be deleted.</p>
-
-                    <div className="mt-8 flex justify-end gap-2">
-                        <Button onClick={() => setModalActive(!modalActive)} variant='gray'>Cancel</Button>
-                        <Button variant='danger'>
-                            <TbTrashX size={20} strokeWidth={1.5} className="mr-2" />
-                            Delete Permanently
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
-        </>
-    );
-}
-
-
-
 /**
  * EXPORTED PARENT COMPONENT
  */
 const SettingsPage: FC = () => {
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { collection: notebookList, total: notebookCount, createNotebook } = useNotebook();
 
-    const onCreate = () => {
-        alert("created new")
+    // Create new notebook
+    const onCreate = async () => {
+        setIsLoading(true);
+        await createNotebook("Untitled");
+        setIsLoading(false);
     }
 
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-bold">My Notebooks ({notebookCount}/3)</h2>
-                <Button onClick={onCreate} rounded='full'>
+                <Button onClick={onCreate} rounded='full' disabled={isLoading}>
+                    {!isLoading && <TbPlus size={20} className="mr-2 mt-[1px]" />}
+                    {isLoading && <Spinner variant='button' className="mr-2" />}
                     Create New
                 </Button>
+
             </div>
 
             {/* General Notebook - not editable */}
