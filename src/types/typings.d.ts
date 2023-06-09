@@ -88,6 +88,7 @@ export type NoteFormData = {
     subtitle: string;
     body: string;
     snippet_language?: string;
+    status: NoteStatus;
 }
 
 // Snippet supported languages

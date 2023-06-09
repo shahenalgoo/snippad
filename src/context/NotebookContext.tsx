@@ -17,6 +17,7 @@ import { Permission, Query, Role } from "appwrite";
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 import { NoteStatus, NoteType } from "@/types/enums";
+import useNoteExamples from "@/hooks/useNoteExamples";
 
 
 
@@ -65,7 +66,7 @@ export const useNotebook = (): NotebookContextType => {
 
 /**
  * Notebook Provider
- * Used to wrap the /workspace
+ * Used to wrap the /workspace and make notebooks' data easily available everywhere
  * 
  */
 export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: any) => {
@@ -91,7 +92,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const cookies = new Cookies();
     let lastNotebookUsed: Notebook;
 
-
     // Hooks
     //
     const { user } = useUser();
@@ -100,6 +100,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const { createDocument: createFirstNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
 
+    const { createNoteExamples } = useNoteExamples();
 
 
     // Fetch notebooks
@@ -134,6 +135,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             }
 
             let isFound = false;
+
             // If cookie found is also in fetched notebooks, set saved. 
             if (lastNotebookUsed) {
                 for (let i = 0; i < res.documents.length; i++) {
@@ -192,7 +194,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             return;
         }
 
-        //check limit
+        // Check limit
         if (total >= notebookLimit) {
             toast.error("Notebook Limit Reached");
             return;
@@ -206,32 +208,16 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
         });
 
-        // Automatically create the first notebook for the first 'General Notebook'
-        if (isFirst) {
-
-            const firstNote = await createFirstNote({
-                data: {
-                    title: "Welcome to Snippad!",
-                    subtitle: "This note serves as a short tutorial!",
-                    body: "Write tutorial here!",
-                    notebook_related: newNotebook?.$id,
-                    type: NoteType.note,
-                    starred: false,
-                    status: NoteStatus.published,
-                    status_last_update: new Date(),
-                    snippet_language: 'html',
-                    search_index: ''
-                } as Note,
-
-            })
-
-            router.push('/workspace/' + firstNote?.$id);
+        // Automatically create some tutorial/example notes for the first 'General Notebook'
+        if (isFirst && newNotebook) {
+            const welcomeNoteId = await createNoteExamples(newNotebook.$id);
+            router.push('/workspace/' + welcomeNoteId);
         }
 
     }
 
     // Update a notebook
-
+    //
     const updateNotebook = async (document_id: string, title: string) => {
         if (user) {
             updateDocument({
@@ -254,13 +240,14 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const deleteNotebook = (id: string) => {
         deleteDocument({ document_id: id })
 
-        // Switch active notebook to 'personal' IF the active notebook has been deleted
+        // Switch active notebook to 'personal' If the active notebook has been deleted
         if (activeNotebook?.$id === id && defaultNotebook?.$id) {
             activateNotebook(defaultNotebook);
         }
     }
 
     //Fetch all notes for active notebook, for limit controls and stat display
+    //
     const fetchNotes = useCallback(async () => {
         // Fetch only if activeNotebook has been set
         if (!activeNotebook) return;
@@ -294,11 +281,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }, [activeNotebook]);
 
 
-
-
-
-
-    // Use effect
+    // Use effect for notebooks
     //
     useEffect(() => {
 
@@ -322,6 +305,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
 
     //Use effect to update ALL notes for active notebook
+    //
     useEffect(() => {
         // Fetch notes for when active notebook is changed or found (first time)
         fetchNotes();
