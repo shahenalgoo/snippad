@@ -187,12 +187,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Adding before unloading warning event, in case there are unsaved changes.
     //
-    useUnsavedChangesWarning(hasTextChanged);
+    useUnsavedChangesWarning(hasTextChanged && note?.status === NoteStatus.published);
 
 
     // Update Form Titles, and detect text state changes
     //
-    const updateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
+    const onUpdateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
         switch (target) {
             case "title":
                 formData.current.title = e.target.value;
@@ -209,13 +209,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Update Form Body, and detect text state changes
     //
-    const updateFormBody = (newBody: string) => {
+    const onUpdateFormBody = (newBody: string) => {
         formData.current.body = newBody;
         setHasTextChanged(noteChanged() ? true : false)
     }
     // Update Form Code Language, and detect text state changes
     //
-    const updateFormLanguage = (newLanguage: string) => {
+    const onUpdateFormLanguage = (newLanguage: string) => {
         formData.current.snippet_language = newLanguage;
         setHasTextChanged(noteChanged() ? true : false)
     }
@@ -312,7 +312,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="title"
                                 placeholder="Title"
                                 defaultValue={note?.title}
-                                onChange={(e) => updateFormTitle(e, "title")}
+                                onChange={(e) => onUpdateFormTitle(e, "title")}
                                 className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
@@ -323,7 +323,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="subtitle"
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
-                                onChange={(e) => updateFormTitle(e, "subtitle")}
+                                onChange={(e) => onUpdateFormTitle(e, "subtitle")}
 
                                 className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
@@ -336,15 +336,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 <TextEditor
                                     id={id}
                                     note={note}
-                                    updateFormBody={updateFormBody}
+                                    onUpdateFormBody={onUpdateFormBody}
                                 />
                             }
 
                             {note?.type === NoteType.code &&
                                 <SnippetEditor
                                     note={note}
-                                    updateFormBody={updateFormBody}
-                                    updateFormLanguage={updateFormLanguage}
+                                    onUpdateFormBody={onUpdateFormBody}
+                                    onUpdateFormLanguage={onUpdateFormLanguage}
                                 />
                             }
                         </div>

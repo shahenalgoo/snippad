@@ -18,7 +18,7 @@ import { TbSearch, TbX } from 'react-icons/tb';
 
 // Utils
 import { useGlobalState, setGlobalState } from "@/utils/global-states";
-import { containsOnlySpaces } from "@/utils/form-validation";
+import { containsMinChars, containsOnlySpaces } from "@/utils/form-validation";
 import { toast } from "react-hot-toast";
 
 // Appwrite
@@ -106,26 +106,22 @@ const SearchModal: FC<SearchModalProps> = () => {
     // Search Notes
     const searchNotes = async (e: React.FormEvent<HTMLFormElement>, searchGlobal?: boolean) => {
         e.preventDefault();
-        setIsLoading(true);
 
         // If no active notebook is found, cancel fetch.
         if (!activeNotebook) return
 
         // Search query cannot be empty
         if (searchQuery === null || searchQuery === "") {
-            setIsLoading(false);
             return toast.error('Type something... 😓')
         };
 
         // Search query cannot contain only spaces
         if (containsOnlySpaces(searchQuery)) {
-            setIsLoading(false);
             return toast.error('Query cannot contain only spaces');
         }
 
         // Search query must contain at least 3 characters
-        if (searchQuery?.length < 3) {
-            setIsLoading(false);
+        if (containsMinChars(searchQuery, 3)) {
             return toast.error('Must contain at least 3 characters');
         }
 
@@ -137,6 +133,8 @@ const SearchModal: FC<SearchModalProps> = () => {
         if (!searchGlobal) {
             queries.push(Query.equal('notebook_related', activeNotebook.$id));
         }
+
+        setIsLoading(true);
 
         try {
             const res = await databases.listDocuments(

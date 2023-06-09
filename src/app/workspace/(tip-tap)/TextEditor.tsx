@@ -19,11 +19,11 @@ import BubbleMenu from './BubbleMenu';
 interface TextEditorProps {
     id: string;
     note: Note;
-    updateFormBody: (newBody: string) => void;
+    onUpdateFormBody: (newBody: string) => void;
 }
 
 
-const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
+const TextEditor: FC<TextEditorProps> = ({ id, note, onUpdateFormBody }) => {
 
     // Text Editor
     //
@@ -52,7 +52,7 @@ const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
             // formData.current.body = html;
-            updateFormBody(html);
+            onUpdateFormBody(html);
         }
     });
 
