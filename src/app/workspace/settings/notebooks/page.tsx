@@ -111,6 +111,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
     const onDelete = async (moveNotes?: boolean) => {
         let targetNotes: Note[] | null = null;
 
+
         // If active notebook is delete target, we can use allNotes. Else we have to fetch.
         if (activeNotebook?.$id == notebook.$id) {
             targetNotes = allNotes;
@@ -124,21 +125,23 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
             targetNotes = response.documents as Note[];
         }
 
-        // Send to General, else delete all
-        if (moveNotes) {
-            targetNotes?.forEach(async element => {
-                await updateNote({
-                    document_id: element.$id,
-                    data: {
-                        notebook_related: defaultNotebook?.$id
-                    } as Note
-                }
-                );
-            });
-        } else {
-            targetNotes?.forEach(async element => {
-                await deleteNote({ document_id: element.$id });
-            });
+        if (targetNotes && targetNotes.length > 0) {
+            // Send to General, else delete all
+            if (moveNotes) {
+                targetNotes?.forEach(async element => {
+                    await updateNote({
+                        document_id: element.$id,
+                        data: {
+                            notebook_related: defaultNotebook?.$id
+                        } as Note
+                    }
+                    );
+                });
+            } else {
+                targetNotes?.forEach(async element => {
+                    await deleteNote({ document_id: element.$id });
+                });
+            }
         }
 
         deleteNotebook(notebook.$id);

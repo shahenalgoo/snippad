@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { BubbleMenu as Bubble, Editor } from '@tiptap/react';
 import { TbBold, TbItalic, TbStrikethrough, TbH1, TbH2, TbH3, TbList, TbListNumbers, TbQuote, TbCode } from "react-icons/tb";
 import { Button } from "@/components";
@@ -109,7 +109,7 @@ export default BubbleMenu;
 interface BubbleButtonProps {
     onClick: any;
     className: string;
-    children: any;
+    children: ReactNode;
 }
 
 

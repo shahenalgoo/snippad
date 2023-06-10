@@ -13,7 +13,7 @@ import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 
 // Database
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, databases, storage } from "@/lib/appwrite-config";
 
 // Note header
 import HeaderNotes from "../(headers)/HeaderNotes";
@@ -24,7 +24,7 @@ import TextEditor from "../(tip-tap)/TextEditor";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 // Components
-import { Button, Notification } from "@/components";
+import { Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
@@ -55,8 +55,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
     const [hasTextChanged, setHasTextChanged] = useState<boolean>(false);
-
-
 
     const beforeSave = useRef<NoteFormData>({
         title: '',
@@ -123,6 +121,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
 
     }, []);
+
 
     // Save Note
     //
@@ -296,8 +295,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     <div className="py-28">
 
-                        {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
-
                         {/* Display amount of days left for trashed notes */}
                         {note?.status === NoteStatus.trashed &&
 
@@ -348,6 +345,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                     id={id}
                                     note={note}
                                     onUpdateFormBody={onUpdateFormBody}
+                                    noteStatus={status}
                                 />
                             }
 
