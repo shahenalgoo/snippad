@@ -7,17 +7,25 @@ import { Dispatch, FC, useEffect } from 'react';
 import { Note } from '@/types/typings';
 import { NoteStatus } from '@/types/enums';
 
+// Hooks
+import { useUser } from '@/context/SessionContext';
+
+// Components
+import { Button } from '@/components';
+
+// Utils
+import toast from 'react-hot-toast';
+
+// Appwrite
+import { AppwriteIds, storage } from '@/lib/appwrite-config';
+import { ID, Permission, Role } from 'appwrite';
+
 // Tip Tap
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import BubbleMenu from './BubbleMenu';
-import { AppwriteIds, storage } from '@/lib/appwrite-config';
-import { ID, Permission, Role } from 'appwrite';
-import { Button } from '@/components';
-import toast from 'react-hot-toast';
-import { useUser } from '@/context/SessionContext';
 
 
 
@@ -25,7 +33,6 @@ interface TextEditorProps {
     id: string;
     note: Note;
     onUpdateFormBody: (newBody: string) => void;
-
     noteStatus: NoteStatus | null;
 }
 
@@ -59,7 +66,6 @@ const TextEditor: FC<TextEditorProps> = ({ id, note, onUpdateFormBody, noteStatu
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            // formData.current.body = html;
             onUpdateFormBody(html);
         }
     });
