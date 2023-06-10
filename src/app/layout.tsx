@@ -6,8 +6,8 @@ import BodyWrap from '@/components/wrappers/BodyWrap';
 
 
 export const metadata = {
-	title: 'Snippad Notepad',
-	description: 'Code snippets & note-taking for developers.',
+	title: 'Snippad',
+	description: 'An open-source code snippet & note-taking app for developers.',
 }
 
 export default function RootLayout({

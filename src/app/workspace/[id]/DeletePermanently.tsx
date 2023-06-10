@@ -49,7 +49,7 @@ const DeletePermanently: FC<DeletePermanentlyProps> = ({ note }) => {
                 }
                 modalButton={
                     <Button onClick={() => setModalActive(!modalActive)} variant='danger' rounded='full'>
-                        Delete Permanently
+                        Delete Now
                     </Button>
                 }
                 modalActive={modalActive}
