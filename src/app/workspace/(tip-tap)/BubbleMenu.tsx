@@ -1,7 +1,6 @@
 import { FC, ReactNode } from "react";
 import { BubbleMenu as Bubble, Editor } from '@tiptap/react';
 import { TbBold, TbItalic, TbStrikethrough, TbH1, TbH2, TbH3, TbList, TbListNumbers, TbQuote, TbCode } from "react-icons/tb";
-import { Button } from "@/components";
 
 interface BubbleMenuProps {
     editor: Editor | null;
@@ -40,7 +39,7 @@ const BubbleMenu: FC<BubbleMenuProps> = ({ editor }) => {
                     <TbH3 />
                 </BubbleButton>
 
-                <BubbleSep />
+                <Sep />
 
                 <BubbleButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -63,7 +62,7 @@ const BubbleMenu: FC<BubbleMenuProps> = ({ editor }) => {
                     <TbStrikethrough />
                 </BubbleButton>
 
-                <BubbleSep />
+                <Sep />
 
                 <BubbleButton
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -126,7 +125,7 @@ const BubbleButton: FC<BubbleButtonProps> = ({ onClick, className, children }) =
 }
 
 
-const BubbleSep = () => {
+const Sep = () => {
     return (
         <div className="w-[1px] h-4 mx-3 bg-neutral-600">
             &nbsp;
