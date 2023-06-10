@@ -6,8 +6,10 @@
 */
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { useUser } from "@/context/SessionContext";
-import { MagicForm, LoginForm, CreateAccountForm } from "@/types/typings";
+import { MagicForm, LoginForm, CreateAccountForm, RecoverForm, PasswordResetForm } from "@/types/typings";
 
 import { account } from "@/lib/appwrite-config";
 import { ID } from "appwrite";
@@ -20,12 +22,13 @@ export default function useAuth() {
     // User hook
     //
     const { setUser, setIsLoading, setIsLoggedIn } = useUser();
+    const router = useRouter();
 
 
     // Magic Form State
     //
     const [magicForm, setMagicForm] = useState<MagicForm>({
-        email: 'shahenalgoo@gmail.com',
+        email: '',
         url: ''
     });
 
@@ -41,11 +44,26 @@ export default function useAuth() {
     // Create Account Form State
     //
     const [createAccountForm, setCreateAccountForm] = useState<CreateAccountForm>({
-        name: 'Shahen',
-        email: 'email44@example.com',
-        password: '12345678'
+        name: '',
+        email: '',
+        password: ''
     });
 
+
+    // Recover Password Form State
+    //
+    const [recoverForm, setRecoverForm] = useState<RecoverForm>({
+        email: '',
+        url: ''
+    });
+
+
+    // Reset Password Form State
+    //
+    const [resetForm, setResetForm] = useState<PasswordResetForm>({
+        password: '',
+        passwordAgain: ''
+    });
 
 
     /**
@@ -152,10 +170,72 @@ export default function useAuth() {
         }
     };
 
+
+
+    /**
+     * RECOVER PASSWORD
+     * 
+     * @param email email address
+     * @param url redirect url
+     * 
+     */
+    const recoverPassword = async (
+        email: string,
+        url: string
+    ) => {
+
+        setIsLoading(true);
+
+        try {
+            await account.createRecovery(email, url);
+            toast.success('Verification email sent!');
+        } catch (error) {
+            console.log(error);
+            toast.error('Unable to send verification email.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+
+    /**
+     * RECOVER PASSWORD
+     * 
+     * @param email email address
+     * @param url redirect url
+     * 
+     */
+    const resetPassword = async (
+        userId: string,
+        secret: string,
+        password: string,
+        passwordAgain: string
+    ) => {
+
+        setIsLoading(true);
+
+        try {
+            await account.updateRecovery(userId, secret, password, passwordAgain);
+            toast.success('New password set, you can now sign in.');
+            router.push("/login")
+        } catch (error) {
+            console.log(error);
+            toast.error('Unable to set new password.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+
+
     return {
         createAccount, createAccountForm, setCreateAccountForm,
         magicLogin, magicForm, setMagicForm,
         login, loginForm, setLoginForm,
+        recoverPassword, recoverForm, setRecoverForm,
+        resetPassword, resetForm, setResetForm,
         logout
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Traditional login component
+ * TRADITIONAL LOGIN
  * 
  */
 
