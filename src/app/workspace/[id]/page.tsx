@@ -342,7 +342,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                             {note?.type === NoteType.note &&
                                 <TextEditor
-                                    id={id}
                                     note={note}
                                     onUpdateFormBody={onUpdateFormBody}
                                     noteStatus={status}

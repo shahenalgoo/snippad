@@ -49,7 +49,7 @@ const UserDropdown: FC<UserDropdownProps> = () => {
                     </div>
 
                     <DropdownItem>
-                        <Link onClick={() => setDropdownActive(!dropdownActive)} href="/workspace/settings" className="block py-2 px-4">Settings</Link>
+                        <Link onClick={() => setDropdownActive(!dropdownActive)} href="/workspace/settings/notebooks" className="block py-2 px-4">Settings</Link>
                     </DropdownItem>
 
                     <DropdownItem>

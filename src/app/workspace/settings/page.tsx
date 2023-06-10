@@ -7,7 +7,7 @@ interface SettingsPageProps {
 const SettingsPage: FC<SettingsPageProps> = () => {
     return (
         <>
-
+            Demo has limited settings.
         </>
     );
 }

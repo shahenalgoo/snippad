@@ -76,6 +76,16 @@ export type CreateAccountForm = {
     password: string;
 }
 
+export type RecoverForm = {
+    email: string;
+    url: string;
+}
+
+export type PasswordResetForm = {
+    password: string;
+    passwordAgain: string;
+}
+
 
 
 /**

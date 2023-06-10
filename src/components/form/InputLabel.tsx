@@ -3,7 +3,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const inputLabelVariants = cva(
-    'block text-sm',
+    'block mb-2 text-sm',
     {
         variants: {
             variant: {

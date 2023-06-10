@@ -2,22 +2,21 @@
 
 import { FC } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { account } from "@/lib/appwrite-config";
 
-import { Button, Spinner } from "@/components";
-import { TbArrowNarrowRight } from "react-icons/tb";
-import { toast } from "react-hot-toast";
 import { useUser } from "@/context/SessionContext";
 
+import { Button, Spinner } from "@/components";
 
-interface ConfirmMagicClientProps {
+import { account } from "@/lib/appwrite-config";
 
-}
+import { TbArrowNarrowRight } from "react-icons/tb";
+
+import { toast } from "react-hot-toast";
 
 
-const ConfirmMagicClient: FC<ConfirmMagicClientProps> = () => {
+const ConfirmMagicClient: FC = () => {
 
-    // Set user states
+    // Hooks
     //
     const { setIsLoading, setIsLoggedIn } = useUser();
 
