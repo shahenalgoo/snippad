@@ -8,7 +8,7 @@
 'use client';
 
 // React
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { redirect } from "next/navigation";
 
 // Hooks
@@ -16,6 +16,7 @@ import { useUser } from "@/context/SessionContext";
 
 // Components
 import LoadingComponent from "@/components/misc/Loading";
+import { useNotebook } from "@/context/NotebookContext";
 
 
 interface VerifyUserStateProps {
@@ -27,6 +28,13 @@ const VerifyUserState: FC<VerifyUserStateProps> = ({ children }) => {
     // Hooks
     //
     const { isLoading, isLoggedIn } = useUser();
+    const { activeNotebook } = useNotebook();
+
+    // Set active notebook in the document title
+    //
+    useEffect(() => {
+        document.title = `Snippad ${' - ' + (activeNotebook?.title || "Checking notebook...")}`;
+    }, [activeNotebook]);
 
 
     // Redirect to login if user is logged out
