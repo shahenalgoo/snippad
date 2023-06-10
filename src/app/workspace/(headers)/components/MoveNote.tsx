@@ -74,7 +74,7 @@ const MoveNote: FC<MoveNoteProps> = ({
                 {isLoadingMove && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
             </Button>
 
-            <div className={`absolute left-0 z-50 w-[300px] h-auto p-1 transition-all rounded-lg bg-white border border-neutral-300 shadow-md ${!notebookDropdown ? 'invisible opacity-0 top-8' : 'visible opacity-100 top-16'} `}>
+            <div className={`absolute left-0 z-50 w-[300px] h-auto p-1 transition-all duration-200 rounded-lg bg-white border border-neutral-300 shadow-md ${!notebookDropdown ? 'invisible opacity-0 bottom-8 lg:bottom-auto lg:top-8' : 'visible opacity-100 bottom-16 lg:bottom-auto lg:top-16'} `}>
                 {!isLoadingMove && notebookList?.map((notebook: Notebook) => (
                     <button key={notebook.$id} onClick={() => moveNote(notebook)} className="flex items-center w-full py-3 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
                         {note?.notebook_related === notebook.$id ?
