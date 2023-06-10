@@ -24,10 +24,14 @@ import { useGlobalState, setGlobalState } from "@/utils/global-states";
 interface OptionsBarProps {
     noteFilter: NoteFilter;
     setNoteFilter: Dispatch<SetStateAction<NoteFilter>>
+    setSortDate: Dispatch<SetStateAction<string>>;
+    setSortType: Dispatch<SetStateAction<string>>;
+    setSortLanguage: Dispatch<SetStateAction<string>>;
+
 }
 
 
-const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
+const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter, setSortDate, setSortType, setSortLanguage }) => {
 
     //States
     //
@@ -52,6 +56,9 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter }) => {
             <Sort
                 sortActive={sortActive}
                 setSortActive={setSortActive}
+                setSortDate={setSortDate}
+                setSortType={setSortType}
+                setSortLanguage={setSortLanguage}
             />
 
             {!sortActive &&

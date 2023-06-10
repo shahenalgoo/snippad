@@ -4,19 +4,26 @@
 import React, { FC, useState, useRef, useEffect } from "react";
 
 // Typings
-import { Notebook } from "@/types/typings";
+import { Note, Notebook } from "@/types/typings";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
+import { useDocumentDelete, useDocumentUpdate, useToggle } from "@/hooks";
 
 // Icons
-import { TbDeviceFloppy, TbEdit, TbNotebook, TbPlus, TbTrash, TbTrashX, TbX } from "react-icons/tb";
+import { TbArrowsLeftRight, TbDeviceFloppy, TbEdit, TbNotebook, TbPlus, TbTrash, TbTrashX, TbX } from "react-icons/tb";
+
+//Components
 import { Box, Button, Spinner } from "@/components";
-import { useDocumentUpdate, useToggle } from "@/hooks";
-import { toast } from "react-hot-toast";
-import { AppwriteIds } from "@/lib/appwrite-config";
-import { containsMinChars, containsOnlySpaces, containsSpecialChars } from "@/utils/form-validation";
 import { ConfirmationModal } from "@/components/misc/ConfirmationModal";
+
+// Utils
+import { toast } from "react-hot-toast";
+import { containsMinChars, containsOnlySpaces, containsSpecialChars } from "@/utils/form-validation";
+
+// Appwrite
+import { AppwriteIds, databases } from "@/lib/appwrite-config";
+import { Query } from "appwrite";
 
 
 
@@ -40,7 +47,9 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
     //
     const ref = useRef<any>(null);
     const { isLoading, updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
-    const { defaultNotebookName, deleteNotebook } = useNotebook();
+    const { activeNotebook, defaultNotebookName, defaultNotebook, deleteNotebook, allNotes } = useNotebook();
+    const { deleteDocument: deleteNote } = useDocumentDelete(AppwriteIds.collectionId_notes);
+    const { updateDocument: updateNote } = useDocumentUpdate(AppwriteIds.collectionId_notes);
 
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNotebookTitle(e.target.value);
@@ -98,7 +107,40 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
 
     }
 
-    const onDelete = () => {
+    // Delete Notebook and notes
+    const onDelete = async (moveNotes?: boolean) => {
+        let targetNotes: Note[] | null = null;
+
+        // If active notebook is delete target, we can use allNotes. Else we have to fetch.
+        if (activeNotebook?.$id == notebook.$id) {
+            targetNotes = allNotes;
+        } else {
+            const response = await databases.listDocuments(
+                AppwriteIds.databaseId,
+                AppwriteIds.collectionId_notes,
+                [Query.equal("notebook_related", notebook.$id)]
+            );
+
+            targetNotes = response.documents as Note[];
+        }
+
+        // Send to General, else delete all
+        if (moveNotes) {
+            targetNotes?.forEach(async element => {
+                await updateNote({
+                    document_id: element.$id,
+                    data: {
+                        notebook_related: defaultNotebook?.$id
+                    } as Note
+                }
+                );
+            });
+        } else {
+            targetNotes?.forEach(async element => {
+                await deleteNote({ document_id: element.$id });
+            });
+        }
+
         deleteNotebook(notebook.$id);
     }
 
@@ -139,10 +181,16 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
                                     <p>All notes in <span className="font-extrabold">{notebookTitle || 'this item'}</span> will be deleted.</p>
                                 }
                                 confirmationButton={
-                                    <Button variant='danger' type="button" onClick={onDelete}>
-                                        <TbTrashX size={20} strokeWidth={1.5} className="mr-2" />
-                                        Delete Permanently
-                                    </Button>
+                                    <>
+                                        <Button variant='primary' type="button" onClick={() => onDelete(true)}>
+                                            <TbArrowsLeftRight size={20} strokeWidth={1.5} className="mr-2" />
+                                            Send All to General
+                                        </Button>
+                                        <Button variant='danger' type="button" onClick={() => onDelete(false)}>
+                                            <TbTrashX size={20} strokeWidth={1.5} className="mr-2" />
+                                            Delete All
+                                        </Button>
+                                    </>
                                 }
                                 modalButton={
                                     <Button onClick={() => setModalActive(!modalActive)} type="button" variant='gray' size='square'>

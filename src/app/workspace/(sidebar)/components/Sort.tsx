@@ -7,35 +7,48 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { SnippetLanguage } from "@/types/typings";
 
 // Components
-import { Button, InputLabel, Select } from "@/components";
+import { Button, Select } from "@/components";
 
 // Icons
-import { TbAdjustmentsHorizontal, TbChevronDown, TbX } from 'react-icons/tb';
+import { TbAdjustmentsHorizontal, TbX } from 'react-icons/tb';
 
 // Data
 import { languages } from "@/data/languages";
+import { SortDate } from "@/types/enums";
 
 interface SortProps {
     sortActive: boolean;
-    setSortActive: Dispatch<SetStateAction<boolean>>
+    setSortActive: Dispatch<SetStateAction<boolean>>;
+    setSortDate: Dispatch<SetStateAction<string>>;
+    setSortType: Dispatch<SetStateAction<string>>;
+    setSortLanguage: Dispatch<SetStateAction<string>>;
+
 }
 
-interface SortByDateProps { }
-interface SortByTypeProps { }
-interface SortByLanguageProps { }
+interface SortByDateProps {
+    setSortDate: Dispatch<SetStateAction<string>>
+}
+interface SortByTypeProps {
+    setSortType: Dispatch<SetStateAction<string>>
+}
+interface SortByLanguageProps {
+    setSortLanguage: Dispatch<SetStateAction<string>>
+}
 
 
 /**
  * SORT BY DATE
  * 
  */
-const SortByDate: FC<SortByDateProps> = () => {
+const SortByDate: FC<SortByDateProps> = ({ setSortDate }) => {
+
     return (
         <Select
+            onChange={(e) => setSortDate(e.currentTarget.value)}
         >
             <option hidden>by date created</option>
-            <option value="">Latest</option>
-            <option value="">Oldest</option>
+            <option value={"latest"}>Latest</option>
+            <option value={"oldest"}>Oldest</option>
         </Select>
     );
 }
@@ -45,13 +58,16 @@ const SortByDate: FC<SortByDateProps> = () => {
  * SORT BY TYPE
  * 
  */
-const SortByType: FC<SortByTypeProps> = () => {
+const SortByType: FC<SortByTypeProps> = ({ setSortType }) => {
     return (
         <Select
+            onChange={(e) => setSortType(e.currentTarget.value)}
+
         >
             <option hidden>by type</option>
-            <option value="">Note</option>
-            <option value="">Code</option>
+            <option value="all">All</option>
+            <option value="note">Note</option>
+            <option value="code">Code</option>
         </Select>
     );
 }
@@ -61,10 +77,14 @@ const SortByType: FC<SortByTypeProps> = () => {
  * SORT BY LANGUAGE
  * 
  */
-const SortByLanguage: FC<SortByLanguageProps> = () => {
+const SortByLanguage: FC<SortByLanguageProps> = ({ setSortLanguage }) => {
+
     return (
-        <Select>
+        <Select
+            onChange={(e) => setSortLanguage(e.currentTarget.value)}
+        >
             <option hidden>by language</option>
+            <option value="all">All</option>
             {languages.map((language: SnippetLanguage, i) => (
                 <option key={i} value={language.alias}>{language.name}</option>
             ))}
@@ -78,16 +98,19 @@ const SortByLanguage: FC<SortByLanguageProps> = () => {
  */
 const Sort: FC<SortProps> = ({
     sortActive,
-    setSortActive
+    setSortActive,
+    setSortDate,
+    setSortType,
+    setSortLanguage
 }) => {
 
     return (
         <div className={`${sortActive ? 'py-2 w-full flex' : ''}`}>
             {sortActive &&
                 <div className="flex-1 pr-2 flex flex-col gap-2">
-                    <SortByDate />
-                    <SortByType />
-                    <SortByLanguage />
+                    <SortByDate setSortDate={setSortDate} />
+                    <SortByType setSortType={setSortType} />
+                    <SortByLanguage setSortLanguage={setSortLanguage} />
                 </div>
             }
 

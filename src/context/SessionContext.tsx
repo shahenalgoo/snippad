@@ -66,8 +66,6 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
             const sessionInfo = await account.getSession('current');
             if (!sessionInfo) return;
 
-            console.log('session found');
-
             setIsLoggedIn(true);
             const userInfo = await account.get();
             setUser(userInfo);
@@ -84,8 +82,6 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }: an
     // Use effect
     //
     useEffect(() => {
-        console.log('uef fires');
-
         fetchUser();
     }, [fetchUser]);
 
