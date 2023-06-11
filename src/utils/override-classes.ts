@@ -1,5 +1,5 @@
 /**
- * A util used to make classes overridable
+ * Make classes overridable
  * Example: use to overwrite classes of the Button component.
  * 
  */

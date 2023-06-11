@@ -1,4 +1,3 @@
-
 /**
  * Check if string contains a minimum amount of characters
  * 
@@ -8,6 +7,7 @@
 export const containsMinChars = (str: string, min: number) => {
     return str.length < min;
 }
+
 
 /**
  *  Check if string contains only spaces

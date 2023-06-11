@@ -1,3 +1,8 @@
+/**
+ * Handle global states
+ * 
+ */
+
 import { createGlobalState } from "react-hooks-global-state";
 
 const { setGlobalState, useGlobalState } = createGlobalState({

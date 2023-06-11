@@ -1,3 +1,8 @@
+/**
+ * Calculate the number of days between now and date sent as argument
+ * 
+ */
+
 export const daysLeft = (date: Date) => {
     const daysLimit = 30;
 
@@ -7,7 +12,7 @@ export const daysLeft = (date: Date) => {
 
     return daysLimit - daysDifference;
 
-    function dateDiffInDays(a: any, b: any) {
+    function dateDiffInDays(a: Date, b: Date) {
         const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
         // Discard the time and time-zone information.
