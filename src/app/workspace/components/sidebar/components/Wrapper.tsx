@@ -2,7 +2,6 @@
 
 // React
 import { FC, useCallback, useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 // Utils
 import { useGlobalState } from "@/utils/global-states";
@@ -18,11 +17,6 @@ const SidebarWrapper: FC<SidebarWrapperProps> = ({ children }) => {
     // States
     //
     const [sidebar, setSidebar] = useGlobalState("sidebar");
-
-
-    // Hooks
-    //
-    const pathname = usePathname();
 
 
     // Set sidebar to false on breakpoint

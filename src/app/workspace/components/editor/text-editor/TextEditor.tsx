@@ -5,23 +5,10 @@ import { FC } from 'react';
 
 // Typings
 import { Note } from '@/types/typings';
-import { NoteStatus } from '@/types/enums';
-
-// Hooks
-import { useUser } from '@/context/SessionContext';
-
-// Components
-import { Button } from '@/components';
-
-// Utils
-import toast from 'react-hot-toast';
-
-// Appwrite
-import { AppwriteIds, storage } from '@/lib/appwrite-config';
-import { ID, Permission, Role } from 'appwrite';
+import { NoteStatus, NoteType } from '@/types/enums';
 
 // Tip Tap
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
@@ -31,7 +18,7 @@ import FloatingMenu from './FloatingMenu';
 
 
 interface TextEditorProps {
-    note: Note;
+    note: Note | null;
     onUpdateFormBody: (newBody: string) => void;
     noteStatus: NoteStatus | null;
 }
@@ -55,9 +42,11 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
             }
         },
         onCreate: ({ editor }) => {
+            // Check if note exist
+            if (!note) return;
 
             // Load note content into editor
-            editor.commands.setContent(note.body);
+            editor.commands.setContent(note?.body);
 
             // If note is not published, setEditable to false
             if (note?.status !== NoteStatus.published) editor?.setEditable(false);
@@ -69,8 +58,8 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
     });
 
 
-    return (
-        <>
+    return note?.type === NoteType.note ? (
+        <div className='relative'>
             {noteStatus === NoteStatus.published &&
                 <div>
                     <EditorContent editor={editor} />
@@ -79,8 +68,8 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
 
             <BubbleMenu editor={editor} />
             <FloatingMenu editor={editor} />
-        </>
-    )
+        </div>
+    ) : null
 }
 
 export default TextEditor

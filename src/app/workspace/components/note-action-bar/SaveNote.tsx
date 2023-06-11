@@ -1,5 +1,5 @@
 // React
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 
 // Typings
 import { Note } from "@/types/typings";
@@ -11,13 +11,13 @@ import { Button, Spinner } from "@/components";
 import { TbDeviceFloppy } from "react-icons/tb";
 
 interface SaveNoteProps {
-    note: Note | null
-    isSaving: boolean
+    isSaving: boolean;
+    saveNote: (manualSave?: boolean) => void;
 }
 
-const SaveNote: FC<SaveNoteProps> = ({ note, isSaving }) => {
+const SaveNote: FC<SaveNoteProps> = ({ isSaving, saveNote }) => {
     return (
-        <Button variant='primary' rounded='full' type="submit" disabled={isSaving}>
+        <Button onClick={() => saveNote(true)} variant='primary' rounded='full' disabled={isSaving}>
             {!isSaving && <TbDeviceFloppy size={24} strokeWidth={1} />}
             {isSaving && <Spinner variant='button' />}
             <span className="ml-2 hidden lg:block">Save</span>

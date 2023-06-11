@@ -1,5 +1,5 @@
 /**
- * Mobile header
+ * Navbar
  * 
  */
 

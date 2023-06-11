@@ -14,7 +14,6 @@ import { TbAdjustmentsHorizontal, TbX } from 'react-icons/tb';
 
 // Data
 import { languages } from "@/data/languages";
-import { SortDate } from "@/types/enums";
 
 interface SortProps {
     sortActive: boolean;

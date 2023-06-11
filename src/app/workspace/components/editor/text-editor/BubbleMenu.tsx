@@ -1,6 +1,11 @@
+// React
 import { FC, ReactNode } from "react";
+
+// Editor
 import { BubbleMenu as Bubble, Editor } from '@tiptap/react';
-import { TbBold, TbItalic, TbStrikethrough, TbH1, TbH2, TbH3, TbList, TbListNumbers, TbQuote, TbCode } from "react-icons/tb";
+
+// Icons
+import { TbBold, TbItalic, TbStrikethrough, TbH1, TbH2, TbH3, TbList, TbListNumbers } from "react-icons/tb";
 
 interface BubbleMenuProps {
     editor: Editor | null;
@@ -93,8 +98,6 @@ const BubbleMenu: FC<BubbleMenuProps> = ({ editor }) => {
                 >
                     <TbCode />
                 </BubbleButton> */}
-
-
 
             </Bubble>}
         </div>

@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 
 // Typings
 import { Note, SnippetLanguage } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 // Code Editor
 import { languages } from "@/data/languages";
@@ -33,26 +33,32 @@ interface SnippetEditorProps {
 
 const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdateFormLanguage }) => {
 
+    // States
+    //
     const [language, setLanguage] = useState('html');
 
-    const handleLanguage = (e: any) => {
+
+    //Handle language changes
+    //
+    const onLanguageChange = (e: any) => {
         onUpdateFormLanguage(e.target.value);
         setLanguage(e.target.value)
     }
 
-
+    // Use effect
+    //
     useEffect(() => {
         setLanguage(String(note?.snippet_language));
     }, [note]);
 
 
-    return (
-        <>
+    return note?.type === NoteType.code ? (
+        <div className="relave">
             <div className="relative">
                 <select
                     id="countries"
                     defaultValue={note?.snippet_language}
-                    onChange={handleLanguage}
+                    onChange={onLanguageChange}
                     className="block w-full mb-4 p-2.5 bg-neutral-50 border border-border-light focus:border-neutral-500 text-gray-900 font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
                     disabled={note?.status !== NoteStatus.published}
                 >
@@ -78,8 +84,8 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdat
                     disabled={note?.status !== NoteStatus.published}
                 />
             </div>
-        </>
-    );
+        </div>
+    ) : null
 }
 
 export default SnippetEditor;

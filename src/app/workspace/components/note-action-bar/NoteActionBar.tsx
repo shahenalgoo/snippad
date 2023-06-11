@@ -33,7 +33,7 @@ import StarNote from "./StarNote";
 import MoveNote from "./MoveNote";
 
 
-interface HeaderNotesProps {
+interface NoteActionBarProps {
     note: Note | null;
     isSaving: boolean;
     saveNote: (manualSave?: boolean) => void;
@@ -44,7 +44,7 @@ interface HeaderNotesProps {
 }
 
 
-const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
+const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
 
     // States
     //
@@ -106,8 +106,8 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred
             <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5">
                 {note?.status === NoteStatus.published &&
                     <SaveNote
-                        note={note}
                         isSaving={isSaving}
+                        saveNote={saveNote}
                     />
                 }
 
@@ -158,4 +158,4 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred
     );
 }
 
-export default HeaderNotes;
+export default NoteActionBar;

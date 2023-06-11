@@ -25,6 +25,7 @@ const UserDropdown: FC = () => {
     const { user, isLoading } = useUser();
     const [dropdownActive, setDropdownActive] = useToggle();
 
+    // Handle logout
     const onLogout = () => {
         logout();
         setDropdownActive(!dropdownActive);

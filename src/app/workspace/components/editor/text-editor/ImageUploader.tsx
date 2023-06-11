@@ -1,14 +1,20 @@
+// React
 import { FC } from "react";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 
+// Components
 import { Button, Modal } from "@/components";
 
+// Appwrite
 import { AppwriteIds, storage } from "@/lib/appwrite-config";
 import { ID, Permission, Role } from "appwrite";
 
+// Editor
 import { Editor, NodeViewWrapper } from '@tiptap/react'
 
+// Misc
 import toast from "react-hot-toast";
 
 

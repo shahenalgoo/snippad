@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, FormEventHandler, MouseEventHandler, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, FC, FormEventHandler, MouseEventHandler, SetStateAction, useEffect, useRef, useState } from "react";
 
 // Typings
 import { Note } from "@/types/typings";
@@ -24,9 +24,6 @@ import { toast } from "react-hot-toast";
 // Appwrite
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 import { Query } from "appwrite";
-
-
-interface SearchModalProps { }
 
 
 /**
@@ -87,6 +84,8 @@ const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, setResults, onCl
  * EXPORTED PARENT COMPONENT
  * 
  */
+interface SearchModalProps { }
+
 const SearchModal: FC<SearchModalProps> = () => {
 
     // States

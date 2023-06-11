@@ -1,39 +1,41 @@
+/**
+ * CODE & NOTE PAGE
+ * 
+ */
+
 'use client';
 
 // React
-import { ChangeEvent, Ref, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
 import { Note, NoteFormData } from "@/types/typings";
-import { NoteStatus, NoteType } from "@/types/enums";
+import { NoteStatus } from "@/types/enums";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
+import { useUnsavedChangesWarning } from "@/hooks";
 
 // Database
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
-import HeaderNotes from "../components/note-action-bar/NoteActionBar";
+import NoteActionBar from "../components/note-action-bar/NoteActionBar";
 
-// Text Editor
+// Text editor
 import TextareaAutosize from 'react-textarea-autosize';
-import TextEditor from "../components/text-editor/TextEditor";
-import SnippetEditor from "../components/code-editor/CodeEditor";
-
-// Components
-import { Notification } from "@/components";
+import TextEditor from "../components/editor/text-editor/TextEditor";
+import SnippetEditor from "../components/editor/CodeEditor";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 
-//Permanent Delete
-import DeletePermanently from "./DeletePermanently";
-import { useUnsavedChangesWarning } from "@/hooks";
-import { daysLeft } from "@/utils/dates-difference-in-days";
+// Workspace components
+import NoticeTrashAutodeletion from "../components/notices/NoticeTrashAutodeletion";
+import NoticeCannotEdit from "../components/notices/NoticeCannotEdit";
 
 
 // Type Definitions
@@ -207,24 +209,20 @@ const NotePage = ({ params: { id } }: PageProps) => {
         setHasTextChanged(noteChanged() ? true : false)
     }
 
+
     // Update Form Body, and detect text state changes
     //
     const onUpdateFormBody = (newBody: string) => {
         formData.current.body = newBody;
         setHasTextChanged(noteChanged() ? true : false)
     }
+
+
     // Update Form Code Language, and detect text state changes
     //
     const onUpdateFormLanguage = (newLanguage: string) => {
         formData.current.snippet_language = newLanguage;
         setHasTextChanged(noteChanged() ? true : false)
-    }
-
-    // Form submit
-    //
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        saveNote(true);
     }
 
 
@@ -260,108 +258,72 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //
     useEffect(() => {
         fetchNote(id);
-
     }, [fetchNote, id, activeNotebook]);
 
 
-    // If note note found, return not-found page
+    // If note not found, return 404
     //
     if (!isLoading && !note) {
         return notFound();
     }
 
 
-    return (
+    return !isLoading ? (
         <>
-            {isLoading &&
-                <LoadingComponent />
-            }
+            <NoteActionBar
+                note={note}
+                isSaving={isSaving}
+                saveNote={saveNote}
+                isStarred={starred}
+                setStarred={setStarred}
+                status={status}
+                setStatus={setStatus}
+            />
 
-            {!isLoading &&
-
-
-                <form onSubmit={onSubmit} className="font-body">
-
-                    <HeaderNotes
-                        note={note}
-                        isSaving={isSaving}
-                        saveNote={saveNote}
-                        isStarred={starred}
-                        setStarred={setStarred}
-                        status={status}
-                        setStatus={setStatus}
-                    />
+            {/* Notices on Archived and Trashed notes */}
+            <NoticeTrashAutodeletion note={note} />
+            <NoticeCannotEdit note={note} />
 
 
-                    <div className="py-28">
+            {/* Editor Fields */}
+            <div className="mb-1">
+                <TextareaAutosize
+                    id="title"
+                    placeholder="Title"
+                    defaultValue={note?.title}
+                    onChange={(e) => onUpdateFormTitle(e, "title")}
+                    className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
+                    disabled={note?.status !== NoteStatus.published}
+                />
+            </div>
 
-                        {/* Display amount of days left for trashed notes */}
-                        {note?.status === NoteStatus.trashed &&
+            <div className="mb-10">
+                <TextareaAutosize
+                    id="subtitle"
+                    placeholder="Subtitle"
+                    defaultValue={note?.subtitle}
+                    onChange={(e) => onUpdateFormTitle(e, "subtitle")}
 
-                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
-                                {/* Trashed notes are automatically deleted after 30 days. This note has {daysLeft(note.status_last_update)} day(s) left. */}
-                                {daysLeft(note.status_last_update)} day(s) left until automatic deletion.
-                                {note?.status === NoteStatus.trashed &&
-                                    <DeletePermanently note={note} />
-                                }
-                            </Notification>
-                        }
+                    className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
+                    disabled={note?.status !== NoteStatus.published}
+                />
+            </div>
 
-                        {/* Visible only when a note is archived or trashed */}
-                        {note?.status !== NoteStatus.published &&
+            <TextEditor
+                note={note}
+                onUpdateFormBody={onUpdateFormBody}
+                noteStatus={status}
+            />
 
-                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
-                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
-                            </Notification>
-                        }
+            <SnippetEditor
+                note={note}
+                onUpdateFormBody={onUpdateFormBody}
+                onUpdateFormLanguage={onUpdateFormLanguage}
+            />
 
-                        <div className="mb-1">
-                            <TextareaAutosize
-                                id="title"
-                                placeholder="Title"
-                                defaultValue={note?.title}
-                                onChange={(e) => onUpdateFormTitle(e, "title")}
-                                className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
-                                disabled={note?.status !== NoteStatus.published}
-                            />
-                        </div>
-
-                        <div className="mb-10">
-                            <TextareaAutosize
-                                id="subtitle"
-                                placeholder="Subtitle"
-                                defaultValue={note?.subtitle}
-                                onChange={(e) => onUpdateFormTitle(e, "subtitle")}
-
-                                className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
-                                disabled={note?.status !== NoteStatus.published}
-                            />
-                        </div>
-
-                        <div className="relative">
-
-                            {note?.type === NoteType.note &&
-                                <TextEditor
-                                    note={note}
-                                    onUpdateFormBody={onUpdateFormBody}
-                                    noteStatus={status}
-                                />
-                            }
-
-                            {note?.type === NoteType.code &&
-                                <SnippetEditor
-                                    note={note}
-                                    onUpdateFormBody={onUpdateFormBody}
-                                    onUpdateFormLanguage={onUpdateFormLanguage}
-                                />
-                            }
-                        </div>
-                    </div>
-
-                </form>
-            }
         </>
-    )
+
+    ) : <LoadingComponent />
 }
 
 export default NotePage;

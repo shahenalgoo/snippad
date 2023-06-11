@@ -1,4 +1,9 @@
-import { TbCactus, TbError404 } from "react-icons/tb";
+/**
+ * Workspace 404 not found
+ * 
+ */
+
+import { TbError404 } from "react-icons/tb";
 
 const NotFound = () => {
     return (

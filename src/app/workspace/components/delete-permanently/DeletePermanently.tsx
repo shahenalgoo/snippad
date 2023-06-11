@@ -1,11 +1,22 @@
-import { useDocumentDelete, useToggle } from "@/hooks";
-import { AppwriteIds } from "@/lib/appwrite-config";
-import { Note } from "@/types/typings";
+// React
 import { FC } from "react";
 import { useRouter } from "next/navigation"
+
+// Typings
+import { Note } from "@/types/typings";
+
+// Hooks
 import { useNotebook } from "@/context/NotebookContext";
+import { useDocumentDelete, useToggle } from "@/hooks";
+
+// Components
 import { Button } from "@/components";
 import { ConfirmationModal } from "@/components/misc/ConfirmationModal";
+
+// Appwrite
+import { AppwriteIds } from "@/lib/appwrite-config";
+
+// Icons
 import { TbTrashX } from "react-icons/tb";
 
 interface DeletePermanentlyProps {
@@ -13,7 +24,6 @@ interface DeletePermanentlyProps {
 }
 
 const DeletePermanently: FC<DeletePermanentlyProps> = ({ note }) => {
-
 
     // Hooks
     //
