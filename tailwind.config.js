@@ -17,7 +17,11 @@ module.exports = {
 				'success': '#4ade80',
 				'border-light': '#e2e8f0',
 				// 'border-light': 'red'
+
+				// Star snippets/notes
 				'star': '#f59e0b',
+
+				// P Languages
 				'html': '#e34c26',
 				'css': '#264de4',
 				'js': '#ca8a04',
