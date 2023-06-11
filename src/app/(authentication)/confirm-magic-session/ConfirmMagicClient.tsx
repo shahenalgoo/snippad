@@ -1,16 +1,27 @@
+/**
+ * Magic login confirmation
+ * 
+ */
+
 'use client';
 
+// Ract
 import { FC } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 
+// Components
 import { Button, Spinner } from "@/components";
 
+// Appwrite
 import { account } from "@/lib/appwrite-config";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
+// Misc
 import { toast } from "react-hot-toast";
 
 
@@ -42,13 +53,17 @@ const ConfirmMagicClient: FC = () => {
         try {
             await account.updateMagicURLSession(userId || "", secret || "");
             setIsLoggedIn(true);
+
             toast.dismiss();
             toast.success('You are logged in!');
+
             router.push('/workspace');
         } catch (error) {
             setIsLoggedIn(false);
+
             toast.dismiss();
             toast.error('Unable to log in.');
+
             console.log(error);
         } finally {
             setIsLoading(true);

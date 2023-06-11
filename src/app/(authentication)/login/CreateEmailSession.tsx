@@ -5,20 +5,21 @@
 
 'use client';
 
+// React
 import { FC } from "react";
+
+// Hooks
 import { useAuth } from "@/hooks";
 import { useUser } from "@/context/SessionContext";
 
+// Components
 import { Button, InputField, InputLabel } from "@/components";
+
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
 
-interface CreateEmailSessionProps {
-
-}
-
-
-const CreateEmailSession: FC<CreateEmailSessionProps> = () => {
+const CreateEmailSession: FC = () => {
 
     // Hooks
     //

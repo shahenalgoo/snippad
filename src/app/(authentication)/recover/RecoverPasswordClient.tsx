@@ -5,17 +5,19 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useAuth } from "@/hooks";
 
-import { Box, Button, InputField, InputLabel } from "@/components";
+// Components
+import { Box, Button, InputField } from "@/components";
 import AlreadyLoggedIn from "@/components/misc/AlreadyLoggedIn";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
-
-import toast from "react-hot-toast";
 
 
 const RecoverPasswordClient: FC = () => {
@@ -37,7 +39,7 @@ const RecoverPasswordClient: FC = () => {
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await recoverPassword(recoverForm.email, "http://localhost:3000/reset-password")
+        await recoverPassword(recoverForm.email, `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`)
     }
 
 

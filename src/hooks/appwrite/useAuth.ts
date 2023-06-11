@@ -42,8 +42,8 @@ export default function useAuth() {
     // Login Form State
     //
     const [loginForm, setLoginForm] = useState<LoginForm>({
-        email: 'email32@example.com',
-        password: '12345678'
+        email: '',
+        password: ''
     });
 
 

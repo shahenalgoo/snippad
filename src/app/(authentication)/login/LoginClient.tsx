@@ -6,16 +6,21 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useToggle } from "@/hooks";
 
+// Components
 import { Box, Button, Separator } from "@/components";
 import AlreadyLoggedIn from "@/components/misc/AlreadyLoggedIn";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
+// Auth Components
 import CreateOauthSession from "./CreateOauthSession";
 import CreateMagicSession from "./CreateMagicSession";
 import CreateEmailSession from "./CreateEmailSession";

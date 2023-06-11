@@ -5,12 +5,16 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Appwrite
 import { account } from "@/lib/appwrite-config";
 
+// Components
 import { Button, Grid } from "@/components";
 
+// Icons
 import { TbBrandGithub, TbBrandDiscord, TbBrandGoogle, TbArrowNarrowRight } from "react-icons/tb";
 
 
