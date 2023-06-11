@@ -20,7 +20,7 @@ const TabsMenu: FC = () => {
     ]
 
     return (
-        <Box className="shrink-0 flex gap-2 sm:flex-col sm:w-56 h-fit mb-6 sm:mb-0">
+        <Box space='sm' className="shrink-0 flex gap-2 sm:flex-col sm:w-56 h-fit mb-6 sm:mb-0">
             {menuItems.map((item, i) => (
                 <Button
                     key={i}

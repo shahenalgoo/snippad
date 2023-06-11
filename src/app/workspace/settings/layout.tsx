@@ -1,5 +1,5 @@
 import { Title } from "@/components"
-import TabsMenu from "./components/TabsMenu"
+import TabsMenu from "./TabsMenu"
 
 export default function Layout({
     children,
