@@ -1,3 +1,8 @@
+/**
+ * Code Editor supporte programming languages
+ * ~ Check: https://github.com/wooorm/refractor#data for more language support
+ */
+
 export const languages = [
     {
         name: 'HTML',
