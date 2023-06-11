@@ -4,22 +4,25 @@
  * 
  */
 
+// React
 import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
-import { Note, Notebook } from "@/types/typings";
-
-import { useUser } from "./SessionContext";
-import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
 import { useRouter } from "next/navigation";
 
+// Typings
+import { Note, Notebook } from "@/types/typings";
+
+// Hooks
+import { useUser } from "./SessionContext";
+import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
+import { useNoteExamples } from "@/hooks";
+
+// Appwrite
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
 
+// Misc
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
-import { NoteStatus, NoteType } from "@/types/enums";
-import { useNoteExamples } from "@/hooks";
-import { skip } from "node:test";
-
 
 
 // Notebook typings
@@ -61,7 +64,7 @@ export const useNotebook = (): NotebookContextType => {
     const context = useContext(NotebookContext);
 
     if (!context) {
-        throw new Error('Hook must be used within an NotebookProvider');
+        throw new Error('Hook must be used within NotebookProvider context');
     }
 
     return context;
@@ -85,16 +88,19 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [allNotes, setAllNotes] = useState<Note[] | null>(null);
     const [isLoadingAllNotes, setIsLoadingAllNotes] = useState<boolean>(true);
 
+
     // Default Names/Amounts
     //
     const defaultNotebookName = "General Notebook";
     const cookieNotebookRef = "activeNotebookRef";
     const notebookLimit = 3;
 
+
     // Init Cookies
     //
     const cookies = new Cookies();
     let lastNotebookUsed: Notebook;
+
 
     // Hooks
     //
