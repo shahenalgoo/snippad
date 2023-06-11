@@ -1,10 +1,6 @@
 import { FC } from "react";
 
-interface SettingsPageProps {
-
-}
-
-const SettingsPage: FC<SettingsPageProps> = () => {
+const SettingsPage: FC = () => {
     return (
         <>
             Demo has limited settings.

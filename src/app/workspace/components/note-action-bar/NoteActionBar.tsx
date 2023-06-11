@@ -28,9 +28,9 @@ import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { AppwriteIds } from "@/lib/appwrite-config";
 
 // Header notes components
-import SaveNote from "./components/SaveNote";
-import StarNote from "./components/StarNote";
-import MoveNote from "./components/MoveNote";
+import SaveNote from "./SaveNote";
+import StarNote from "./StarNote";
+import MoveNote from "./MoveNote";
 
 
 interface HeaderNotesProps {

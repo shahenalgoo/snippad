@@ -1,16 +1,21 @@
+// React
 import { Dispatch, FC, SetStateAction, useState } from "react";
+
+// Typings
 import { Note } from "@/types/typings";
 
-import { useUser } from "@/context/SessionContext";
+// Hooks
+import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 
+// Components
 import { Button } from "@/components";
 
+// Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
-import { Permission, Role } from "appwrite";
 
+// Icons
 import { TbLoader2, TbStar, TbStarFilled } from "react-icons/tb";
-import { useNotebook } from "@/context/NotebookContext";
 
 
 interface StarNoteProps {

@@ -18,11 +18,8 @@ import { Button } from "@/components";
 import { useGlobalState } from "@/utils/global-states";
 import UserDropdown from "./UserDropdown";
 
-interface HeaderProps {
 
-}
-
-const Header: FC<HeaderProps> = () => {
+const Navbar: FC = () => {
 
     // States
     //
@@ -39,4 +36,4 @@ const Header: FC<HeaderProps> = () => {
     );
 }
 
-export default Header;
+export default Navbar;

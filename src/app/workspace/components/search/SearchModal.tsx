@@ -11,7 +11,7 @@ import { useNotebook } from "@/context/NotebookContext";
 
 // Components
 import { Button, Grid, Modal, Spinner } from "@/components";
-import NoteCard from "../components/NoteCard";
+import NoteCard from "../cards/NoteCard";
 
 // Icons
 import { TbSearch, TbX } from 'react-icons/tb';

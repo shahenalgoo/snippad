@@ -9,7 +9,6 @@ import { TbArrowsLeftRight, TbCircle, TbCircleCheckFilled, TbLoader2 } from "rea
 import { Button } from "@/components";
 
 // Hooks
-import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 

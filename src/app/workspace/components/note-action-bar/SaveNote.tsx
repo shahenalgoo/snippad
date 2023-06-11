@@ -1,7 +1,14 @@
-import { Button, Spinner } from "@/components";
-import { Note } from "@/types/typings";
+// React
 import { FC } from "react";
-import { TbDeviceFloppy, TbLoader2 } from "react-icons/tb";
+
+// Typings
+import { Note } from "@/types/typings";
+
+// Components
+import { Button, Spinner } from "@/components";
+
+// Icons
+import { TbDeviceFloppy } from "react-icons/tb";
 
 interface SaveNoteProps {
     note: Note | null

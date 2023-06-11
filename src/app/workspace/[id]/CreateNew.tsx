@@ -41,7 +41,7 @@ const CreateNew: FC<CreateNewProps> = () => {
 
 
     // Notes limit in a notebook
-    const notesLimit = 20;
+    const notesLimit = 30;
 
 
     // Create a new note

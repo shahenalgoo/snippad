@@ -8,11 +8,7 @@ import { usePathname } from "next/navigation"
 import { Box, Button } from "@/components";
 
 
-interface TabsMenuProps {
-
-}
-
-const TabsMenu: FC<TabsMenuProps> = () => {
+const TabsMenu: FC = () => {
 
     // Pathname
     const path = usePathname();

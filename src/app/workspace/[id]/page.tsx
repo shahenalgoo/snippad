@@ -13,15 +13,15 @@ import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 
 // Database
-import { AppwriteIds, databases, storage } from "@/lib/appwrite-config";
+import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
-import HeaderNotes from "../(headers)/HeaderNotes";
+import HeaderNotes from "../components/note-action-bar/NoteActionBar";
 
 // Text Editor
 import TextareaAutosize from 'react-textarea-autosize';
-import TextEditor from "../(tip-tap)/TextEditor";
-import SnippetEditor from "../(code-editor)/SnippetEditor";
+import TextEditor from "../components/text-editor/TextEditor";
+import SnippetEditor from "../components/code-editor/CodeEditor";
 
 // Components
 import { Notification } from "@/components";

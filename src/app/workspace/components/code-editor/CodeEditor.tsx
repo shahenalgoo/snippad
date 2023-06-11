@@ -4,11 +4,11 @@
 'use client';
 
 // React
-import { Dispatch, FC, MutableRefObject, SetStateAction, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 // Typings
-import { Note, NoteFormData, SnippetLanguage } from "@/types/typings";
+import { Note, SnippetLanguage } from "@/types/typings";
 import { NoteStatus } from "@/types/enums";
 
 // Code Editor
