@@ -14,8 +14,8 @@ import { Button } from "@/components";
 import { TbPlus, TbSearch } from 'react-icons/tb';
 
 // Options bar components
-import Filters from "./components/Filters";
-import Sort from "./components/Sort";
+import Filters from "./Filters";
+import Sort from "./Sort";
 
 // Utils
 import { useGlobalState, setGlobalState } from "@/utils/global-states";

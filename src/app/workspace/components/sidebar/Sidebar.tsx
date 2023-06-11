@@ -24,10 +24,10 @@ import { Query } from "appwrite";
 import { useNotebook } from "@/context/NotebookContext";
 
 // Sidebar Components
-import Notebooks from "./Notebooks";
-import OptionsBar from "./OptionsBar";
-import NoteSwitcher from "./Notes";
-import SidebarWrapper from "./components/Wrapper";
+import NotebookSwitcher from "./NotebookSwitcher";
+import OptionsBar from "./options-bar/OptionsBar";
+import NoteSwitcher from "./NoteSwitcher";
+import SidebarWrapper from "./Wrapper";
 
 
 const Sidebar = () => {
@@ -48,10 +48,9 @@ const Sidebar = () => {
 
     /**
      * FETCH NOTES AND SET STATES
+     * Get note status according to the filter set    
      * 
      */
-
-    // Get note status according to the filter set    
     function getFetchNoteStatus() {
         switch (noteFilter) {
             case NoteFilter.all:
@@ -155,7 +154,8 @@ const Sidebar = () => {
     return (
         <SidebarWrapper>
 
-            <Notebooks />
+            <NotebookSwitcher />
+
             <OptionsBar
                 noteFilter={noteFilter}
                 setNoteFilter={setNoteFilter}
@@ -164,6 +164,7 @@ const Sidebar = () => {
                 setSortType={setSortType}
                 setSortLanguage={setSortLanguage}
             />
+
             <NoteSwitcher noteList={noteList} noteFilter={noteFilter} />
 
         </SidebarWrapper>

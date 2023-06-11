@@ -22,10 +22,10 @@ import { Notebook } from "@/types/typings";
 import { Button } from "@/components";
 
 
-interface NotebooksProps { }
+interface NotebookSwitcherProps { }
 
 
-const Notebooks: FC<NotebooksProps> = () => {
+const NotebookSwitcher: FC<NotebookSwitcherProps> = () => {
 
     // States
     //
@@ -104,4 +104,4 @@ const Notebooks: FC<NotebooksProps> = () => {
     );
 }
 
-export default Notebooks;
+export default NotebookSwitcher;
