@@ -34,7 +34,7 @@ const UserDropdown: FC = () => {
     }
 
     return (
-        <div className="relative dropdown">
+        <div className="relative dropdown ">
             <button type="button" className="overflow-hidden w-12 h-12 rounded-full flex items-center justify-center bg-neutral-100 dark:bg-black">
                 <TbUser size={24} strokeWidth={1} />
             </button>
