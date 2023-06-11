@@ -21,10 +21,14 @@ const AlreadyLoggedIn = () => {
 
             <div className="flex justify-center gap-2">
                 <Button onClick={logout} variant='gray'>Logout</Button>
-                <Button href="/workspace">
+                {/* <Button href="/workspace">
                     Go to Workspace
                     <TbArrowNarrowRight className="ml-2" />
-                </Button>
+                </Button> */}
+                <a href="/workspace" className="relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all outline-none focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-black hover:bg-neutral-950 text-white h-10 px-4 text-sm rounded-lg">
+                    Go to Workspace
+                    <TbArrowNarrowRight className="ml-2" />
+                </a>
             </div>
         </>
     );

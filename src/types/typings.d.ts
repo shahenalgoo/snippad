@@ -41,7 +41,6 @@ export interface IDeleteDocument {
 
 export type Notebook = Models.Document & {
     title: string;
-    notes_related: string[];
 }
 
 export type Note = Models.Document & {
@@ -75,6 +74,16 @@ export type CreateAccountForm = {
     name: string;
     email: string;
     password: string;
+}
+
+export type RecoverForm = {
+    email: string;
+    url: string;
+}
+
+export type PasswordResetForm = {
+    password: string;
+    passwordAgain: string;
 }
 
 

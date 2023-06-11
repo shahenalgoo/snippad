@@ -101,57 +101,59 @@ const HeaderNotes: FC<HeaderNotesProps> = ({ note, isSaving, saveNote, isStarred
 
 
     return (
-        <div className="fixed top-3 right-3 z-40 rounded-full py-1 px-2 bg-neutral-200 flex items-center">
+        <div className="fixed bottom-4 left-0 z-30 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
 
-            {note?.status === NoteStatus.published &&
-                <SaveNote
+            <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5">
+                {note?.status === NoteStatus.published &&
+                    <SaveNote
+                        note={note}
+                        isSaving={isSaving}
+                    />
+                }
+
+                {note?.status === NoteStatus.archived &&
+                    <Button onClick={handleArchive} variant='black' rounded='full' className="mr-2">
+                        <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingArchive && 'animate-spin'}`} />
+                        Recover
+                    </Button>
+                }
+
+                {note?.status === NoteStatus.trashed &&
+                    <Button onClick={handleTrash} variant='black' rounded='full' className="mr-2">
+                        <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingTrash && 'animate-spin'}`} />
+                        Recover
+                    </Button>
+                }
+
+                <MoveNote
                     note={note}
                     isSaving={isSaving}
+                    saveNote={saveNote}
                 />
-            }
 
-            {note?.status === NoteStatus.archived &&
-                <Button onClick={handleArchive} variant='black' rounded='full' className="mr-2">
-                    <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingArchive && 'animate-spin'}`} />
-                    Recover
-                </Button>
-            }
+                <StarNote
+                    note={note}
+                    isStarred={isStarred}
+                    setStarred={setStarred}
+                    isSaving={isSaving}
+                />
 
-            {note?.status === NoteStatus.trashed &&
-                <Button onClick={handleTrash} variant='black' rounded='full' className="mr-2">
-                    <TbRotateRectangle size={18} strokeWidth={2} className={`mr-2 ${isLoadingTrash && 'animate-spin'}`} />
-                    Recover
-                </Button>
-            }
+                {note?.status !== NoteStatus.archived &&
+                    <Button variant='inverted' type="button" onClick={handleArchive} disabled={isSaving}>
+                        {!isLoadingArchive && status !== NoteStatus.archived && <HiOutlineArchiveBox size={20} strokeWidth={1} />}
+                        {!isLoadingArchive && status === NoteStatus.archived && <TbCheck size={20} strokeWidth={1} />}
+                        {isLoadingArchive && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
+                    </Button>
+                }
 
-            <MoveNote
-                note={note}
-                isSaving={isSaving}
-                saveNote={saveNote}
-            />
-
-            <StarNote
-                note={note}
-                isStarred={isStarred}
-                setStarred={setStarred}
-                isSaving={isSaving}
-            />
-
-            {note?.status !== NoteStatus.archived &&
-                <Button variant='bubble' type="button" onClick={handleArchive} disabled={isSaving}>
-                    {!isLoadingArchive && status !== NoteStatus.archived && <HiOutlineArchiveBox size={20} strokeWidth={1} />}
-                    {!isLoadingArchive && status === NoteStatus.archived && <TbCheck size={20} strokeWidth={1} />}
-                    {isLoadingArchive && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
-                </Button>
-            }
-
-            {note?.status !== NoteStatus.trashed &&
-                <Button variant='bubble' type="button" onClick={handleTrash} disabled={isSaving}>
-                    {!isLoadingTrash && status !== NoteStatus.trashed && <TbTrash size={20} strokeWidth={1} />}
-                    {!isLoadingTrash && status === NoteStatus.trashed && <TbCheck size={20} strokeWidth={2} />}
-                    {isLoadingTrash && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
-                </Button>
-            }
+                {note?.status !== NoteStatus.trashed &&
+                    <Button variant='inverted' type="button" onClick={handleTrash} disabled={isSaving}>
+                        {!isLoadingTrash && status !== NoteStatus.trashed && <TbTrash size={20} strokeWidth={1} />}
+                        {!isLoadingTrash && status === NoteStatus.trashed && <TbCheck size={20} strokeWidth={2} />}
+                        {isLoadingTrash && <TbLoader2 size={20} className="opacity-40 animate-spin" />}
+                    </Button>
+                }
+            </div>
         </div>
     );
 }

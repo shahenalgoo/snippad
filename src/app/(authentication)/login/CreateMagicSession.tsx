@@ -1,24 +1,21 @@
 /**
- * Traditional login component
+ * MAGIC LOGIN
  * 
  */
 
 'use client';
 
 import { FC } from "react";
+
 import { useAuth } from "@/hooks";
 import { useUser } from "@/context/SessionContext";
 
 import { Button, InputField } from "@/components";
+
 import { TbArrowNarrowRight } from "react-icons/tb";
 
 
-interface CreateMagicSessionProps {
-
-}
-
-
-const CreateMagicSession: FC<CreateMagicSessionProps> = () => {
+const CreateMagicSession: FC = () => {
 
     // Hooks
     //
@@ -29,8 +26,7 @@ const CreateMagicSession: FC<CreateMagicSessionProps> = () => {
     // Handle state changes on form
     //
     const onFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // setLoginForm({ ...loginForm, [e.target.id]: e.target.value });
-        setMagicForm({ ...magicForm, [e.target.id]: e.target.value })
+        setMagicForm({ ...magicForm, email: e.target.value })
     }
 
 
@@ -41,6 +37,7 @@ const CreateMagicSession: FC<CreateMagicSessionProps> = () => {
         // await login(loginForm.email, loginForm.password);
         await magicLogin(magicForm.email, "http://localhost:3000/confirm-magic-session")
     }
+
 
     return (
         <form onSubmit={onSubmit} className="flex gap-2">
@@ -57,6 +54,7 @@ const CreateMagicSession: FC<CreateMagicSessionProps> = () => {
             <Button type="submit" className="w-10 p-0">
                 <TbArrowNarrowRight size={20} strokeWidth={1.5} />
             </Button>
+
         </form>
     );
 }

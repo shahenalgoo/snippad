@@ -1,29 +1,43 @@
 'use client';
 
 // React
-import { ChangeEvent, Dispatch, FC, MutableRefObject, SetStateAction } from 'react';
+import { FC } from 'react';
 
 // Typings
-import { Note, NoteFormData } from '@/types/typings';
+import { Note } from '@/types/typings';
 import { NoteStatus } from '@/types/enums';
 
-// Tip Tap
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+// Hooks
+import { useUser } from '@/context/SessionContext';
 
+// Components
+import { Button } from '@/components';
+
+// Utils
+import toast from 'react-hot-toast';
+
+// Appwrite
+import { AppwriteIds, storage } from '@/lib/appwrite-config';
+import { ID, Permission, Role } from 'appwrite';
+
+// Tip Tap
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import BubbleMenu from './BubbleMenu';
+import FloatingMenu from './FloatingMenu';
+
 
 
 interface TextEditorProps {
-    id: string;
     note: Note;
-    updateFormBody: (newBody: string) => void;
+    onUpdateFormBody: (newBody: string) => void;
+    noteStatus: NoteStatus | null;
 }
 
 
-const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
+const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus }) => {
 
     // Text Editor
     //
@@ -34,7 +48,6 @@ const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
                 placeholder: 'Write your note...'
             }),
             Image,
-            // Dropcursor
         ],
         editorProps: {
             attributes: {
@@ -51,19 +64,21 @@ const TextEditor: FC<TextEditorProps> = ({ id, note, updateFormBody }) => {
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            // formData.current.body = html;
-            updateFormBody(html);
+            onUpdateFormBody(html);
         }
     });
 
 
     return (
         <>
-            <div>
-                <EditorContent editor={editor} />
-            </div>
+            {noteStatus === NoteStatus.published &&
+                <div>
+                    <EditorContent editor={editor} />
+                </div>
+            }
 
             <BubbleMenu editor={editor} />
+            <FloatingMenu editor={editor} />
         </>
     )
 }

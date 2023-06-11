@@ -5,6 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+body {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -48,6 +53,10 @@
 /*//////////////////////////////////////////////////////////////
     TEXT EDITOR - PROSE MIRROR
 //////////////////////////////////////////////////////////////*/
+
+#tippy-2 {
+    z-index: 888 !important;
+}
 
 // HEADINGS
 .ProseMirror {

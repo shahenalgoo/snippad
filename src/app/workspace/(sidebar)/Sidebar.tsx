@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Typings
 import { Note } from "@/types/typings";
-import { NoteFilter, NoteStatus } from "@/types/enums";
+import { NoteFilter, NoteStatus, NoteType, SortDate } from "@/types/enums";
 
 // Appwrite
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
@@ -37,7 +37,9 @@ const Sidebar = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noteList, setNoteList] = useState<Note[] | null>(null);
     const [noteFilter, setNoteFilter] = useState<NoteFilter>(NoteFilter.all);
-
+    const [sortDate, setSortDate] = useState<string>("latest");
+    const [sortType, setSortType] = useState<string>("all");
+    const [sortLanguage, setSortLanguage] = useState<string>("all");
 
     // Hooks
     //
@@ -82,14 +84,30 @@ const Sidebar = () => {
             let queries: string[] = [
                 Query.equal('notebook_related', activeNotebook.$id),
                 Query.equal('status', getFetchNoteStatus()),
-                Query.orderDesc('$createdAt')
             ]
+
+            // Sort by latest/oldest
+            if (sortDate === SortDate.latest) {
+                queries.push(Query.orderDesc('$createdAt'));
+            } else {
+                queries.push(Query.orderAsc('$createdAt'));
+
+            }
 
             // Add starred to the query if filter is set to starred
             if (noteFilter === NoteFilter.starred) {
-                queries.push(
-                    Query.equal('starred', true),
-                );
+                queries.push(Query.equal('starred', true),);
+            }
+
+            // Sort by type
+            if (sortType !== "all") {
+                queries.push(Query.equal('type', sortType));
+            }
+
+            // Sort by language
+            if (sortType === NoteType.code && sortLanguage !== "all") {
+                queries.push(Query.equal('snippet_language', sortLanguage));
+
             }
 
             // Fetch user's notes
@@ -112,7 +130,7 @@ const Sidebar = () => {
             setIsLoading(false);
         }
 
-    }, [activeNotebook, noteFilter]);
+    }, [activeNotebook, noteFilter, sortDate, sortType, sortLanguage]);
 
 
     // Use effect
@@ -138,7 +156,14 @@ const Sidebar = () => {
         <SidebarWrapper>
 
             <Notebooks />
-            <OptionsBar noteFilter={noteFilter} setNoteFilter={setNoteFilter} />
+            <OptionsBar
+                noteFilter={noteFilter}
+                setNoteFilter={setNoteFilter}
+
+                setSortDate={setSortDate}
+                setSortType={setSortType}
+                setSortLanguage={setSortLanguage}
+            />
             <NoteSwitcher noteList={noteList} noteFilter={noteFilter} />
 
         </SidebarWrapper>

@@ -13,7 +13,7 @@ import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 
 // Database
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, databases, storage } from "@/lib/appwrite-config";
 
 // Note header
 import HeaderNotes from "../(headers)/HeaderNotes";
@@ -24,7 +24,7 @@ import TextEditor from "../(tip-tap)/TextEditor";
 import SnippetEditor from "../(code-editor)/SnippetEditor";
 
 // Components
-import { Button, Notification } from "@/components";
+import { Notification } from "@/components";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
@@ -33,6 +33,7 @@ import { toast } from "react-hot-toast";
 //Permanent Delete
 import DeletePermanently from "./DeletePermanently";
 import useUnsavedChangesWarning from "@/hooks/useUnsavedChangesWarning";
+import { daysLeft } from "@/utils/dates-difference-in-days";
 
 
 // Type Definitions
@@ -54,8 +55,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [starred, setStarred] = useState<boolean>(false);
     const [status, setStatus] = useState<NoteStatus | null>(null);
     const [hasTextChanged, setHasTextChanged] = useState<boolean>(false);
-
-
 
     const beforeSave = useRef<NoteFormData>({
         title: '',
@@ -123,6 +122,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, []);
 
+
     // Save Note
     //
     async function saveNote(manualSave?: boolean) {
@@ -187,12 +187,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Adding before unloading warning event, in case there are unsaved changes.
     //
-    useUnsavedChangesWarning(hasTextChanged);
+    useUnsavedChangesWarning(hasTextChanged && note?.status === NoteStatus.published);
 
 
     // Update Form Titles, and detect text state changes
     //
-    const updateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
+    const onUpdateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
         switch (target) {
             case "title":
                 formData.current.title = e.target.value;
@@ -209,13 +209,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Update Form Body, and detect text state changes
     //
-    const updateFormBody = (newBody: string) => {
+    const onUpdateFormBody = (newBody: string) => {
         formData.current.body = newBody;
         setHasTextChanged(noteChanged() ? true : false)
     }
     // Update Form Code Language, and detect text state changes
     //
-    const updateFormLanguage = (newLanguage: string) => {
+    const onUpdateFormLanguage = (newLanguage: string) => {
         formData.current.snippet_language = newLanguage;
         setHasTextChanged(noteChanged() ? true : false)
     }
@@ -293,17 +293,25 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     />
 
 
-                    <div className="lg:pt-24 lg:pb-24">
+                    <div className="py-28">
 
-                        {/* <input type="file" id="uploader" onChange={() => addImage()} /> */}
+                        {/* Display amount of days left for trashed notes */}
+                        {note?.status === NoteStatus.trashed &&
 
-                        {/* Visible only when a note is archived or trashed */}
-                        {note?.status !== NoteStatus.published &&
                             <Notification variant='danger' className="mb-4 flex justify-between items-center">
-                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
+                                {/* Trashed notes are automatically deleted after 30 days. This note has {daysLeft(note.status_last_update)} day(s) left. */}
+                                {daysLeft(note.status_last_update)} day(s) left until automatic deletion.
                                 {note?.status === NoteStatus.trashed &&
                                     <DeletePermanently note={note} />
                                 }
+                            </Notification>
+                        }
+
+                        {/* Visible only when a note is archived or trashed */}
+                        {note?.status !== NoteStatus.published &&
+
+                            <Notification variant='danger' className="mb-4 flex justify-between items-center">
+                                Cannot be edited while {note?.status === NoteStatus.archived ? 'archived' : 'trashed'}.
                             </Notification>
                         }
 
@@ -312,8 +320,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="title"
                                 placeholder="Title"
                                 defaultValue={note?.title}
-                                onChange={(e) => updateFormTitle(e, "title")}
-                                className="w-full bg-transparent outline-none text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
+                                onChange={(e) => onUpdateFormTitle(e, "title")}
+                                className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
@@ -323,9 +331,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
                                 id="subtitle"
                                 placeholder="Subtitle"
                                 defaultValue={note?.subtitle}
-                                onChange={(e) => updateFormTitle(e, "subtitle")}
+                                onChange={(e) => onUpdateFormTitle(e, "subtitle")}
 
-                                className="w-full bg-transparent outline-none text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
+                                className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
                                 disabled={note?.status !== NoteStatus.published}
                             />
                         </div>
@@ -334,17 +342,17 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                             {note?.type === NoteType.note &&
                                 <TextEditor
-                                    id={id}
                                     note={note}
-                                    updateFormBody={updateFormBody}
+                                    onUpdateFormBody={onUpdateFormBody}
+                                    noteStatus={status}
                                 />
                             }
 
                             {note?.type === NoteType.code &&
                                 <SnippetEditor
                                     note={note}
-                                    updateFormBody={updateFormBody}
-                                    updateFormLanguage={updateFormLanguage}
+                                    onUpdateFormBody={onUpdateFormBody}
+                                    onUpdateFormLanguage={onUpdateFormLanguage}
                                 />
                             }
                         </div>

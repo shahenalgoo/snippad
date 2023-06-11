@@ -28,6 +28,9 @@ type NotebookContextType = {
     collection: Notebook[] | null;
     total: number;
 
+    defaultNotebookName: string;
+    notebookLimit: number;
+
     defaultNotebook: Notebook | null;
     activeNotebook: Notebook | null;
 
@@ -105,7 +108,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     // Fetch notebooks
     //
-    const fetchNotebooks = async () => {
+    const fetchNotebooks = async (skipActivation?: boolean) => {
 
         setIsLoading(true);
 
@@ -131,7 +134,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             setDefaultNotebook(res.documents[0] as Notebook);
 
             if (!cookies.get(cookieNotebookRef)) {
-                activateNotebook(res.documents[0] as Notebook);
+                if (!skipActivation) activateNotebook(res.documents[0] as Notebook);
             }
 
             let isFound = false;
@@ -141,14 +144,14 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 for (let i = 0; i < res.documents.length; i++) {
                     if (lastNotebookUsed.$id == res.documents[i].$id) {
                         isFound = true;
-                        activateNotebook(lastNotebookUsed);
+                        if (!skipActivation) activateNotebook(lastNotebookUsed);
                         break;
                     }
                 }
 
                 //If notebook saved in cookie not found, set default as active and save in cookie
                 if (!isFound) {
-                    activateNotebook(res.documents[0] as Notebook);
+                    if (!skipActivation) activateNotebook(res.documents[0] as Notebook);
                     cookies.set(cookieNotebookRef, defaultNotebook);
                 }
 
@@ -167,6 +170,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     // Set selected notebook as active
     //
     const activateNotebook = async (notebook: Notebook, backToWorkspace?: boolean) => {
+        console.log("active notebook is changing");
 
         setActiveNotebook(notebook);
 
@@ -224,7 +228,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 document_id: document_id,
                 data: {
                     title: title,
-                } as Notebook
+                } as Notebook,
+                onSuccess() {
+
+                }
             });
         }
     }
@@ -237,7 +244,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const deleteNotebook = (id: string) => {
         deleteDocument({ document_id: id })
 
-        // Switch active notebook to 'personal' If the active notebook has been deleted
+        // Switch active notebook to 'General' If the active notebook has been deleted
         if (activeNotebook?.$id === id && defaultNotebook?.$id) {
             activateNotebook(defaultNotebook);
         }
@@ -292,8 +299,12 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         //
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notebook}.documents`,
             res => {
-                // console.log("realtime triggered");
-                fetchNotebooks();
+
+                const payload: Notebook = res.payload as Notebook;
+
+                fetchNotebooks(true);
+                if (payload.$id == activeNotebook?.$id) {
+                }
             }
         );
 
@@ -315,6 +326,8 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         isLoading,
         collection: collection as Notebook[] | null,
         total,
+        defaultNotebookName,
+        notebookLimit,
         defaultNotebook,
         activeNotebook,
         activateNotebook,

@@ -11,7 +11,7 @@ import NotebookProvider from "@/components/wrappers/NotebookProvider";
 import VerifyUserState from "./verify";
 
 // Workspace components
-import HeaderMobile from "./(headers)/HeaderMobile";
+import Header from "./(headers)/Header";
 import Sidebar from "./(sidebar)/Sidebar";
 
 // Modals
@@ -30,13 +30,13 @@ export default function Layout({
                 <VerifyUserState>
 
                     {/* Mobile header */}
-                    <HeaderMobile />
+                    <Header />
 
                     {/* Workspace Sidebar */}
                     <Sidebar />
 
                     {/* Workspace Content */}
-                    <main className="relative !min-h-full h-full lg:ml-80 xl:ml-96 transition-all">
+                    <main className="relative !min-h-full h-full overflow-y-auto lg:ml-80 xl:ml-96 transition-all duration-300">
                         <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] md:mx-auto px-6">
                             {children}
                         </div>
