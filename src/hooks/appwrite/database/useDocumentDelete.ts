@@ -3,10 +3,16 @@
  * 
  */
 
+// React
 import { useState } from "react";
+
+// Typings
 import { IDeleteDocument } from "@/types/typings";
 
+// Appwrite
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
+
+// Misc
 import toast from "react-hot-toast";
 
 

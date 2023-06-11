@@ -32,7 +32,7 @@ import { toast } from "react-hot-toast";
 
 //Permanent Delete
 import DeletePermanently from "./DeletePermanently";
-import useUnsavedChangesWarning from "@/hooks/useUnsavedChangesWarning";
+import { useUnsavedChangesWarning } from "@/hooks";
 import { daysLeft } from "@/utils/dates-difference-in-days";
 
 

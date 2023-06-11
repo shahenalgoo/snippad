@@ -3,12 +3,18 @@
  * 
  */
 
+// React
 import { useState } from "react";
+
+// Typings
 import { ICreateDocument } from "@/types/typings";
 
+// Hooks
+import { useUser } from "@/context/SessionContext";
+
+// Appwrite
 import { databases, AppwriteIds } from "@/lib/appwrite-config";
 import { ID, Permission, Role } from "appwrite";
-import { useUser } from "@/context/SessionContext";
 
 
 /**

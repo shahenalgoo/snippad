@@ -17,7 +17,7 @@ import { Permission, Query, Role } from "appwrite";
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 import { NoteStatus, NoteType } from "@/types/enums";
-import useNoteExamples from "@/hooks/useNoteExamples";
+import { useNoteExamples } from "@/hooks";
 import { skip } from "node:test";
 
 
