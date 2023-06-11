@@ -1,7 +1,11 @@
-import * as React from 'react';
+// React
+import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes'
 
+// Components
 import Box from './Box';
 
 const NotificationVariants = cva(

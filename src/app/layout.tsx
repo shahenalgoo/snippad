@@ -1,8 +1,9 @@
 import './globals.scss';
 
 import SessionProvider from '@/components/wrappers/SessionProvider';
-import { Toaster } from '@/components';
 import BodyWrap from '@/components/wrappers/BodyWrap';
+
+import { Toaster } from '@/components';
 
 
 export const metadata = {

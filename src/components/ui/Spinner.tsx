@@ -1,3 +1,7 @@
+// React
+import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 

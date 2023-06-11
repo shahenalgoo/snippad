@@ -6,7 +6,7 @@
  */
 
 // Workspace components
-import CreateNew from "./[id]/CreateNew";
+import CreateNew from "./components/create-new/CreateNew";
 
 export default function Workspace() {
     return <CreateNew />

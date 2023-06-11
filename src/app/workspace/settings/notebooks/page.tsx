@@ -167,7 +167,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
                         onChange={onFieldChange}
                         disabled={!canEdit}
                         ref={ref}
-                        className="w-full h-14 outline-none disabled:bg-transparent"
+                        className="w-full h-14 outline-none bg-transparent disabled:bg-transparent"
                     />
 
                 </div>

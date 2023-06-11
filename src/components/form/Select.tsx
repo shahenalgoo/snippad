@@ -1,6 +1,11 @@
+// React
 import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
+
+// Icons
 import { TbChevronDown } from 'react-icons/tb';
 
 const SelectVariants = cva(

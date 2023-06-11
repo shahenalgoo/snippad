@@ -5,15 +5,21 @@
  * 
 */
 
+// React
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useUser } from "@/context/SessionContext";
+// Typings
 import { MagicForm, LoginForm, CreateAccountForm, RecoverForm, PasswordResetForm } from "@/types/typings";
 
+// Hooks
+import { useUser } from "@/context/SessionContext";
+
+// Appwrite
 import { account } from "@/lib/appwrite-config";
 import { ID } from "appwrite";
 
+// Toast
 import { toast } from "react-hot-toast";
 
 
@@ -36,8 +42,8 @@ export default function useAuth() {
     // Login Form State
     //
     const [loginForm, setLoginForm] = useState<LoginForm>({
-        email: 'email32@example.com',
-        password: '12345678'
+        email: '',
+        password: ''
     });
 
 
@@ -171,7 +177,6 @@ export default function useAuth() {
     };
 
 
-
     /**
      * RECOVER PASSWORD
      * 
@@ -196,7 +201,6 @@ export default function useAuth() {
             setIsLoading(false);
         }
     }
-
 
 
     /**
@@ -226,8 +230,6 @@ export default function useAuth() {
             setIsLoading(false);
         }
     }
-
-
 
 
     return {

@@ -1,26 +1,28 @@
+// React
 import React from 'react';
 import Link from 'next/link';
-import { VariantProps, cva } from 'class-variance-authority';
 
+// Utils
+import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const buttonVariants = cva(
-    'relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all outline-none focus:outline-none bg-white disabled:opacity-50 disabled:pointer-events-none',
+    'relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all outline-none focus:outline-none disabled:opacity-50 disabled:pointer-events-none',
     {
         variants: {
             variant: {
-                primary: 'bg-primary',
-                danger: 'bg-danger',
+                primary: 'bg-primary text-black',
+                danger: 'bg-danger text-black',
 
-                gray: 'bg-neutral-100 hover:bg-neutral-200',
+                gray: 'bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700',
                 black: 'bg-black hover:bg-neutral-950 text-white',
 
-                border: 'border border-border-light',
-                link: 'bg-transparent hover:bg-neutral-100 text-slate-500',
+                border: 'dark:bg-neutral-800 dark:hover:bg-neutral-700 border border-border-light dark:border-border-dark ',
+                link: 'bg-transparent hover:bg-neutral-100 text-neutral-500 dark:text-neutral-400',
 
                 github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
                 hamburger: '!w-12 !h-12 bg-white !px-0 drop-shadow-lg',
-                inverted: '!w-11 !h-11 !p-0 text-black bg-transparent'
+                inverted: '!w-11 !h-11 !p-0 bg-transparent text-black dark:text-white'
             },
             size: {
                 default: 'h-10 px-4 text-sm',

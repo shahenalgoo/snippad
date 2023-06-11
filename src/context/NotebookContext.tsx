@@ -4,21 +4,25 @@
  * 
  */
 
+// React
 import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
-import { Note, Notebook } from "@/types/typings";
-
-import { useUser } from "./SessionContext";
-import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
 import { useRouter } from "next/navigation";
 
+// Typings
+import { Note, Notebook } from "@/types/typings";
+
+// Hooks
+import { useUser } from "./SessionContext";
+import { useDocumentCreate, useDocumentUpdate, useDocumentDelete } from "@/hooks";
+import { useNoteExamples } from "@/hooks";
+
+// Appwrite
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
 
+// Misc
 import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
-import { NoteStatus, NoteType } from "@/types/enums";
-import useNoteExamples from "@/hooks/useNoteExamples";
-
 
 
 // Notebook typings
@@ -60,7 +64,7 @@ export const useNotebook = (): NotebookContextType => {
     const context = useContext(NotebookContext);
 
     if (!context) {
-        throw new Error('Hook must be used within an NotebookProvider');
+        throw new Error('Hook must be used within NotebookProvider context');
     }
 
     return context;
@@ -84,16 +88,19 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [allNotes, setAllNotes] = useState<Note[] | null>(null);
     const [isLoadingAllNotes, setIsLoadingAllNotes] = useState<boolean>(true);
 
+
     // Default Names/Amounts
     //
     const defaultNotebookName = "General Notebook";
     const cookieNotebookRef = "activeNotebookRef";
     const notebookLimit = 3;
 
+
     // Init Cookies
     //
     const cookies = new Cookies();
     let lastNotebookUsed: Notebook;
+
 
     // Hooks
     //
@@ -108,7 +115,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
     // Fetch notebooks
     //
-    const fetchNotebooks = async (skipActivation?: boolean) => {
+    const fetchNotebooks = async (skipActivation?: boolean, eventNotebook?: Notebook) => {
 
         setIsLoading(true);
 
@@ -130,11 +137,21 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
 
 
             if (res.total == 0) return;
+
+            // Skip notebook activation when realtime triggers.
+            if (skipActivation) {
+                // Update active notebook only if eventNotebook is the same as the one currently active.
+                if (activeNotebook && eventNotebook?.$id === activeNotebook?.$id) {
+                    activateNotebook(eventNotebook);
+                }
+                return;
+            }
+
             // The first document in the list is the default one: called ''General'
             setDefaultNotebook(res.documents[0] as Notebook);
 
             if (!cookies.get(cookieNotebookRef)) {
-                if (!skipActivation) activateNotebook(res.documents[0] as Notebook);
+                activateNotebook(res.documents[0] as Notebook);
             }
 
             let isFound = false;
@@ -144,14 +161,14 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 for (let i = 0; i < res.documents.length; i++) {
                     if (lastNotebookUsed.$id == res.documents[i].$id) {
                         isFound = true;
-                        if (!skipActivation) activateNotebook(lastNotebookUsed);
+                        activateNotebook(lastNotebookUsed);
                         break;
                     }
                 }
 
                 //If notebook saved in cookie not found, set default as active and save in cookie
                 if (!isFound) {
-                    if (!skipActivation) activateNotebook(res.documents[0] as Notebook);
+                    activateNotebook(res.documents[0] as Notebook);
                     cookies.set(cookieNotebookRef, defaultNotebook);
                 }
 
@@ -300,11 +317,9 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notebook}.documents`,
             res => {
 
-                const payload: Notebook = res.payload as Notebook;
+                const eventNotebook: Notebook = res.payload as Notebook;
 
-                fetchNotebooks(true);
-                if (payload.$id == activeNotebook?.$id) {
-                }
+                fetchNotebooks(true, eventNotebook);
             }
         );
 

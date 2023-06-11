@@ -9,11 +9,11 @@ import { useState } from "react";
 import { NoteStatus } from "@/types/enums";
 import { Note } from "@/types/typings";
 
-// Tutorial Notes
-import { tutorialNotes } from "@/data/tutorialNotes";
-
 // Hooks
 import useDocumentCreate from "./appwrite/database/useDocumentCreate";
+
+// Data
+import { tutorialNotes } from "@/data/tutorialNotes";
 
 // Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
@@ -34,6 +34,7 @@ export default function useNoteExamples() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { createDocument: createNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
+
     //Create Notes Function
     //
     const createNoteExamples = async (notebook_id: string) => {
@@ -42,7 +43,6 @@ export default function useNoteExamples() {
 
         // Looping through and creating the notes
         // Reverse looping so first note appears on top in the sidebar
-        //
         for (let i = tutorialNotes.length - 1; i >= 0; i--) {
             const noteData = tutorialNotes[i];
 
