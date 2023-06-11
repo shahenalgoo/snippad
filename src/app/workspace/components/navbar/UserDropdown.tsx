@@ -7,13 +7,16 @@ import { useRouter } from "next/navigation";
 
 // Hooks
 import { useUser } from "@/context/SessionContext";
-import { useAuth, useToggle } from "@/hooks";
+import { useAuth } from "@/hooks";
 
 // Components
 import { Dropdown, DropdownItem } from "@/components";
 
 // Icons
 import { TbUser } from "react-icons/tb";
+
+// Dark Mode
+import DarkModeSwitch from "./DarkModeSwitch";
 
 
 const UserDropdown: FC = () => {
@@ -23,28 +26,26 @@ const UserDropdown: FC = () => {
     const router = useRouter();
     const { logout } = useAuth();
     const { user, isLoading } = useUser();
-    const [dropdownActive, setDropdownActive] = useToggle();
 
     // Handle logout
     const onLogout = () => {
         logout();
-        setDropdownActive(!dropdownActive);
         router.push('/login');
     }
 
     return (
-        <div className="relative">
-            <button type="button" onClick={() => setDropdownActive(!dropdownActive)} className="overflow-hidden w-12 h-12 rounded-full flex items-center justify-center bg-neutral-100">
+        <div className="relative dropdown">
+            <button type="button" className="overflow-hidden w-12 h-12 rounded-full flex items-center justify-center bg-neutral-100 dark:bg-black">
                 <TbUser size={24} strokeWidth={1} />
             </button>
 
-            <Dropdown variant='right' className={dropdownActive ? 'block' : 'hidden'}>
-                <div className="mb-1 py-2 px-4 flex flex-col border-b border-neutral-200 cursor-default">
+            <Dropdown variant='right' className={`dropdown-menu pt-14`}>
+                <div className="mb-1 py-2 px-4 flex flex-col border-b border-neutral-200 dark:border-neutral-900 cursor-default">
 
                     {!isLoading &&
                         <>
                             {user?.name &&
-                                <span className="text-neutral-800 font-bold line-clamp-1">{user?.name}</span>
+                                <span className="text-neutral-800 dark:text-white font-bold line-clamp-1">{user?.name}</span>
                             }
                             <span className="text-sm text-neutral-500 line-clamp-1">{user?.email}</span>
                         </>
@@ -52,7 +53,11 @@ const UserDropdown: FC = () => {
                 </div>
 
                 <DropdownItem>
-                    <Link onClick={() => setDropdownActive(!dropdownActive)} href="/workspace/settings/notebooks" className="block py-2 px-4">Settings</Link>
+                    <DarkModeSwitch />
+                </DropdownItem>
+
+                <DropdownItem>
+                    <Link href="/workspace/settings/notebooks" className="block py-2 px-4">Settings</Link>
                 </DropdownItem>
 
                 <DropdownItem>

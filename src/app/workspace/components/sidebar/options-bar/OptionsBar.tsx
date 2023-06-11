@@ -47,7 +47,7 @@ const OptionsBar: FC<OptionsBarProps> = ({ noteFilter, setNoteFilter, setSortDat
 
 
     return (
-        <div className={`relative flex items-center gap-2 px-3 border-b border-t border-border-light ${!notebookDropdown ? 'z-40' : 'z-30'} ${!sortActive ? 'h-14' : 'h-auto'}`}>
+        <div className={`relative flex items-center gap-2 px-2 border-b border-t border-border-light dark:border-border-dark ${!notebookDropdown ? 'z-40' : 'z-30'} ${!sortActive ? 'h-16' : 'h-auto'}`}>
 
             {!sortActive &&
                 <Filters noteFilter={noteFilter} setNoteFilter={setNoteFilter} />

@@ -280,46 +280,50 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 setStatus={setStatus}
             />
 
-            {/* Notices on Archived and Trashed notes */}
-            <NoticeTrashAutodeletion note={note} />
-            <NoticeCannotEdit note={note} />
+            <div className="py-28">
+
+                {/* Notices on Archived and Trashed notes */}
+                <NoticeTrashAutodeletion note={note} />
+                <NoticeCannotEdit note={note} />
 
 
-            {/* Editor Fields */}
-            <div className="mb-1">
-                <TextareaAutosize
-                    id="title"
-                    placeholder="Title"
-                    defaultValue={note?.title}
-                    onChange={(e) => onUpdateFormTitle(e, "title")}
-                    className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed"
-                    disabled={note?.status !== NoteStatus.published}
+                {/* Editor Fields */}
+                <div className="mb-1">
+                    <TextareaAutosize
+                        id="title"
+                        placeholder="Title"
+                        defaultValue={note?.title}
+                        onChange={(e) => onUpdateFormTitle(e, "title")}
+                        className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
+                        disabled={note?.status !== NoteStatus.published}
+                    />
+                </div>
+
+                <div className="mb-10">
+                    <TextareaAutosize
+                        id="subtitle"
+                        placeholder="Subtitle"
+                        defaultValue={note?.subtitle}
+                        onChange={(e) => onUpdateFormTitle(e, "subtitle")}
+
+                        className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
+                        disabled={note?.status !== NoteStatus.published}
+                    />
+                </div>
+
+                <TextEditor
+                    note={note}
+                    onUpdateFormBody={onUpdateFormBody}
+                    noteStatus={status}
                 />
-            </div>
 
-            <div className="mb-10">
-                <TextareaAutosize
-                    id="subtitle"
-                    placeholder="Subtitle"
-                    defaultValue={note?.subtitle}
-                    onChange={(e) => onUpdateFormTitle(e, "subtitle")}
-
-                    className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed"
-                    disabled={note?.status !== NoteStatus.published}
+                <SnippetEditor
+                    note={note}
+                    onUpdateFormBody={onUpdateFormBody}
+                    onUpdateFormLanguage={onUpdateFormLanguage}
                 />
+
             </div>
-
-            <TextEditor
-                note={note}
-                onUpdateFormBody={onUpdateFormBody}
-                noteStatus={status}
-            />
-
-            <SnippetEditor
-                note={note}
-                onUpdateFormBody={onUpdateFormBody}
-                onUpdateFormLanguage={onUpdateFormLanguage}
-            />
 
         </>
 

@@ -46,6 +46,7 @@ body {
 }
 
 .dropdown:hover .dropdown-menu {
+    display: block;
     visibility: visible;
     opacity: 1;
 }
@@ -55,12 +56,17 @@ body {
     TEXT EDITOR - PROSE MIRROR
 //////////////////////////////////////////////////////////////*/
 
+// PLACEHOLDER
 .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
     color: #adb5bd;
     pointer-events: none;
     height: 0;
+}
+
+.dark .ProseMirror p.is-editor-empty:first-child::before {
+    color: #525252;
 }
 
 // HEADINGS

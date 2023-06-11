@@ -56,10 +56,9 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdat
         <div className="relave">
             <div className="relative">
                 <select
-                    id="countries"
                     defaultValue={note?.snippet_language}
                     onChange={onLanguageChange}
-                    className="block w-full mb-4 p-2.5 bg-neutral-50 border border-border-light focus:border-neutral-500 text-gray-900 font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
+                    className="block w-full mb-4 p-3 bg-neutral-50 dark:bg-neutral-800 border border-border-light dark:border-none focus:border-neutral-500 text-gray-900 dark:text-white font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
                     disabled={note?.status !== NoteStatus.published}
                 >
                     {languages.map((language: SnippetLanguage, i) => (
@@ -69,7 +68,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdat
                 <TbChevronDown size={18} className=" absolute top-0 right-0 m-[14px]" />
             </div>
 
-            <div data-color-mode="dark" className="overflow-hidden rounded-lg">
+            <div data-color-mode="dark" className="overflow-hidden rounded-lg bg-[#0f172a] dark:bg-neutral-800">
                 <CodeEditor
                     value={note?.body}
                     language={language}
@@ -78,7 +77,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdat
                     padding={32}
                     style={{
                         fontSize: 16,
-                        backgroundColor: "#0f172a",
+                        backgroundColor: "transparent",
                         fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
                     }}
                     disabled={note?.status !== NoteStatus.published}

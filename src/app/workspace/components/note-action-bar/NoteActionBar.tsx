@@ -103,7 +103,7 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
     return (
         <div className="fixed bottom-4 left-0 z-30 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
 
-            <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5">
+            <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5 dark:bg-white/5">
                 {note?.status === NoteStatus.published &&
                     <SaveNote
                         isSaving={isSaving}

@@ -38,7 +38,7 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
         ],
         editorProps: {
             attributes: {
-                class: "min-h-[200px] bg-white text-black text-xl leading-8 border-none outline-none disabled:cursor-not-allowed"
+                class: "min-h-[200px] text-xl leading-8 border-none outline-none disabled:cursor-not-allowed"
             }
         },
         onCreate: ({ editor }) => {

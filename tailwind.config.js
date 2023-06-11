@@ -5,6 +5,7 @@ module.exports = {
 		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
 		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
 	],
+	darkMode: 'class',
 	theme: {
 		extend: {
 			fontFamily: {
@@ -16,6 +17,7 @@ module.exports = {
 				'danger': '#fb7185',
 				'success': '#4ade80',
 				'border-light': '#e2e8f0',
+				'border-dark': '#262626',
 				// 'border-light': 'red'
 
 				// Star snippets/notes

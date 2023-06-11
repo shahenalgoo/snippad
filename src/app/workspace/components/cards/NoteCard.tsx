@@ -103,19 +103,18 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 {/* Icons */}
                 <div className="shrink-0 w-10 h-10 flex items-center">
                     {/* Default note icon */}
-                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-slate-600`} />}
+                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-neutral-600 dark:text-neutral-200`} />}
                     {/* Code snippet icons */}
                     {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
                 </div>
 
                 {/* Note title, subtitle or body */}
                 <div className="flex-1">
-                    <h5 className={`text-md font-semibold ${pathname === `/workspace/${note?.$id}` ? 'text-slate-600' : 'text-slate-500'} `}>
+                    <h5 className={`text-md font-semibold ${pathname === `/workspace/${note?.$id}` ? 'text-black dark:text-white' : 'text-neutral-500 dark:text-neutral-400'} `}>
                         <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
                     </h5>
-                    {note?.subtitle && <h6 className="text-xs text-slate-500 line-clamp-2">{note?.subtitle || 'No subtitle or note written yet'}</h6>}
-                    {/* {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{note?.body.substring(0, 120) || 'No subtitle or note written yet'}</p>} */}
-                    {!note?.subtitle && <p className="text-xs text-slate-500 line-clamp-2">{removeTags(note)}</p>}
+                    {note?.subtitle && <h6 className="text-xs font-semibold text-neutral-400 line-clamp-2">{note?.subtitle}</h6>}
+                    {!note?.subtitle && <p className="text-xs font-semibold text-neutral-500 line-clamp-2">{removeTags(note)}</p>}
                 </div>
 
                 {/* If starred */}

@@ -25,8 +25,7 @@ const TabsMenu: FC = () => {
                 <Button
                     key={i}
                     href={`/workspace/${item.url}`}
-                    variant={path === `/workspace/${item.url}` ? 'black' : 'link'}
-                    className="justify-start sm:w-full sm:h-12"
+                    className={`justify-start sm:w-full sm:h-12 bg-transparent dark:text-white ${path === `/workspace/${item.url}` ? 'bg-neutral-300 dark:bg-neutral-700' : ''}`}
                 >
                     {item.title}
                 </Button>

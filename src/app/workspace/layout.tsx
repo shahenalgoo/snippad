@@ -38,9 +38,7 @@ export default function Layout({
                     {/* Workspace Content */}
                     <main className="relative !min-h-full h-full overflow-y-auto lg:ml-80 xl:ml-96 transition-all duration-300">
                         <div className="!min-h-full h-full w-full md:w-[700px] xl:w-[800px] 2xl:w-[900px] md:mx-auto px-6">
-                            <div className="py-28">
-                                {children}
-                            </div>
+                            {children}
                         </div>
                     </main>
 

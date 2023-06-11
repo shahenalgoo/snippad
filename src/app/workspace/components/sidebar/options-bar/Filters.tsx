@@ -102,13 +102,13 @@ const Filters: FC<FiltersProps> = ({ noteFilter, setNoteFilter }) => {
 
     return (
         <div className="dropdown group flex-1 relative">
-            <Button variant='border' className="w-full justify-between group-hover:bg-neutral-100">
+            <Button variant='border' className="w-full justify-between group-hover:bg-neutral-100 dark:group-hover:bg-neutral-700">
                 <span className="capitalize">
                     {noteFilter} ({activeFilterTotal()})</span>
                 <TbChevronDown />
             </Button>
 
-            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[110%] w-[215px] p-1 rounded-lg transition-all bg-white border border-neutral-300 shadow-md`}>
+            <div className={`dropdown-menu overflow-hidden absolute invisible opacity-0 top-[110%] w-[215px] p-1 rounded-lg transition-all bg-white dark:bg-black border border-neutral-300 dark:border-neutral-800 shadow-md`}>
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.all)} icon="TbLayoutList" title="All" total={allTotal} />
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.starred)} icon="TbStar" title="Starred" total={starredTotal} />
                 <FilterButton onClick={() => setNoteFilter(NoteFilter.archived)} icon="TbArchive" title="Archived" total={archivedTotal} />
@@ -139,7 +139,7 @@ const FilterButton: FC<FilterButtonProps> = ({ onClick, icon, title, total }) =>
     }
 
     return (
-        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100">
+        <button onClick={onClick} className="flex items-center w-full py-2 px-3 rounded-md transition-all bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-900">
             <DynamicIcon icon={icon} className="mr-3" size={18} strokeWidth={1} />
             <span className="font-semibold">{title}</span>
             &nbsp;
