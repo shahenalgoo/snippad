@@ -1,13 +1,15 @@
-import { Button, Modal } from "@/components";
-import { Icon } from "next/dist/lib/metadata/types/metadata-types";
-import { FC, ReactNode } from "react";
-import { IconBase, IconType } from "react-icons/lib";
-import { TbTrashX } from "react-icons/tb";
-
 /**
- * CONFIRMATION MODAL
+ * General confirmation modal
  * 
  */
+
+// React
+import { FC, ReactNode } from "react";
+
+// Components
+import { Button, Modal } from "@/components";
+
+
 interface ConfirmationModalProps {
     confirmationMessage: ReactNode;
     confirmationButton: ReactNode;
@@ -21,7 +23,9 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
     confirmationButton,
     modalButton,
     modalActive,
-    setModalActive }) => {
+    setModalActive
+}) => {
+
     return (
         <>
 

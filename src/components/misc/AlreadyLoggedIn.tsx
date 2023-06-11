@@ -1,10 +1,20 @@
+/**
+ * In case a user is already logged in
+ * 
+ */
+
 'use client';
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useAuth } from "@/hooks";
 
+// Components
 import Button from "../ui/Button";
+
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
+
 
 const AlreadyLoggedIn = () => {
 
@@ -21,10 +31,8 @@ const AlreadyLoggedIn = () => {
 
             <div className="flex justify-center gap-2">
                 <Button onClick={logout} variant='gray'>Logout</Button>
-                {/* <Button href="/workspace">
-                    Go to Workspace
-                    <TbArrowNarrowRight className="ml-2" />
-                </Button> */}
+
+                {/* Used anchor tag insteaf of Link as a quickfix for useEffects not firing when 're-routing' to workspace */}
                 <a href="/workspace" className="relative inline-flex justify-center items-center shrink-0 font-sans font-semibold transition-all outline-none focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-black hover:bg-neutral-950 text-white h-10 px-4 text-sm rounded-lg">
                     Go to Workspace
                     <TbArrowNarrowRight className="ml-2" />

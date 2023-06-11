@@ -1,3 +1,9 @@
+/**
+ * Just a separator
+ * ~ used mostly in auth pages
+ * 
+ */
+
 const Separator = () => {
     return (
         <div className="w-full flex item-center justify-center my-8">

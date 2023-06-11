@@ -1,7 +1,9 @@
+// React
 import React from 'react';
 import Link from 'next/link';
-import { VariantProps, cva } from 'class-variance-authority';
 
+// Utils
+import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
 const buttonVariants = cva(
