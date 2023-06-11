@@ -9,7 +9,7 @@ import { NoteFilter } from "@/types/enums";
 
 // Utils
 import { setGlobalState, useGlobalState } from "@/utils/global-states";
-import NoteCard from "../components/cards/NoteCard";
+import NoteCard from "../cards/NoteCard";
 
 
 interface NoteSwitcherProps {
