@@ -60,14 +60,14 @@ const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, setResults, onCl
     }, [searchQuery, setResults]);
 
     return (
-        <div className="flex items-center justify-between px-2 border-b border-border-light">
+        <div className="flex items-center justify-between px-2 border-b border-border-light dark:border-border-dark">
             <form onSubmit={onSubmit} className="flex-1">
                 <input
                     type="text"
                     ref={ref}
                     onChange={onChange}
                     placeholder="Type and hit enter to search..."
-                    className="w-full h-14 px-4 outline-none text-lg font-semibold placeholder:text-sm placeholder:font-normal"
+                    className="w-full h-14 px-4 outline-none text-lg font-semibold placeholder:text-sm placeholder:font-normal bg-transparent"
                 />
             </form>
 
@@ -194,10 +194,10 @@ const SearchModal: FC<SearchModalProps> = () => {
                 <div className="w-full h-full flex flex-col justify-center items-center">
                     {!isLoading &&
                         <>
-                            <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-slate-50 text-slate-300">
+                            <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-neutral-50 dark:bg-neutral-800 text-neutral-300 dark:text-neutral-700 dark:opacity-50">
                                 <TbSearch size={50} strokeWidth={0.5} />
                             </div>
-                            <span className="text-slate-300 font-light">Search for notes and code snippets</span>
+                            <span className="text-neutral-400 dark:text-neutral-500 font-light">Search for notes and code snippets</span>
                         </>
                     }
 

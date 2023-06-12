@@ -13,7 +13,7 @@ const SelectVariants = cva(
     {
         variants: {
             variant: {
-                default: 'bg-transparent border border-border-light focus:border-neutral-500 text-gray-900',
+                default: 'bg-transparent dark:bg-neutral-800 border border-border-light dark:border-border-dark focus:border-neutral-500 text-neutral-900 dark:text-white',
             },
             size: {
                 default: 'h-10'

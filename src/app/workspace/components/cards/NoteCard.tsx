@@ -71,7 +71,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 return "TbCoffee"
                 break;
             case 'json':
-                color = "text-json";
+                color = "text-json dark:text-white";
                 return "TbBraces"
                 break;
             case 'kt':
@@ -98,7 +98,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
 
     return (
         <>
-            <Link href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg py-4 px-4 border border-transparent ${!asSearchResult && pathname === `/workspace/${note?.$id}` && '!border-primary'} ${asSearchResult && '!border-neutral-200 hover:bg-neutral-50'} `}>
+            <Link href={`/workspace/${note?.$id}`} title={note?.title} className={`flex items-center w-full rounded-lg py-4 px-4 border border-transparent ${!asSearchResult && pathname === `/workspace/${note?.$id}` && '!border-primary'} ${asSearchResult && '!border-neutral-200 dark:!border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800'} `}>
 
                 {/* Icons */}
                 <div className="shrink-0 w-10 h-10 flex items-center">
@@ -110,7 +110,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
 
                 {/* Note title, subtitle or body */}
                 <div className="flex-1">
-                    <h5 className={`text-md font-semibold ${pathname === `/workspace/${note?.$id}` ? 'text-black dark:text-white' : 'text-neutral-500 dark:text-neutral-400'} `}>
+                    <h5 className={`text-md font-semibold ${pathname === `/workspace/${note?.$id}` ? 'text-black dark:text-white' : 'text-neutral-500 dark:text-neutral-200'} `}>
                         <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
                     </h5>
                     {note?.subtitle && <h6 className="text-xs font-semibold text-neutral-400 line-clamp-2">{note?.subtitle}</h6>}

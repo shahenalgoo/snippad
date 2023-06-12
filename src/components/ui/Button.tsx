@@ -18,11 +18,11 @@ const buttonVariants = cva(
                 black: 'bg-black hover:bg-neutral-950 text-white',
 
                 border: 'dark:bg-neutral-800 dark:hover:bg-neutral-700 border border-border-light dark:border-border-dark ',
-                link: 'bg-transparent hover:bg-neutral-100 text-neutral-500 dark:text-neutral-400',
+                link: 'bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400',
 
-                github: 'bg-slate-800 hover:bg-slate-900 text-white font-medium',
                 hamburger: '!w-12 !h-12 bg-white !px-0 drop-shadow-lg',
-                inverted: '!w-11 !h-11 !p-0 bg-transparent text-black dark:text-white'
+                inverted: '!w-11 !h-11 !p-0 bg-transparent text-black dark:text-white',
+                github: 'bg-slate-800 hover:bg-slate-700 text-white font-medium'
             },
             size: {
                 default: 'h-10 px-4 text-sm',
