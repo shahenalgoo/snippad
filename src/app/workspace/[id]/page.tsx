@@ -36,6 +36,7 @@ import { toast } from "react-hot-toast";
 // Workspace components
 import NoticeTrashAutodeletion from "../components/notices/NoticeTrashAutodeletion";
 import NoticeCannotEdit from "../components/notices/NoticeCannotEdit";
+import useCTRLS from "@/hooks/useCTRLS";
 
 
 // Type Definitions
@@ -58,6 +59,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [status, setStatus] = useState<NoteStatus | null>(null);
     const [hasTextChanged, setHasTextChanged] = useState<boolean>(false);
 
+
+    // Refs
+    //
     const beforeSave = useRef<NoteFormData>({
         title: '',
         subtitle: '',
@@ -130,18 +134,18 @@ const NotePage = ({ params: { id } }: PageProps) => {
     async function saveNote(manualSave?: boolean) {
         if (isSaving) return;
 
-        // Prevent save attempt when permanently deleting a note since saveNote triggers on unmount
+        // Allow save only on published notes
         if (formData.current.status != NoteStatus.published) return;
 
-        setIsSaving(true);
 
         // If no change happened, no need to save
         if (!noteChanged()) {
-            setIsSaving(false);
             return manualSave ? toast.error('No changes found') : null;
         }
 
-        updateDocument({
+        setIsSaving(true);
+
+        await updateDocument({
             document_id: id,
             data: {
                 title: formData?.current.title,
@@ -151,7 +155,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
             } as Note,
             onSuccess() {
-                // Updating before save data
+                // Updating 'before save' data to updated data
                 beforeSave.current.title = formData.current.title;
                 beforeSave.current.subtitle = formData.current.subtitle;
                 beforeSave.current.body = formData.current.body;
@@ -162,13 +166,14 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 noteChanged();
 
                 if (manualSave) toast.success("Note saved!");
-                setIsSaving(false);
             },
             onError() {
                 toast.error("Unable to save note");
-                setIsSaving(false);
             }
         });
+
+        setIsSaving(false);
+
     }
 
 
@@ -186,72 +191,13 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
     }
 
-
     // Adding before unloading warning event, in case there are unsaved changes.
     //
     useUnsavedChangesWarning(hasTextChanged && note?.status === NoteStatus.published);
 
-
-    // Update Form Titles, and detect text state changes
+    // Enabling saving with CTRL+S, also saves on unmount resulting into the auto-save feature
     //
-    const onUpdateFormTitle = (e: ChangeEvent<HTMLTextAreaElement>, target: string) => {
-        switch (target) {
-            case "title":
-                formData.current.title = e.target.value;
-                break;
-            case "subtitle":
-                formData.current.subtitle = e.target.value;
-                break;
-            default:
-                break;
-        }
-
-        setHasTextChanged(noteChanged() ? true : false)
-    }
-
-
-    // Update Form Body, and detect text state changes
-    //
-    const onUpdateFormBody = (newBody: string) => {
-        formData.current.body = newBody;
-        setHasTextChanged(noteChanged() ? true : false)
-    }
-
-
-    // Update Form Code Language, and detect text state changes
-    //
-    const onUpdateFormLanguage = (newLanguage: string) => {
-        formData.current.snippet_language = newLanguage;
-        setHasTextChanged(noteChanged() ? true : false)
-    }
-
-
-    // Keyboard Events
-    //
-    const handleKeyDown = useCallback((e: any) => {
-        // Save Note - Ctrl + s
-        if ((e.ctrlKey && e.key === "S" || e.ctrlKey && e.key === "s")) {
-            e.preventDefault();
-            saveNote(true);
-        }
-    }, []);
-
-
-    // Use effect - Save notes
-    //
-    useEffect(() => {
-
-        // Register keydown events
-        window.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            // De-register keydown events
-            window.removeEventListener("keydown", handleKeyDown);
-
-            // Save note when leaving (unmounts)
-            saveNote();
-        };
-    }, [handleKeyDown]);
+    useCTRLS(saveNote);
 
 
     // Use effect - Fetch notes
@@ -293,7 +239,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         id="title"
                         placeholder="Title"
                         defaultValue={note?.title}
-                        onChange={(e) => onUpdateFormTitle(e, "title")}
+                        onChange={(e) => { formData.current.title = e.target.value; setHasTextChanged(noteChanged() ? true : false); }}
                         className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
                         disabled={note?.status !== NoteStatus.published}
                     />
@@ -304,8 +250,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         id="subtitle"
                         placeholder="Subtitle"
                         defaultValue={note?.subtitle}
-                        onChange={(e) => onUpdateFormTitle(e, "subtitle")}
-
+                        onChange={(e) => { formData.current.subtitle = e.target.value; setHasTextChanged(noteChanged() ? true : false); }}
                         className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
                         disabled={note?.status !== NoteStatus.published}
                     />
@@ -313,14 +258,14 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                 <TextEditor
                     note={note}
-                    onUpdateFormBody={onUpdateFormBody}
+                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
                     noteStatus={status}
                 />
 
                 <SnippetEditor
                     note={note}
-                    onUpdateFormBody={onUpdateFormBody}
-                    onUpdateFormLanguage={onUpdateFormLanguage}
+                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
+                    onUpdateFormLanguage={(newLanguage: string) => { formData.current.snippet_language = newLanguage; setHasTextChanged(noteChanged() ? true : false) }}
                 />
 
             </div>
