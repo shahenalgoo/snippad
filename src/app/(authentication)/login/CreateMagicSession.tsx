@@ -5,13 +5,17 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Hooks
 import { useAuth } from "@/hooks";
 import { useUser } from "@/context/SessionContext";
 
+// Components
 import { Button, InputField } from "@/components";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
 
@@ -34,8 +38,7 @@ const CreateMagicSession: FC = () => {
     //
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // await login(loginForm.email, loginForm.password);
-        await magicLogin(magicForm.email, "http://localhost:3000/confirm-magic-session")
+        await magicLogin(magicForm.email, `${process.env.NEXT_PUBLIC_APP_URL}/confirm-magic-session`)
     }
 
 

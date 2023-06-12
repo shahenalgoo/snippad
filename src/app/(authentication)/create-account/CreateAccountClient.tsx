@@ -5,16 +5,21 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useAuth } from "@/hooks";
 
+// Components
 import { Box, Button, InputField, InputLabel } from "@/components";
 import AlreadyLoggedIn from "@/components/misc/AlreadyLoggedIn";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
+// Misc
 import toast from "react-hot-toast";
 
 

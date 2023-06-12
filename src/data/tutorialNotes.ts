@@ -1,3 +1,10 @@
+/**
+ * New user's first time default notes
+ * Used as tutorial to demo features
+ * 
+ */
+
+// Typings
 import { NoteType } from "@/types/enums";
 
 export const tutorialNotes = [

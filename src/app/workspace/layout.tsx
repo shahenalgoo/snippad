@@ -11,11 +11,11 @@ import NotebookProvider from "@/components/wrappers/NotebookProvider";
 import VerifyUserState from "./verify";
 
 // Workspace components
-import Header from "./(headers)/Header";
-import Sidebar from "./(sidebar)/Sidebar";
+import Navbar from "./components/navbar/Navbar";
+import Sidebar from "./components/sidebar/Sidebar";
 
 // Modals
-import SearchModal from "./(search-modal)/SearchModal";
+import SearchModal from "./components/search/SearchModal";
 
 
 export default function Layout({
@@ -30,7 +30,7 @@ export default function Layout({
                 <VerifyUserState>
 
                     {/* Mobile header */}
-                    <Header />
+                    <Navbar />
 
                     {/* Workspace Sidebar */}
                     <Sidebar />

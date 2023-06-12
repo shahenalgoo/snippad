@@ -3,9 +3,13 @@
  * 
  */
 
+// React
 import { useState, useEffect, useCallback } from "react";
+
+// Typings
 import { IFetchCollection } from "@/types/typings";
 
+// Appwrite
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Models } from "appwrite";
 

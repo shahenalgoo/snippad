@@ -8,11 +8,7 @@ import { usePathname } from "next/navigation"
 import { Box, Button } from "@/components";
 
 
-interface TabsMenuProps {
-
-}
-
-const TabsMenu: FC<TabsMenuProps> = () => {
+const TabsMenu: FC = () => {
 
     // Pathname
     const path = usePathname();
@@ -24,13 +20,12 @@ const TabsMenu: FC<TabsMenuProps> = () => {
     ]
 
     return (
-        <Box className="shrink-0 flex gap-2 sm:flex-col sm:w-56 h-fit mb-6 sm:mb-0">
+        <Box space='sm' className="shrink-0 flex gap-2 sm:flex-col sm:w-56 h-fit mb-6 sm:mb-0">
             {menuItems.map((item, i) => (
                 <Button
                     key={i}
                     href={`/workspace/${item.url}`}
-                    variant={path === `/workspace/${item.url}` ? 'black' : 'link'}
-                    className="justify-start sm:w-full sm:h-12"
+                    className={`justify-start sm:w-full sm:h-12 bg-transparent dark:text-white ${path === `/workspace/${item.url}` ? 'bg-neutral-300 dark:bg-neutral-700' : ''}`}
                 >
                     {item.title}
                 </Button>

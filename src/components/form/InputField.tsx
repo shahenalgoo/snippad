@@ -1,4 +1,7 @@
-import * as React from 'react';
+// React
+import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
@@ -7,7 +10,7 @@ const inputFieldVariants = cva(
     {
         variants: {
             variant: {
-                default: 'placeholder-slate-400 bg-slate-100 border-slate-200 focus:border-slate-400',
+                default: 'placeholder-neutral-400 bg-neutral-100 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 focus:border-neutral-400 dark:focus:border-neutral-600',
             },
             size: {
                 default: 'h-10'

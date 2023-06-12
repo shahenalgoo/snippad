@@ -1,5 +1,5 @@
 /**
- * A main file to configure Appwrite SDK
+ * Appwrite Client SDK Configuration
  * 
  */
 
@@ -40,6 +40,7 @@ export const account = new Account(client);
  * 
  */
 export const databases = new Databases(client);
+
 
 /**
  * Initiate Bucket

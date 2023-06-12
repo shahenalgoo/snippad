@@ -1,6 +1,12 @@
+/**
+ * Handle global states
+ * 
+ */
+
 import { createGlobalState } from "react-hooks-global-state";
 
 const { setGlobalState, useGlobalState } = createGlobalState({
+    darkMode: true as boolean,
     sidebar: false as boolean,
     notebookSwitcher: false as boolean,
     searchModal: false as boolean

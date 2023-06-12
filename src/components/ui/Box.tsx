@@ -1,4 +1,7 @@
+//React
 import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
@@ -7,9 +10,9 @@ const boxVariants = cva(
     {
         variants: {
             variant: {
-                solid: 'bg-neutral-100',
-                border: 'border border-border-light',
-                white: 'bg-white'
+                solid: 'bg-neutral-100 dark:bg-neutral-800',
+                border: 'border border-border-light dark:border-border-dark',
+                white: 'bg-white dark:bg-neutral-900'
             },
             rounded: {
                 default: 'rounded-lg',

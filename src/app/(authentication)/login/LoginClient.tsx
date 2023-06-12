@@ -6,16 +6,21 @@
 
 'use client';
 
+// React
 import { FC } from "react";
 
+// Hooks
 import { useUser } from "@/context/SessionContext";
 import { useToggle } from "@/hooks";
 
+// Components
 import { Box, Button, Separator } from "@/components";
 import AlreadyLoggedIn from "@/components/misc/AlreadyLoggedIn";
 
+// Icons
 import { TbArrowNarrowRight } from "react-icons/tb";
 
+// Auth Components
 import CreateOauthSession from "./CreateOauthSession";
 import CreateMagicSession from "./CreateMagicSession";
 import CreateEmailSession from "./CreateEmailSession";
@@ -43,12 +48,12 @@ const LoginClient: FC = () => {
 
                     <Separator />
 
-                    <div className="p-4 rounded-xl border border-slate-200">
+                    <Box variant='border'>
                         <h4 className="text-md font-bold">Passwordless Login</h4>
                         <p className="mb-4 text-sm">Enter your email address and check your inbox.</p>
 
                         <CreateMagicSession />
-                    </div>
+                    </Box>
 
                     <Separator />
                 </>

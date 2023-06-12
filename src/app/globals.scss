@@ -1,6 +1,13 @@
+/*//////////////////////////////////////////////////////////////
+    FONTS
+//////////////////////////////////////////////////////////////*/
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
 
+
+/*//////////////////////////////////////////////////////////////
+    TAILWIND / GLOBALS
+//////////////////////////////////////////////////////////////*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,6 +17,55 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+
+/*//////////////////////////////////////////////////////////////
+    SCROLLBARS
+//////////////////////////////////////////////////////////////*/
+*::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-notes-overflow::-webkit-scrollbar {
+    width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #f5f5f5;
+}
+
+// Dark version
+.dark *::-webkit-scrollbar-track {
+    background: #262626;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+    background-color: #404040;
+}
+
+
+/*//////////////////////////////////////////////////////////////
+    DROPDOWN
+//////////////////////////////////////////////////////////////*/
+.dropdown {
+    position: relative;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/*//////////////////////////////////////////////////////////////
+    TEXT EDITOR - PROSE MIRROR
+//////////////////////////////////////////////////////////////*/
+
+// PLACEHOLDER
 .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -18,44 +74,8 @@ body {
     height: 0;
 }
 
-
-
-/* DROPDOWN */
-.dropdown {
-    position: relative;
-}
-
-.dropdown:hover .dropdown-menu {
-    visibility: visible;
-    opacity: 1;
-}
-
-
-
-
-*::-webkit-scrollbar {
-    width: 10px;
-}
-
-.sidebar-notes-overflow::-webkit-scrollbar {
-    width: 4px;
-}
-
-.sidebar-notes-overflow::-webkit-scrollbar-track {
-    background: #fff;
-}
-
-.sidebar-notes-overflow::-webkit-scrollbar-thumb {
-    background-color: #e2e8f0;
-}
-
-
-/*//////////////////////////////////////////////////////////////
-    TEXT EDITOR - PROSE MIRROR
-//////////////////////////////////////////////////////////////*/
-
-#tippy-2 {
-    z-index: 888 !important;
+.dark .ProseMirror p.is-editor-empty:first-child::before {
+    color: #525252;
 }
 
 // HEADINGS
@@ -98,8 +118,8 @@ body {
 
     ul,
     ol {
-        margin-top: 32px;
-        margin-bottom: 32px;
+        margin-top: 16px;
+        margin-bottom: 16px;
         margin-left: 48px;
     }
 
@@ -112,7 +132,7 @@ body {
     }
 
     li {
-        margin-bottom: 16px;
+        margin-bottom: 4px;
 
         &:last-child {
             margin-bottom: 0;

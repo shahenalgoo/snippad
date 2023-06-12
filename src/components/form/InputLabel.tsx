@@ -1,4 +1,7 @@
-import * as React from 'react';
+// React
+import React from 'react';
+
+// Utils
 import { VariantProps, cva } from 'class-variance-authority';
 import { overridableClasses } from '@/utils/override-classes';
 
@@ -7,7 +10,7 @@ const inputLabelVariants = cva(
     {
         variants: {
             variant: {
-                default: 'text-black font-medium',
+                default: 'text-black dark:text-neutral-500 font-medium',
                 lighter: 'text-slate-300'
             }
         },
