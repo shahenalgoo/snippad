@@ -25,8 +25,13 @@ const BodyWrap: FC<BodyWrapProps> = ({ children }) => {
 
     const isDarkMode = useCallback(() => {
         const isDarkMode = localStorage.getItem('dark-mode');
-        let boolValue = (isDarkMode === "true");
-        setGlobalState("darkMode", boolValue)
+
+        if (isDarkMode === null) {
+            localStorage.setItem('dark-mode', "true");
+        } else {
+            let boolValue = (isDarkMode === "true");
+            setGlobalState("darkMode", boolValue)
+        }
     }, []);
 
 
