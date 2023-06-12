@@ -57,7 +57,8 @@ const ConfirmMagicClient: FC = () => {
             toast.dismiss();
             toast.success('You are logged in!');
 
-            router.push('/workspace');
+            // router.push('/workspace');
+            window.location.replace("/workspace")
         } catch (error) {
             setIsLoggedIn(false);
 

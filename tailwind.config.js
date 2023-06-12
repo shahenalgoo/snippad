@@ -16,7 +16,7 @@ module.exports = {
 				'primary': '#2dd4bf',
 				'danger': '#fb7185',
 				'success': '#4ade80',
-				'border-light': '#e2e8f0',
+				'border-light': '#e5e5e5',
 				'border-dark': '#262626',
 				// 'border-light': 'red'
 
@@ -30,7 +30,7 @@ module.exports = {
 				'ts': '#007acc',
 				'py': '#4b8bbe',
 				'php': '#474a8a',
-				'cs': '#682876',
+				'cs': '#960ab5',
 				'cpp': '#00549d',
 				'java': '#1565c0',
 				'json': '#000',

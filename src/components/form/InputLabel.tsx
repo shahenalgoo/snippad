@@ -10,7 +10,7 @@ const inputLabelVariants = cva(
     {
         variants: {
             variant: {
-                default: 'text-black font-medium',
+                default: 'text-black dark:text-neutral-500 font-medium',
                 lighter: 'text-slate-300'
             }
         },

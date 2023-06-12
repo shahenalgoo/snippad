@@ -10,7 +10,7 @@ const spinnerVariants = cva(
     {
         variants: {
             variant: {
-                default: 'fill-black text-neutral-200',
+                default: 'fill-black text-neutral-200 dark:fill-white dark:text-neutral-800',
                 button: 'fill-black text-black text-opacity-20',
             },
             size: {

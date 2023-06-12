@@ -8,7 +8,7 @@ export default function Layout({
 }) {
 
     return (
-        <div className="py-10">
+        <div className="pt-20 pb-10">
             <Title type="h1">Settings</Title>
 
             <div className="sm:flex">

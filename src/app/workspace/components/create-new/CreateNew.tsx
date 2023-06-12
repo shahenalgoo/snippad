@@ -101,7 +101,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                 {/* Create First Notebook */}
                 {!isLoadingNotebook && notebookCount === 0 &&
                     <>
-                        <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-slate-100 text-slate-500">
+                        <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-slate-100 text-neutral-500">
                             <TbHandRock size={50} strokeWidth={0.5} />
                         </div>
                         <h1 className="mb-1 text-2xl font-bold">Welcome to Snippad!</h1>
@@ -118,17 +118,16 @@ const CreateNew: FC<CreateNewProps> = () => {
                 {/* Create new notes */}
                 {allNotes && allNotes.length < notesLimit &&
                     <>
-                        <h1 className="mb-8 text-xl text-slate-400">Create New</h1>
+                        <h1 className="mb-8 text-xl text-black dark:text-white font-semibold">Create New</h1>
 
                         <div className="flex gap-6">
-                            <CreateNewButton className="bg-emerald-100" onClick={() => createNote(NoteType.note)}>
-                                <TbNotes size={30} strokeWidth={1} />
-                                Note
-                            </CreateNewButton>
-
-                            <CreateNewButton className="bg-blue-100" onClick={() => createNote(NoteType.code)}>
+                            <CreateNewButton className="bg-blue-900" onClick={() => createNote(NoteType.code)}>
                                 <TbCode size={30} strokeWidth={1} />
                                 Code
+                            </CreateNewButton>
+                            <CreateNewButton className="bg-emerald-800" onClick={() => createNote(NoteType.note)}>
+                                <TbNotes size={30} strokeWidth={1} />
+                                Note
                             </CreateNewButton>
                         </div>
                     </>
@@ -155,7 +154,7 @@ interface CreateNewButtonProps {
 
 const CreateNewButton: FC<CreateNewButtonProps> = ({ className, onClick, children }) => {
     return (
-        <button onClick={onClick} className={`flex flex-col justify-center items-center gap-1 rounded-2xl w-20 h-24 ${className}`}>
+        <button onClick={onClick} className={`flex flex-col justify-center items-center gap-1 rounded-2xl w-20 h-24 text-white ${className}`}>
             {children}
         </button>
     );

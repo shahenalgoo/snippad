@@ -48,12 +48,12 @@ const LoginClient: FC = () => {
 
                     <Separator />
 
-                    <div className="p-4 rounded-xl border border-slate-200">
+                    <Box variant='border'>
                         <h4 className="text-md font-bold">Passwordless Login</h4>
                         <p className="mb-4 text-sm">Enter your email address and check your inbox.</p>
 
                         <CreateMagicSession />
-                    </div>
+                    </Box>
 
                     <Separator />
                 </>
