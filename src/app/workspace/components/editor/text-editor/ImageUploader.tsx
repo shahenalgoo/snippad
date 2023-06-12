@@ -106,7 +106,7 @@ const ImageUploader: FC<ImageUploaderProps> = ({ uploaderActive, setUploaderActi
                 >
 
                     <div className="p-4">
-                        <input id="uploader" type="file" accept="image/png, image/jpeg" className="block w-full py-2 px-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" />
+                        <input id="uploader" type="file" accept="image/png, image/jpeg" className="block w-full py-2 px-2 text-sm text-neutral-900 dark:text-neutral-300 bg-gray-50 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-800 rounded-lg cursor-pointer " />
 
                         <div className="mt-4 flex justify-end">
                             <Button type="button" onClick={onAddImage}>Upload Image</Button>

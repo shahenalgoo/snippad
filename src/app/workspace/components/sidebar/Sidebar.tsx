@@ -160,8 +160,13 @@ const Sidebar = () => {
                 noteFilter={noteFilter}
                 setNoteFilter={setNoteFilter}
 
+                sortDate={sortDate}
                 setSortDate={setSortDate}
+
+                sortType={sortType}
                 setSortType={setSortType}
+
+                sortLanguage={sortLanguage}
                 setSortLanguage={setSortLanguage}
             />
 

@@ -58,7 +58,7 @@ const SnippetEditor: FC<SnippetEditorProps> = ({ note, onUpdateFormBody, onUpdat
                 <select
                     defaultValue={note?.snippet_language}
                     onChange={onLanguageChange}
-                    className="block w-full mb-4 p-3 bg-neutral-50 dark:bg-neutral-800 border border-border-light dark:border-none focus:border-neutral-500 text-gray-900 dark:text-white font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
+                    className="block w-full mb-4 p-3 bg-neutral-50 dark:bg-neutral-800 border border-border-light dark:border-neutral-800 focus:border-neutral-500 text-gray-900 dark:text-white font-sans rounded-lg outline-none appearance-none disabled:cursor-not-allowed"
                     disabled={note?.status !== NoteStatus.published}
                 >
                     {languages.map((language: SnippetLanguage, i) => (

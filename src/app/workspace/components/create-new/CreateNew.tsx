@@ -101,7 +101,7 @@ const CreateNew: FC<CreateNewProps> = () => {
                 {/* Create First Notebook */}
                 {!isLoadingNotebook && notebookCount === 0 &&
                     <>
-                        <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-slate-100 text-neutral-500">
+                        <div className="mb-4 w-20 h-20 rounded-full flex justify-center items-center bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600">
                             <TbHandRock size={50} strokeWidth={0.5} />
                         </div>
                         <h1 className="mb-1 text-2xl font-bold">Welcome to Snippad!</h1>
