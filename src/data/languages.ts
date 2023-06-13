@@ -1,8 +1,3 @@
-/**
- * Code Editor supporte programming languages
- * ~ Check: https://github.com/wooorm/refractor#data for more language support
- */
-
 export const languages = [
     {
         name: 'HTML',
@@ -14,15 +9,15 @@ export const languages = [
     },
     {
         name: 'Javascript',
-        alias: 'js'
+        alias: 'javascript'
     },
     {
         name: 'Typescript',
-        alias: 'ts'
+        alias: 'typescript'
     },
     {
         name: 'Python',
-        alias: 'py'
+        alias: 'python'
     },
     {
         name: 'PHP',
@@ -30,7 +25,7 @@ export const languages = [
     },
     {
         name: 'C#',
-        alias: 'cs'
+        alias: 'csharp'
     },
     {
         name: 'C++',
@@ -50,7 +45,7 @@ export const languages = [
     },
     {
         name: 'Objective C',
-        alias: 'objc'
+        alias: 'objectiveC'
     },
     {
         name: 'Rust',
@@ -58,7 +53,7 @@ export const languages = [
     },
     {
         name: 'Kotlin',
-        alias: 'kt'
+        alias: 'kotlin'
     },
     {
         name: 'Go',
@@ -73,7 +68,7 @@ export const languages = [
         alias: 'lua'
     },
     {
-        name: 'SCSS',
-        alias: 'scss'
+        name: 'SASS',
+        alias: 'sass'
     },
 ]
