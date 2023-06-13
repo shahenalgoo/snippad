@@ -218,7 +218,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
         });
 
-        // Automatically create some tutorial/example notes for the first 'General Notebook'
+        // Automatically create some tutorial/example notes for the first 'Personal Notebook'
         if (isFirst && newNotebook) {
             const welcomeNoteId = await createNoteExamples(newNotebook.$id);
             router.push('/workspace/' + welcomeNoteId);
@@ -251,7 +251,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const deleteNotebook = (id: string) => {
         deleteDocument({ document_id: id })
 
-        // Switch active notebook to 'General' If the active notebook has been deleted
+        // Switch active notebook to 'Personal' If the active notebook has been deleted
         if (activeNotebook?.$id === id && defaultNotebook?.$id) {
             activateNotebook(defaultNotebook);
         }
