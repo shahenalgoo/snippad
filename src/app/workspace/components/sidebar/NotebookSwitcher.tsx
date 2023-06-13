@@ -81,26 +81,28 @@ const NotebookSwitcher: FC<NotebookSwitcherProps> = () => {
                     </div>
 
                     {/* List all notebooks */}
-                    <div className="overflow-hidden w-full bg-white dark:bg-black rounded-lg">
-                        {notebookList?.map((notebook: Notebook) => (
-                            <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light dark:border-neutral-900 last:border-none hover:bg-neutral-100 dark:hover:bg-neutral-950">
-                                {activeNotebook?.$id === notebook.$id ?
-                                    <TbCircleCheckFilled size={24} strokeWidth={1} className="mr-3 text-primary" />
-                                    :
-                                    <TbCircle size={24} strokeWidth={1} className="mr-3 text-neutral-300 dark:text-neutral-800" />
-                                }
-                                <span className="font-semibold">{notebook.title}</span>
-                            </button>
-                        ))}
-                    </div>
+                    {!isLoading && total > 0 &&
+                        < div className="overflow-hidden w-full bg-white dark:bg-black rounded-lg">
+                            {notebookList?.map((notebook: Notebook) => (
+                                <button key={notebook.$id} onClick={() => handleSwitchNotebook(notebook)} className="flex items-center w-full p-4 transition-all border-b border-border-light dark:border-neutral-900 last:border-none hover:bg-neutral-100 dark:hover:bg-neutral-950">
+                                    {activeNotebook?.$id === notebook.$id ?
+                                        <TbCircleCheckFilled size={24} strokeWidth={1} className="mr-3 text-primary" />
+                                        :
+                                        <TbCircle size={24} strokeWidth={1} className="mr-3 text-neutral-300 dark:text-neutral-800" />
+                                    }
+                                    <span className="font-semibold">{notebook.title}</span>
+                                </button>
+                            ))}
+                        </div>
+                    }
                 </div>
 
-            </div>
+            </div >
 
             {/* Notebook backdrop */}
-            <div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute top-0 left-0 w-full h-full cursor-zoom-out backdrop-blur-lg bg-black/10 dark:bg-white/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
-                &nbsp;
-            </div>
+            < div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute top-0 left-0 w-full h-full cursor-zoom-out backdrop-blur-lg bg-black/10 dark:bg-white/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
+                & nbsp;
+            </div >
         </>
     );
 }
