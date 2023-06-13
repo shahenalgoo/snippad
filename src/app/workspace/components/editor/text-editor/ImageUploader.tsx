@@ -80,8 +80,7 @@ const ImageUploader: FC<ImageUploaderProps> = ({ uploaderActive, setUploaderActi
 
             // Add to Text Editor
             if (url) {
-                editor?.chain().focus().setImage({ src: url.href }).run()
-                editor?.chain().focus().enter();
+                editor?.chain().focus().setImage({ src: url.href }).run();
             }
 
             // Clear Image upload

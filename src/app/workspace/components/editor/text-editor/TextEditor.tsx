@@ -14,6 +14,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import BubbleMenu from './BubbleMenu';
 import FloatingMenu from './FloatingMenu';
+import CharacterCount from '@tiptap/extension-character-count'
 
 
 
@@ -26,6 +27,8 @@ interface TextEditorProps {
 
 const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus }) => {
 
+    const characterLimit = 5000;
+
     // Text Editor
     //
     const editor = useEditor({
@@ -34,7 +37,8 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
             Placeholder.configure({
                 placeholder: 'Write your note...'
             }),
-            Image,
+            Image.configure({ inline: true }),
+            CharacterCount.configure({ limit: characterLimit })
         ],
         editorProps: {
             attributes: {
@@ -60,9 +64,12 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
 
     return note?.type === NoteType.note ? (
         <div className='relative'>
-            {noteStatus === NoteStatus.published &&
+            {noteStatus === NoteStatus.published && editor &&
                 <div>
                     <EditorContent editor={editor} />
+                    {/* {editor.storage.characterCount.characters()}/{characterLimit} characters
+                    <br />
+                    {editor.storage.characterCount.words()} words */}
                 </div>
             }
 
