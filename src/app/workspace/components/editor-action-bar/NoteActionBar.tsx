@@ -41,10 +41,13 @@ interface NoteActionBarProps {
     setStarred: Dispatch<SetStateAction<boolean>>;
     status: NoteStatus | null;
     setStatus: Dispatch<SetStateAction<NoteStatus | null>>;
+    characterCount: number;
+    wordCount: number;
+
 }
 
 
-const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
+const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus, characterCount, wordCount }) => {
 
     // States
     //
@@ -99,9 +102,15 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
         updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash);
     }
 
-
     return (
         <div className="fixed bottom-4 left-0 z-30 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
+
+            {/* Character & Word count display */}
+            <div>
+                {characterCount}/{5000} characters
+                <br />
+                {wordCount} words
+            </div>
 
             <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5 dark:bg-white/5">
                 {note?.status === NoteStatus.published &&

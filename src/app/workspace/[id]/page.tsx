@@ -6,7 +6,7 @@
 'use client';
 
 // React
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { notFound } from "next/navigation";
 
 // Typings
@@ -59,6 +59,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [status, setStatus] = useState<NoteStatus | null>(null);
     const [hasTextChanged, setHasTextChanged] = useState<boolean>(false);
 
+    const [characterCount, setCharacterCount] = useState<number>(0);
+    const [wordCount, setWordCount] = useState<number>(0);
 
     // Refs
     //
@@ -224,6 +226,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 setStarred={setStarred}
                 status={status}
                 setStatus={setStatus}
+                characterCount={characterCount}
+                wordCount={wordCount}
             />
 
             <div className="py-28">
@@ -260,6 +264,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     note={note}
                     onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
                     noteStatus={status}
+                    setCharacterCount={setCharacterCount}
+                    setWordCount={setWordCount}
                 />
 
                 <CodeEditor

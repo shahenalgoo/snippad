@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { FC } from 'react';
+import { Dispatch, FC, SetStateAction } from 'react';
 
 // Typings
 import { Note } from '@/types/typings';
@@ -23,10 +23,11 @@ interface TextEditorProps {
     note: Note | null;
     onUpdateFormBody: (newBody: string) => void;
     noteStatus: NoteStatus | null;
+    setCharacterCount: Dispatch<SetStateAction<number>>;
+    setWordCount: Dispatch<SetStateAction<number>>;
 }
 
-
-const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus }) => {
+const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus, setCharacterCount, setWordCount }) => {
 
     const characterLimit = 5000;
 
@@ -51,15 +52,25 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
             if (!note) return;
 
             // Load note content into editor
-            editor.commands.setContent(note?.body);
+            editor.commands.setContent(note.body);
 
             // If note is not published, setEditable to false
             if (note?.status !== NoteStatus.published) editor?.setEditable(false);
+
+            // Update word count onCreate
+            setCharacterCount(editor.storage.characterCount.characters());
+            setWordCount(editor.storage.characterCount.words());
         },
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
             onUpdateFormBody(html);
-        }
+
+            // Update word count onUpdate
+            setCharacterCount(editor.storage.characterCount.characters());
+            setWordCount(editor.storage.characterCount.words());
+
+        },
+
     });
 
 
@@ -68,9 +79,6 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
             {noteStatus === NoteStatus.published && editor &&
                 <div>
                     <EditorContent editor={editor} />
-                    {/* {editor.storage.characterCount.characters()}/{characterLimit} characters
-                    <br />
-                    {editor.storage.characterCount.words()} words */}
                 </div>
             }
 
@@ -79,5 +87,6 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus })
         </div>
     ) : null
 }
+
 
 export default TextEditor
