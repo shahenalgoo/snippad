@@ -14,7 +14,6 @@ export const AppwriteIds = {
     databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
     collectionId_notebook: process.env.NEXT_PUBLIC_COLLECTION_NOTEBOOKS_ID as string,
     collectionId_notes: process.env.NEXT_PUBLIC_COLLECTION_NOTES_ID as string,
-    collectionId_test_notes: process.env.NEXT_PUBLIC_COLLECTION_TEST_NOTES_ID as string,
     bucketId_images: process.env.NEXT_PUBLIC_BUCKET_IMAGES_ID as string,
 }
 
