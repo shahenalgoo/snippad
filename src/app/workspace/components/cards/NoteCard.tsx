@@ -42,15 +42,15 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-css";
                 return "TbBrandCss3";
                 break;
-            case 'js':
+            case 'javascript':
                 color = "text-js";
                 return "TbBrandJavascript";
                 break;
-            case 'ts':
+            case 'typescript':
                 color = "text-ts";
                 return "TbBrandTypescript"
                 break;
-            case 'py':
+            case 'python':
                 color = "text-py";
                 return "TbBrandPython"
                 break;
@@ -58,7 +58,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-php";
                 return "TbBrandPhp"
                 break;
-            case 'cs':
+            case 'csharp':
                 color = "text-cs";
                 return "TbBrandCSharp"
                 break;
@@ -74,7 +74,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-json dark:text-white";
                 return "TbBraces"
                 break;
-            case 'kt':
+            case 'kotlin':
                 color = "text-kt";
                 return "TbBrandKotlin"
                 break;

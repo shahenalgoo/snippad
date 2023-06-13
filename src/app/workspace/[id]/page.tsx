@@ -22,12 +22,12 @@ import { useUnsavedChangesWarning } from "@/hooks";
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 
 // Note header
-import NoteActionBar from "../components/note-action-bar/NoteActionBar";
+import NoteActionBar from "../components/editor-action-bar/NoteActionBar";
 
 // Text editor
 import TextareaAutosize from 'react-textarea-autosize';
-import TextEditor from "../components/editor/text-editor/TextEditor";
-import SnippetEditor from "../components/editor/CodeEditor";
+import CodeEditor from "../components/editor-code/CodeEditor";
+import TextEditor from "../components/editor-text/TextEditor";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";
@@ -262,7 +262,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     noteStatus={status}
                 />
 
-                <SnippetEditor
+                <CodeEditor
                     note={note}
                     onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
                     onUpdateFormLanguage={(newLanguage: string) => { formData.current.snippet_language = newLanguage; setHasTextChanged(noteChanged() ? true : false) }}
