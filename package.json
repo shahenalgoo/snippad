@@ -12,6 +12,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@tiptap/extension-character-count": "^2.0.3",
 		"@tiptap/extension-dropcursor": "^2.0.3",
 		"@tiptap/extension-image": "^2.0.3",
 		"@tiptap/extension-placeholder": "^2.0.3",
