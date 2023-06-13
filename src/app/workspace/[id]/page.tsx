@@ -27,7 +27,7 @@ import NoteActionBar from "../components/editor-action-bar/NoteActionBar";
 // Text editor
 import TextareaAutosize from 'react-textarea-autosize';
 import CodeEditor from "../components/editor-code/CodeEditor";
-import TextEditor from "../components/editor/text-editor/TextEditor";
+import TextEditor from "../components/editor-text/TextEditor";
 
 // Utils
 import LoadingComponent from "@/components/misc/Loading";

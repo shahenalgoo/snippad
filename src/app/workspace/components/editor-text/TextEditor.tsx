@@ -10,10 +10,11 @@ import { NoteStatus, NoteType } from '@/types/enums';
 // Tip Tap
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Placeholder from "@tiptap/extension-placeholder";
-import Image from "@tiptap/extension-image";
 import BubbleMenu from './BubbleMenu';
 import FloatingMenu from './FloatingMenu';
+
+import Placeholder from "@tiptap/extension-placeholder";
+import Image from "@tiptap/extension-image";
 import CharacterCount from '@tiptap/extension-character-count'
 
 
