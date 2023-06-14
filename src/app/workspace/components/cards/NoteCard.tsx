@@ -38,7 +38,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
             let preview = "";
             const todoList: Todo[] = JSON.parse(note.body);
             for (let i = 0; i < todoList.length; i++) {
-                const done = todoList[i].done ? "🟩 " : "🟥 ";
+                const done = todoList[i].done ? "🟢 " : "⚫ ";
                 preview += done + todoList[i].title;
                 if (i + 1 !== todoList.length) preview += ", ";
             }
