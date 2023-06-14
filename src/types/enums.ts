@@ -2,6 +2,12 @@
  * ENUMS
  */
 
+// Types of notebook
+export enum NotebookType {
+    personal = "personal",
+    shared = "shared"
+}
+
 // Types of notes
 //
 export enum NoteType {

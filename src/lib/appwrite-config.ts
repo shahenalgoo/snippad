@@ -3,7 +3,7 @@
  * 
  */
 
-import { Client, Account, Databases, Storage } from 'appwrite';
+import { Client, Account, Databases, Storage, Functions } from 'appwrite';
 
 
 /**
@@ -14,7 +14,7 @@ export const AppwriteIds = {
     databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
     collectionId_notebook: process.env.NEXT_PUBLIC_COLLECTION_NOTEBOOKS_ID as string,
     collectionId_notes: process.env.NEXT_PUBLIC_COLLECTION_NOTES_ID as string,
-    bucketId_images: process.env.NEXT_PUBLIC_BUCKET_IMAGES_ID as string,
+    bucketId_images: process.env.NEXT_PUBLIC_BUCKET_UPLOADS_ID as string,
 }
 
 
@@ -39,6 +39,13 @@ export const account = new Account(client);
  * 
  */
 export const databases = new Databases(client);
+
+
+/**
+ * Initiate Functions
+ * 
+ */
+export const functions = new Functions(client);
 
 
 /**

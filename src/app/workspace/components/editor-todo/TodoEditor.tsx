@@ -9,7 +9,7 @@ import { TbGripHorizontal, TbX } from "react-icons/tb";
 
 // Sortable
 import SortableList, { SortableItem, SortableKnob } from "react-easy-sort";
-import { arrayMoveImmutable, arrayMoveMutable } from "array-move"
+import { arrayMoveImmutable } from "array-move"
 import { Button, Checkbox } from "@/components";
 import { NoteType } from "@/types/enums";
 
@@ -73,23 +73,32 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
 interface TodoEditorProps {
     note: Note | null;
     onUpdateFormBody: (newBody: string) => void;
+    changeDetector: boolean
+    body: string;
 }
 
-const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
+const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody, changeDetector, body }) => {
     // States
     //
     const [data, setData] = useState<Todo[]>([]);
 
-
+    // New item
+    //
     const newItem: Todo = {
         title: "New item",
         done: false
     }
 
+
+    // Add a new item
+    //
     const onAddItem = () => {
         setData(data => [...data, newItem])
     }
 
+
+    // Check box of a todo item
+    //
     const onCheckItem = (index: number, checked: boolean) => {
         const newState = data.map((obj, i) => {
             if (i === index) {
@@ -102,6 +111,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newState);
     };
 
+
+    // Changing content of a todo item
+    //
     const onChangeContent = (index: number, newTitle: string) => {
         const newState = data.map((obj, i) => {
             if (i === index) {
@@ -114,6 +126,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newState);
     };
 
+
+    // Delete a todo item
+    //
     const onDelete = (index: number) => {
         let newData: Todo[] = new Array();
 
@@ -126,12 +141,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newData);
     }
 
-
+    // Swapping items in array
+    //
     const onSortEnd = (oldIndex: number, newIndex: number) => {
-        console.log(oldIndex);
-        console.log(newIndex);
-
-
         setData((array) => arrayMoveImmutable(array, oldIndex, newIndex))
     }
 
@@ -139,7 +151,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
     // First time load data
     //
     useEffect(() => {
-        if (note && note.type === NoteType.todo && note.body !== "") { setData(JSON.parse(note.body)) };
+        if (note && note.type === NoteType.todo && note.body !== "") {
+            setData(JSON.parse(note.body))
+        };
     }, []);
 
 

@@ -1,5 +1,5 @@
 // React
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // Typings
 import { Note, SnippetLanguage } from "@/types/typings";
@@ -7,7 +7,7 @@ import { NoteStatus, NoteType } from "@/types/enums";
 
 // CodeMirror
 import CodeMirror from '@uiw/react-codemirror';
-import { langNames, LanguageName, loadLanguage } from '@uiw/codemirror-extensions-langs';
+import { LanguageName, loadLanguage } from '@uiw/codemirror-extensions-langs';
 
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
@@ -24,19 +24,24 @@ interface CodeEditorProps {
     note: Note | null;
     onUpdateFormBody: (newBody: string) => void;
     onUpdateFormLanguage: (newLanguage: string) => void;
+    changeDetector: boolean
+    body: string;
 }
 
 
 const CodeEditor: FC<CodeEditorProps> = ({
     note,
     onUpdateFormBody,
-    onUpdateFormLanguage
+    onUpdateFormLanguage,
+    changeDetector,
+    body
 }) => {
 
     // States
     //
     const [language, setLanguage] = useState<LanguageName>('javascript');
     const [fullscreen, setFullscreen] = useToggle();
+    const [value, setValue] = useState<string>("");
 
 
     //Handle language changes
@@ -50,9 +55,16 @@ const CodeEditor: FC<CodeEditorProps> = ({
     // Use effect
     //
     useEffect(() => {
-        setLanguage(note?.snippet_language as LanguageName);
+        if (!note) return;
+        setLanguage(note.snippet_language as LanguageName);
     }, [note]);
 
+
+    // setting live updates via realtime
+    useEffect(() => {
+        setValue(body);
+
+    }, [changeDetector]);
 
     return note?.type === NoteType.code ? (
         <div className="relative">
@@ -81,8 +93,12 @@ const CodeEditor: FC<CodeEditorProps> = ({
                 </Button>
 
                 <CodeMirror
-                    value={note?.body}
-                    onChange={(value: any) => onUpdateFormBody(value)}
+                    id="code-mirror"
+                    value={value}
+                    onChange={(value: any) => {
+                        onUpdateFormBody(value);
+                        setValue(value);
+                    }}
                     extensions={[loadLanguage(language)!].filter(Boolean)}
                     placeholder={`Write your ${language.toUpperCase()} code...`}
                     autoFocus={note?.status === NoteStatus.published}

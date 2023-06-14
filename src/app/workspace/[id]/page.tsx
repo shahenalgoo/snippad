@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 
 // Typings
 import { Note, NoteFormData } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { NoteStatus, NoteType, NotebookType } from "@/types/enums";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
@@ -19,7 +19,7 @@ import { useDocumentUpdate } from "@/hooks";
 import { useUnsavedChangesWarning } from "@/hooks";
 
 // Database
-import { AppwriteIds, databases } from "@/lib/appwrite-config";
+import { AppwriteIds, client, databases, functions } from "@/lib/appwrite-config";
 
 // Note header
 import NoteActionBar from "../components/editor-action-bar/NoteActionBar";
@@ -30,7 +30,6 @@ import CodeEditor from "../components/editor-code/CodeEditor";
 import TextEditor from "../components/editor-text/TextEditor";
 
 // Utils
-import LoadingComponent from "@/components/misc/Loading";
 import { toast } from "react-hot-toast";
 
 // Workspace components
@@ -38,6 +37,7 @@ import NoticeTrashAutodeletion from "../components/notices/NoticeTrashAutodeleti
 import NoticeCannotEdit from "../components/notices/NoticeCannotEdit";
 import useCTRLS from "@/hooks/useCTRLS";
 import TodoEditor from "../components/editor-todo/TodoEditor";
+import { useUser } from "@/context/SessionContext";
 
 
 // Type Definitions
@@ -63,6 +63,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [characterCount, setCharacterCount] = useState<number>(0);
     const [wordCount, setWordCount] = useState<number>(0);
 
+    const [changeDetector, setChangeDetector] = useState<boolean>(false);
+
     // Refs
     //
     const beforeSave = useRef<NoteFormData>({
@@ -86,6 +88,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //
     const { activeNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
+    const { user } = useUser();
 
 
     // Fetch Note
@@ -101,26 +104,7 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 id
             );
 
-            setNote(res);
-            setStarred(res.starred);
-            setStatus(res.status);
-
-            formData.current = {
-                title: res.title,
-                subtitle: res.subtitle,
-                body: res.body,
-                snippet_language: res.snippet_language,
-                status: res.status
-            }
-
-            beforeSave.current = {
-                title: res.title,
-                subtitle: res.subtitle,
-                body: res.body,
-                snippet_language: res.snippet_language,
-                status: res.status
-
-            }
+            setNoteData(res);
 
             return res;
         } catch (error) {
@@ -131,6 +115,73 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     }, []);
 
+
+    // Set note data
+    //
+    const setNoteData = (note: Note) => {
+        setNote(note);
+        setStarred(note.starred);
+        setStatus(note.status);
+
+        formData.current = {
+            title: note.title,
+            subtitle: note.subtitle,
+            body: note.body,
+            snippet_language: note.snippet_language,
+            status: note.status
+        }
+
+        beforeSave.current = {
+            title: note.title,
+            subtitle: note.subtitle,
+            body: note.body,
+            snippet_language: note.snippet_language,
+            status: note.status
+
+        }
+    }
+
+
+    // Share note with user
+    //
+    const shareNote = async (email?: string) => {
+        if (!user) return;
+
+        // Only owners can share
+        if (!note?.$permissions[0].includes(user.$id)) {
+            toast.error("Only available for owner");
+            return;
+        }
+
+        // Not share with own user
+        if (email === user.email) {
+            toast.error("Cannot share with yourself");
+        }
+
+        // Forming payload to send function
+        const payload = {
+            owner: user.$id,
+            email: "test456@example.com",
+            note: id
+        }
+
+        // Calling a server function to add the user 
+        //
+        const res = await functions.createExecution(process.env.NEXT_PUBLIC_FUNCTION_SHARE_NOTE as string, JSON.stringify(payload));
+
+        // Share response
+        //
+        switch (res.statusCode) {
+            case 200:
+                toast.success("Successfully shared!");
+                break;
+            case 500:
+                toast.error("Could not share");
+                break;
+            default:
+                break;
+        }
+    }
 
     // Save Note
     //
@@ -155,7 +206,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
                 subtitle: formData?.current.subtitle,
                 body: formData?.current.body,
                 snippet_language: formData.current.snippet_language,
-                search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body
+                search_index: formData?.current.title + ' ' + formData?.current.subtitle + ' ' + formData?.current.body,
+                last_change_by: user?.$id
             } as Note,
             onSuccess() {
                 // Updating 'before save' data to updated data
@@ -176,7 +228,6 @@ const NotePage = ({ params: { id } }: PageProps) => {
         });
 
         setIsSaving(false);
-
     }
 
 
@@ -198,15 +249,48 @@ const NotePage = ({ params: { id } }: PageProps) => {
     //
     useUnsavedChangesWarning(hasTextChanged && note?.status === NoteStatus.published);
 
+
     // Enabling saving with CTRL+S, also saves on unmount resulting into the auto-save feature
     //
     useCTRLS(saveNote);
 
 
-    // Use effect - Fetch notes
+    // Use effect - Fetch note
     //
     useEffect(() => {
         fetchNote(id);
+
+        // Realtime not required for personal notebooks
+        if (activeNotebook?.type === NotebookType.personal) return;
+
+        // Subscribe to live changes for the user's notebook collection
+        const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notes}.documents.${id}`, res => {
+            // Getting ref to event note
+            let eventNote: Note = res.payload as Note;
+
+            // Do not apply change if user is the last updater
+            if (eventNote.last_change_by === user?.$id) {
+                return;
+            }
+
+            // Update data received from realtime
+            setNoteData(eventNote);
+
+            let titleElement = document.getElementById("title");
+            if (titleElement) titleElement.textContent = eventNote.title;
+
+            let subtitleElement = document.getElementById("subtitle");
+            if (subtitleElement) subtitleElement.textContent = eventNote.subtitle;
+
+            // This is used by editors to change BODY
+            setChangeDetector((prev) => !prev);
+        });
+
+        return () => {
+            // Unsubscribe on unmount
+            subscribe();
+        }
+
     }, [fetchNote, id, activeNotebook]);
 
 
@@ -217,26 +301,31 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
-    return !isLoading ? (
+    return /*!isLoading ?*/ (
         <>
-            <NoteActionBar
-                note={note}
-                isSaving={isSaving}
-                saveNote={saveNote}
-                isStarred={starred}
-                setStarred={setStarred}
-                status={status}
-                setStatus={setStatus}
-                characterCount={characterCount}
-                wordCount={wordCount}
-            />
+            {!isLoading &&
+                <NoteActionBar
+                    note={note}
+                    isSaving={isSaving}
+                    saveNote={saveNote}
+                    isStarred={starred}
+                    setStarred={setStarred}
+                    status={status}
+                    setStatus={setStatus}
+                    characterCount={characterCount}
+                    wordCount={wordCount}
+                />
+            }
 
             <div className="py-28">
 
                 {/* Notices on Archived and Trashed notes */}
-                <NoticeTrashAutodeletion note={note} />
-                <NoticeCannotEdit note={note} />
-
+                {!isLoading &&
+                    <NoticeTrashAutodeletion note={note} />
+                }
+                {!isLoading &&
+                    <NoticeCannotEdit note={note} />
+                }
 
                 {/* Editor Fields */}
                 <div className="mb-1">
@@ -244,7 +333,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         id="title"
                         placeholder="Title"
                         defaultValue={note?.title}
-                        onChange={(e) => { formData.current.title = e.target.value; setHasTextChanged(noteChanged() ? true : false); }}
+                        onChange={(e) => {
+                            formData.current.title = e.target.value;
+                            activeNotebook?.type === NotebookType.shared ? saveNote() : setHasTextChanged(noteChanged() ? true : false);
+                        }}
+
+
                         className="w-full bg-transparent outline-none text-3xl sm:text-4xl font-semibold resize-none overflow-auto disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
                         disabled={note?.status !== NoteStatus.published}
                     />
@@ -255,37 +349,67 @@ const NotePage = ({ params: { id } }: PageProps) => {
                         id="subtitle"
                         placeholder="Subtitle"
                         defaultValue={note?.subtitle}
-                        onChange={(e) => { formData.current.subtitle = e.target.value; setHasTextChanged(noteChanged() ? true : false); }}
+                        onChange={(e) => {
+                            formData.current.subtitle = e.target.value;
+                            activeNotebook?.type === NotebookType.shared ? saveNote() : setHasTextChanged(noteChanged() ? true : false);
+                        }}
                         className="w-full bg-transparent outline-none text-xl sm:text-2xl font-medium resize-none overflow-auto text-neutral-500 disabled:cursor-not-allowed dark:placeholder:text-neutral-600"
                         disabled={note?.status !== NoteStatus.published}
                     />
                 </div>
 
-                <TextEditor
-                    note={note}
-                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
-                    noteStatus={status}
-                    setCharacterCount={setCharacterCount}
-                    setWordCount={setWordCount}
-                />
+                {!isLoading && note?.type === NoteType.note &&
+                    < TextEditor
+                        note={note}
+                        onUpdateFormBody={(newBody: string) => {
+                            formData.current.body = newBody;
+                            activeNotebook?.type === NotebookType.shared ? saveNote() : setHasTextChanged(noteChanged() ? true : false);
+                        }}
+                        noteStatus={status}
+                        setCharacterCount={setCharacterCount}
+                        setWordCount={setWordCount}
+                        changeDetector={changeDetector}
+                        body={formData.current.body}
+                    />
+                }
 
-                <CodeEditor
-                    note={note}
-                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
-                    onUpdateFormLanguage={(newLanguage: string) => { formData.current.snippet_language = newLanguage; setHasTextChanged(noteChanged() ? true : false) }}
-                />
+                {!isLoading && note?.type === NoteType.code &&
 
-                <TodoEditor
-                    note={note}
-                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
+                    <CodeEditor
+                        note={note}
+                        onUpdateFormBody={(newBody: string) => {
+                            formData.current.body = newBody;
+                            activeNotebook?.type === NotebookType.shared ? saveNote() : setHasTextChanged(noteChanged() ? true : false);
+                        }}
+                        onUpdateFormLanguage={(newLanguage: string) => {
+                            formData.current.snippet_language = newLanguage;
+                            activeNotebook?.type === NotebookType.shared ? saveNote() : setHasTextChanged(noteChanged() ? true : false);
+                        }}
+                        changeDetector={changeDetector}
+                        body={formData.current.body}
+                    />
+                }
 
-                />
+                {!isLoading && note?.type === NoteType.todo &&
+                    <TodoEditor
+                        note={note}
+                        onUpdateFormBody={(newBody: string) => {
+                            formData.current.body = newBody;
+                            setHasTextChanged(noteChanged() ? true : false);
+                        }}
+                        changeDetector={changeDetector}
+                        body={formData.current.body}
+
+                    />
+                }
+                <button onClick={() => shareNote()}>SHARE</button>
 
             </div>
 
         </>
 
-    ) : <LoadingComponent />
+    )
+    // : <LoadingComponent />
 }
 
 export default NotePage;

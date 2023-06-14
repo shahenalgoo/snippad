@@ -22,6 +22,7 @@ import { Permission, Query, Role } from "appwrite";
 
 // Misc
 import toast from "react-hot-toast";
+import { NotebookType } from "@/types/enums";
 
 
 // Notebook typings
@@ -93,7 +94,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     //
     const defaultNotebookName = "Personal";
     const storageNotebookRef = "activeNotebookRef";
-    const notebookLimit = 3;
+    const notebookLimit = 4;
     //let firstTimeLoad = true;
 
     // Notebook ref for local storage
@@ -166,11 +167,13 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             }
         }
 
+        console.log("first time load");
+
+
         // If not found or the notebook found is not in fetched notebooks, set default active and save in local storage
         if (!isFound || !lastNotebookUsed) {
             activateNotebook(notebooks[0]);
-            if (defaultNotebook) localStorage.setItem(storageNotebookRef, JSON.stringify(defaultNotebook));
-
+            localStorage.setItem(storageNotebookRef, JSON.stringify(notebooks[0]));
         }
     }
 
@@ -214,16 +217,26 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         const newNotebook = await createDocument({
             data: {
                 title: isFirst ? defaultNotebookName : title,
+                type: NotebookType.personal
             } as Notebook,
-            permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
+            permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
         });
 
-        // Automatically create some tutorial/example notes for the first 'Personal Notebook'
         if (isFirst && newNotebook) {
+
+            // Create ONLY shared notebook
+            await createDocument({
+                data: {
+                    title: "Shared (Experimental)",
+                    type: NotebookType.shared
+                } as Notebook,
+                permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
+            });
+
+            // Automatically create some tutorial/example notes for the first 'Personal Notebook'
             const welcomeNoteId = await createNoteExamples(newNotebook.$id);
             router.push('/workspace/' + welcomeNoteId);
         }
-
     }
 
 
@@ -271,9 +284,10 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 AppwriteIds.databaseId,
                 AppwriteIds.collectionId_notes,
                 [
-                    Query.equal("notebook_related", activeNotebook.$id)
+                    Query.equal("notebook_related", activeNotebook.type === NotebookType.personal ? activeNotebook.$id : NotebookType.shared)
                 ]
             );
+            setAllNotes(res.documents as Note[])
 
             // Temp code: use to quick delete while developing
             // res.documents.forEach(element => {
@@ -281,7 +295,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             // });
 
             // Set state
-            setAllNotes(res.documents as Note[])
 
         } catch (error) {
             console.log(error);

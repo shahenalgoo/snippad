@@ -86,7 +86,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
             return toast.error('Cannot contain special characters');
         }
 
-        //Title cannot be the same name as default General notebook
+        //Title cannot be the same name as default Personal notebook
         if (notebookTitle === defaultNotebookName) {
             return toast.error('This notebook already exists');
         }
@@ -126,7 +126,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
         }
 
         if (targetNotes && targetNotes.length > 0) {
-            // Send to General, else delete all
+            // Send to Personal, else delete all
             if (moveNotes) {
                 targetNotes?.forEach(async element => {
                     await updateNote({
@@ -187,7 +187,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
                                     <>
                                         <Button variant='primary' type="button" onClick={() => onDelete(true)}>
                                             <TbArrowsLeftRight size={20} strokeWidth={1.5} className="mr-2" />
-                                            Send All to General
+                                            Send All to Personal
                                         </Button>
                                         <Button variant='danger' type="button" onClick={() => onDelete(false)}>
                                             <TbTrashX size={20} strokeWidth={1.5} className="mr-2" />
@@ -230,7 +230,7 @@ const NotebookCard: FC<NotebookCardProps> = ({ notebook }) => {
  */
 const SettingsPage: FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { collection: notebookList, total: notebookCount, createNotebook } = useNotebook();
+    const { collection: notebookList, total: notebookCount, createNotebook, notebookLimit } = useNotebook();
 
     // Create new notebook
     const onCreate = async () => {
@@ -242,7 +242,7 @@ const SettingsPage: FC = () => {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold">My Notebooks ({notebookCount}/3)</h2>
+                <h2 className="text-lg font-bold">My Notebooks ({notebookCount}/{notebookLimit})</h2>
                 <Button onClick={onCreate} rounded='full' disabled={isLoading}>
                     {!isLoading && <TbPlus size={20} className="mr-2 mt-[1px]" />}
                     {isLoading && <Spinner variant='button' className="mr-2" />}
@@ -251,18 +251,27 @@ const SettingsPage: FC = () => {
 
             </div>
 
-            {/* General Notebook - not editable */}
+            {/* Personal & Shared Notebook - not editable */}
             {notebookList &&
-                <Box variant='border' rounded='default' className={`py-0 mb-4 last:mb-0`}>
-                    <div className="flex-1 flex items-center h-14 text-sm font-semibold">
-                        <TbNotebook size={24} strokeWidth={1} className="mr-2" />
-                        {notebookList[0].title}
-                    </div>
-                </Box>
+                <>
+                    <Box variant='border' rounded='default' className={`py-0 mb-4 last:mb-0`}>
+                        <div className="flex-1 flex items-center h-14 text-sm font-semibold">
+                            <TbNotebook size={24} strokeWidth={1} className="mr-2" />
+                            {notebookList[0].title}
+                        </div>
+                    </Box>
+
+                    <Box variant='border' rounded='default' className={`py-0 mb-4 last:mb-0`}>
+                        <div className="flex-1 flex items-center h-14 text-sm font-semibold">
+                            <TbNotebook size={24} strokeWidth={1} className="mr-2" />
+                            {notebookList[1].title}
+                        </div>
+                    </Box>
+                </>
             }
 
             {/* Other Notebooks - editable */}
-            {notebookList?.slice(1).map((notebook: Notebook) => (
+            {notebookList?.slice(2).map((notebook: Notebook) => (
                 <NotebookCard key={notebook?.$id} notebook={notebook} />
             ))}
         </div>

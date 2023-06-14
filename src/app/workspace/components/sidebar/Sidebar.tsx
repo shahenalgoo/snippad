@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Typings
 import { Note } from "@/types/typings";
-import { NoteFilter, NoteStatus, NoteType, SortDate } from "@/types/enums";
+import { NoteFilter, NoteStatus, NoteType, NotebookType, SortDate } from "@/types/enums";
 
 // Appwrite
 import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
@@ -81,7 +81,7 @@ const Sidebar = () => {
 
             // Fetching notes for the active notebook + active status (published, archived or trashed)
             let queries: string[] = [
-                Query.equal('notebook_related', activeNotebook.$id),
+                Query.equal('notebook_related', activeNotebook.type === NotebookType.personal ? activeNotebook.$id : NotebookType.shared),
                 Query.equal('status', getFetchNoteStatus()),
             ]
 
