@@ -86,8 +86,7 @@ const CodeEditor: FC<CodeEditorProps> = ({
 
             {/* Code Editor */}
             <div className={` bg-[#1E1E1E] py-2 ${!fullscreen ? 'relative mt-4 rounded-lg' : 'fixed z-[8888] top-0 left-0 w-full h-full'}`}>
-
-                <Button onClick={() => setFullscreen(!fullscreen)} variant='black' size='square' className="absolute top-2 right-2 z-40">
+                <Button onClick={() => setFullscreen(!fullscreen)} variant='black' size='square' className="absolute top-2 right-2 z-10">
                     {!fullscreen && <TbArrowsMaximize />}
                     {fullscreen && <TbArrowsMinimize />}
                 </Button>

@@ -69,7 +69,7 @@ export default function Modal({ className, variant, modalActive, onClose, closeW
 
                 </Box>
 
-                <div onClick={closeWithBackdrop ? onClose : () => null} className="absolute top-0 left-0 -z-0 w-full h-full backdrop-blur-lg bg-black/30">&nbsp;</div>
+                <div onClick={closeWithBackdrop ? onClose : () => null} className="absolute top-0 left-0 -z-0 w-full h-full backdrop-blur-lg bg-black/60">&nbsp;</div>
             </div>
         </div>
     ) : null;

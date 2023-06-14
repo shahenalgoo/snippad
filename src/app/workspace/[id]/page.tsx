@@ -14,30 +14,31 @@ import { Note, NoteFormData } from "@/types/typings";
 import { NoteStatus, NoteType, NotebookType } from "@/types/enums";
 
 // Hooks
+import { useUser } from "@/context/SessionContext";
 import { useNotebook } from "@/context/NotebookContext";
 import { useDocumentUpdate } from "@/hooks";
 import { useUnsavedChangesWarning } from "@/hooks";
+import { useCTRLS } from "@/hooks/";
 
 // Database
 import { AppwriteIds, client, databases, functions } from "@/lib/appwrite-config";
 
-// Note header
+// Components
+import LoadingComponent from "@/components/misc/Loading";
 import NoteActionBar from "../components/editor-action-bar/NoteActionBar";
 
-// Text editor
+// Editors
 import TextareaAutosize from 'react-textarea-autosize';
 import CodeEditor from "../components/editor-code/CodeEditor";
 import TextEditor from "../components/editor-text/TextEditor";
+import TodoEditor from "../components/editor-todo/TodoEditor";
 
 // Utils
 import { toast } from "react-hot-toast";
 
-// Workspace components
+// Notice
 import NoticeTrashAutodeletion from "../components/notices/NoticeTrashAutodeletion";
 import NoticeCannotEdit from "../components/notices/NoticeCannotEdit";
-import useCTRLS from "@/hooks/useCTRLS";
-import TodoEditor from "../components/editor-todo/TodoEditor";
-import { useUser } from "@/context/SessionContext";
 
 
 // Type Definitions
@@ -64,6 +65,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
     const [wordCount, setWordCount] = useState<number>(0);
 
     const [changeDetector, setChangeDetector] = useState<boolean>(false);
+
+    // Used for sharing notes with people
+    const [shareEmail, setShareEmail] = useState<string | null>(null);
 
     // Refs
     //
@@ -144,7 +148,9 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
     // Share note with user
     //
-    const shareNote = async (email?: string) => {
+    const shareNote = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         if (!user) return;
 
         // Only owners can share
@@ -154,14 +160,15 @@ const NotePage = ({ params: { id } }: PageProps) => {
         }
 
         // Not share with own user
-        if (email === user.email) {
+        if (shareEmail === user.email) {
             toast.error("Cannot share with yourself");
         }
 
         // Forming payload to send function
         const payload = {
             owner: user.$id,
-            email: "test456@example.com",
+            // email: "landingpage@example.com",
+            email: shareEmail,
             note: id
         }
 
@@ -301,8 +308,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
     }
 
 
-    return /*!isLoading ?*/ (
+    return (
         <>
+            {isLoading &&
+                <LoadingComponent />
+            }
+
             {!isLoading &&
                 <NoteActionBar
                     note={note}
@@ -314,6 +325,10 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     setStatus={setStatus}
                     characterCount={characterCount}
                     wordCount={wordCount}
+
+                    shareNote={shareNote}
+                    shareEmail={shareEmail}
+                    setShareEmail={setShareEmail}
                 />
             }
 
@@ -402,14 +417,12 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                     />
                 }
-                <button onClick={() => shareNote()}>SHARE</button>
 
             </div>
 
         </>
 
-    )
-    // : <LoadingComponent />
+    );
 }
 
 export default NotePage;
