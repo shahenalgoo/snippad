@@ -32,7 +32,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
         return newText.body.textContent?.substring(0, 120);
 
         function todoPreview() {
-            if (!note) return "";
+            if (!note || note.body === "") return "";
             let preview = "";
             const todoList: Todo[] = JSON.parse(note.body);
             for (let i = 0; i < todoList.length; i++) {

@@ -72,7 +72,6 @@ export type Note = Models.Document & {
 export interface Todo {
     title: string;
     done: boolean;
-    order: number
 }
 
 /**

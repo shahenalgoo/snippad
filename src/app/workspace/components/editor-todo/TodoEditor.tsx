@@ -9,7 +9,7 @@ import { TbGripHorizontal, TbX } from "react-icons/tb";
 
 // Sortable
 import SortableList, { SortableItem, SortableKnob } from "react-easy-sort";
-import { arrayMoveImmutable } from "array-move"
+import { arrayMoveImmutable, arrayMoveMutable } from "array-move"
 import { Button, Checkbox } from "@/components";
 import { NoteType } from "@/types/enums";
 
@@ -42,7 +42,7 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
             <div className="shrink-0 mr-4">
                 <Checkbox
                     variant="circle"
-                    defaultChecked={todo.done}
+                    checked={todo.done}
                     onChange={(e: any) => onCheckItem(index, e.target.checked)}
                     className="shrink-0 mr-4"
                 />
@@ -51,7 +51,7 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
             <div className="flex-1">
                 <input
                     type="text"
-                    defaultValue={todo.title}
+                    value={todo.title}
                     onChange={(e) => onChangeContent(index, e.target.value)}
                     className="flex-1 w-full h-14 outline-none bg-transparent"
                 />
@@ -76,7 +76,6 @@ interface TodoEditorProps {
 }
 
 const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
-
     // States
     //
     const [data, setData] = useState<Todo[]>([]);
@@ -84,8 +83,7 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
 
     const newItem: Todo = {
         title: "New item",
-        done: false,
-        order: data.length
+        done: false
     }
 
     const onAddItem = () => {
@@ -130,6 +128,10 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
 
 
     const onSortEnd = (oldIndex: number, newIndex: number) => {
+        console.log(oldIndex);
+        console.log(newIndex);
+
+
         setData((array) => arrayMoveImmutable(array, oldIndex, newIndex))
     }
 
@@ -137,7 +139,7 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
     // First time load data
     //
     useEffect(() => {
-        if (note && note.type === NoteType.todo) { setData(JSON.parse(note.body)) };
+        if (note && note.type === NoteType.todo && note.body !== "") { setData(JSON.parse(note.body)) };
     }, []);
 
 
@@ -159,6 +161,7 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
                     </SortableItem>
                 ))}
             </SortableList>
+
 
             <div className="text-center">
                 <Button onClick={onAddItem} variant='black'>
