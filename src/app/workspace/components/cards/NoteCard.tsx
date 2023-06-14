@@ -102,10 +102,12 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
 
                 {/* Icons */}
                 <div className="shrink-0 w-10 h-10 flex items-center">
-                    {/* Default note icon */}
-                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-neutral-600 dark:text-neutral-200`} />}
+                    {/* Note icon */}
+                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                     {/* Code snippet icons */}
                     {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
+                    {/* Todo */}
+                    {note?.type === "todo" && <DynamicIcon name="TbListDetails" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                 </div>
 
                 {/* Note title, subtitle or body */}

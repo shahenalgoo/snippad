@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 
 // Typings
 import { Note, NoteFormData } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
@@ -37,6 +37,7 @@ import { toast } from "react-hot-toast";
 import NoticeTrashAutodeletion from "../components/notices/NoticeTrashAutodeletion";
 import NoticeCannotEdit from "../components/notices/NoticeCannotEdit";
 import useCTRLS from "@/hooks/useCTRLS";
+import TodoEditor from "../components/editor-todo/TodoEditor";
 
 
 // Type Definitions
@@ -272,6 +273,10 @@ const NotePage = ({ params: { id } }: PageProps) => {
                     note={note}
                     onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
                     onUpdateFormLanguage={(newLanguage: string) => { formData.current.snippet_language = newLanguage; setHasTextChanged(noteChanged() ? true : false) }}
+                />
+
+                <TodoEditor
+                    note={note}
                 />
 
             </div>

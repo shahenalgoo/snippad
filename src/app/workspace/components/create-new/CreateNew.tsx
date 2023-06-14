@@ -18,7 +18,7 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import { Permission, Role } from "appwrite";
 
 // Icons
-import { TbNotes, TbCode, TbPlus, TbHandRock } from "react-icons/tb";
+import { TbNotes, TbCode, TbPlus, TbHandRock, TbListDetails } from "react-icons/tb";
 import toast from "react-hot-toast";
 import { Button } from "@/components";
 
@@ -120,14 +120,19 @@ const CreateNew: FC<CreateNewProps> = () => {
                     <>
                         <h1 className="mb-8 text-xl text-black dark:text-white font-semibold">Create New</h1>
 
-                        <div className="flex gap-6">
-                            <CreateNewButton className="bg-blue-900" onClick={() => createNote(NoteType.code)}>
+                        <div className="flex gap-4 md:gap-6">
+                            <CreateNewButton className="bg-blue-950" onClick={() => createNote(NoteType.code)}>
                                 <TbCode size={30} strokeWidth={1} />
                                 Code
                             </CreateNewButton>
-                            <CreateNewButton className="bg-emerald-800" onClick={() => createNote(NoteType.note)}>
+                            <CreateNewButton className="bg-emerald-900" onClick={() => createNote(NoteType.note)}>
                                 <TbNotes size={30} strokeWidth={1} />
                                 Note
+                            </CreateNewButton>
+
+                            <CreateNewButton className="bg-purple-950" onClick={() => createNote(NoteType.todo)}>
+                                <TbListDetails size={30} strokeWidth={1} />
+                                Todo
                             </CreateNewButton>
                         </div>
                     </>
@@ -154,7 +159,7 @@ interface CreateNewButtonProps {
 
 const CreateNewButton: FC<CreateNewButtonProps> = ({ className, onClick, children }) => {
     return (
-        <button onClick={onClick} className={`flex flex-col justify-center items-center gap-1 rounded-2xl w-20 h-24 text-white ${className}`}>
+        <button onClick={onClick} className={`flex flex-col justify-center items-center gap-3 rounded-2xl w-24 h-28 text-white ${className}`}>
             {children}
         </button>
     );

@@ -64,6 +64,17 @@ export type Note = Models.Document & {
     search_index: string;
 }
 
+
+/**
+ * TODO
+ * 
+ */
+export interface Todo {
+    title: string;
+    done: boolean;
+    order: number
+}
+
 /**
  * AUTHENTICATION
  */
