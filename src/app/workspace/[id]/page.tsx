@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 
 // Typings
 import { Note, NoteFormData } from "@/types/typings";
-import { NoteStatus, NoteType } from "@/types/enums";
+import { NoteStatus } from "@/types/enums";
 
 // Hooks
 import { useNotebook } from "@/context/NotebookContext";
@@ -277,6 +277,8 @@ const NotePage = ({ params: { id } }: PageProps) => {
 
                 <TodoEditor
                     note={note}
+                    onUpdateFormBody={(newBody: string) => { formData.current.body = newBody; setHasTextChanged(noteChanged() ? true : false) }}
+
                 />
 
             </div>
