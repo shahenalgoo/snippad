@@ -102,10 +102,12 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
 
                 {/* Icons */}
                 <div className="shrink-0 w-10 h-10 flex items-center">
-                    {/* Default note icon */}
-                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-neutral-600 dark:text-neutral-200`} />}
+                    {/* Note icon */}
+                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                     {/* Code snippet icons */}
                     {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
+                    {/* Todo */}
+                    {note?.type === "todo" && <DynamicIcon name="TbListDetails" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                 </div>
 
                 {/* Note title, subtitle or body */}
@@ -114,7 +116,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                         <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
                     </h5>
                     {note?.subtitle && <h6 className="text-xs font-semibold text-neutral-400 line-clamp-2">{note?.subtitle}</h6>}
-                    {!note?.subtitle && <p className="text-xs font-semibold text-neutral-500 line-clamp-2">{removeTags(note)}</p>}
+                    {!note?.subtitle && <p className="text-xs font-semibold text-neutral-500 line-clamp-2 break-all">{removeTags(note)}</p>}
                 </div>
 
                 {/* If starred */}

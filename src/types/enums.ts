@@ -6,7 +6,8 @@
 //
 export enum NoteType {
     note = "note",
-    code = "code"
+    code = "code",
+    todo = "todo"
 }
 
 // Note statuses
