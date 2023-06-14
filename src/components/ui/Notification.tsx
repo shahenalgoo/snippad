@@ -14,7 +14,7 @@ const NotificationVariants = cva(
         variants: {
             variant: {
                 default: 'bg-slate-100 text-black',
-                danger: 'bg-rose-100',
+                danger: 'bg-rose-100 dark:bg-rose-900',
                 info: 'bg-cyan-100',
                 success: 'bg-green-100',
                 warning: 'bg-orange-100'

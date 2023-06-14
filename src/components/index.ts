@@ -18,6 +18,7 @@ export { default as Title } from "./ui/Title";
 export { default as MainFullCentered } from "./layout/MainFullCentered";
 
 // FORMS
+export { default as Checkbox } from "./form/Checkbox";
 export { default as InputField } from "./form/InputField";
 export { default as InputLabel } from "./form/InputLabel";
 export { default as Select } from "./form/Select";

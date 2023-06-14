@@ -5,6 +5,8 @@ import { NoteStatus, NoteType } from "./enums";
  * Appwrite DB interfaces
  */
 
+// Interface used in hooks/useCollection to fetch data
+//
 export interface IFetchCollection {
     collection_id: string;
     queries?: string[];
@@ -12,6 +14,8 @@ export interface IFetchCollection {
     onError?: () => any;
 }
 
+// Interface used in hooks/useDocumentCreate to create documents
+//
 export interface ICreateDocument {
     data: any;
     permission?: string[];
@@ -19,6 +23,8 @@ export interface ICreateDocument {
     onError?: () => any;
 }
 
+// Interface used in hooks/useDocumentUpdate to update documents
+//
 export interface IUpdateDocument {
     document_id: string;
     data: any;
@@ -27,6 +33,8 @@ export interface IUpdateDocument {
     onError?: () => any;
 }
 
+// Interface used in hooks/useDocumentDelete to delete documents
+//
 export interface IDeleteDocument {
     document_id: any;
     onSuccess?: () => any;
@@ -54,6 +62,17 @@ export type Note = Models.Document & {
     status_last_update: Date;
     snippet_language: string;
     search_index: string;
+}
+
+
+/**
+ * TODO
+ * 
+ */
+export interface Todo {
+    title: string;
+    done: boolean;
+    order: number
 }
 
 /**
@@ -87,7 +106,6 @@ export type PasswordResetForm = {
 }
 
 
-
 /**
  * NOTES
  */
@@ -100,6 +118,11 @@ export type NoteFormData = {
     snippet_language?: string;
     status: NoteStatus;
 }
+
+/**
+ * CODE LANGUAGE TYPE
+ * used by code editor
+ */
 
 // Snippet supported languages
 export type SnippetLanguage = {

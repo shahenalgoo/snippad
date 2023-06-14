@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 // Typings
-import { Note } from "@/types/typings";
+import { Note, Todo } from "@/types/typings";
 
 // Icons
 import * as Icons from "react-icons/tb";
+import { NoteType } from "@/types/enums";
 
 interface NoteCardProps {
     note: Note | null;
@@ -24,10 +25,23 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
     // Remove HTML tags from string for non-HTML bodies (in sidebar preview)
     const removeTags = (note: Note | null) => {
         if (note?.body == null || undefined || '') return '';
-        if (note?.type === "code" && note?.snippet_language === 'html') return note?.body.substring(0, 120);
+        if (note?.type === NoteType.code && note?.snippet_language === 'html') return note?.body.substring(0, 120);
+        if (note?.type === NoteType.todo) return todoPreview()?.substring(0, 120);
 
         const newText = new DOMParser().parseFromString(note?.body, 'text/html');
         return newText.body.textContent?.substring(0, 120);
+
+        function todoPreview() {
+            if (!note) return "";
+            let preview = "";
+            const todoList: Todo[] = JSON.parse(note.body);
+            for (let i = 0; i < todoList.length; i++) {
+                const done = todoList[i].done ? "🟩 " : "🟥 ";
+                preview += done + todoList[i].title;
+                if (i + 1 !== todoList.length) preview += ", ";
+            }
+            return preview;
+        }
     }
 
     let color = "";
@@ -42,15 +56,15 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-css";
                 return "TbBrandCss3";
                 break;
-            case 'js':
+            case 'javascript':
                 color = "text-js";
                 return "TbBrandJavascript";
                 break;
-            case 'ts':
+            case 'typescript':
                 color = "text-ts";
                 return "TbBrandTypescript"
                 break;
-            case 'py':
+            case 'python':
                 color = "text-py";
                 return "TbBrandPython"
                 break;
@@ -58,7 +72,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-php";
                 return "TbBrandPhp"
                 break;
-            case 'cs':
+            case 'csharp':
                 color = "text-cs";
                 return "TbBrandCSharp"
                 break;
@@ -74,7 +88,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                 color = "text-json dark:text-white";
                 return "TbBraces"
                 break;
-            case 'kt':
+            case 'kotlin':
                 color = "text-kt";
                 return "TbBrandKotlin"
                 break;
@@ -102,10 +116,12 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
 
                 {/* Icons */}
                 <div className="shrink-0 w-10 h-10 flex items-center">
-                    {/* Default note icon */}
-                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-neutral-600 dark:text-neutral-200`} />}
+                    {/* Note icon */}
+                    {note?.type === "note" && <DynamicIcon name="TbNotes" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                     {/* Code snippet icons */}
                     {note?.type === "code" && <DynamicIcon name={setLanguageIcon(note)} size={24} strokeWidth={1} className={color} />}
+                    {/* Todo */}
+                    {note?.type === "todo" && <DynamicIcon name="TbListDetails" size={24} strokeWidth={1} className={`text-black dark:text-white`} />}
                 </div>
 
                 {/* Note title, subtitle or body */}
@@ -114,7 +130,7 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
                         <span className="line-clamp-1">{note?.title || 'Untitled'}</span>
                     </h5>
                     {note?.subtitle && <h6 className="text-xs font-semibold text-neutral-400 line-clamp-2">{note?.subtitle}</h6>}
-                    {!note?.subtitle && <p className="text-xs font-semibold text-neutral-500 line-clamp-2">{removeTags(note)}</p>}
+                    {!note?.subtitle && <p className="text-xs font-semibold text-neutral-500 line-clamp-2 break-all">{removeTags(note)}</p>}
                 </div>
 
                 {/* If starred */}

@@ -21,7 +21,6 @@ import { AppwriteIds, client, databases } from "@/lib/appwrite-config";
 import { Permission, Query, Role } from "appwrite";
 
 // Misc
-import Cookies from "universal-cookie";
 import toast from "react-hot-toast";
 
 
@@ -87,18 +86,17 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const [activeNotebook, setActiveNotebook] = useState<Notebook | null>(null);
     const [allNotes, setAllNotes] = useState<Note[] | null>(null);
     const [isLoadingAllNotes, setIsLoadingAllNotes] = useState<boolean>(true);
+    const [isFirstTimeLoad, setIsFirstTimeLoad] = useState<boolean>(true);
 
 
     // Default Names/Amounts
     //
-    const defaultNotebookName = "General Notebook";
-    const cookieNotebookRef = "activeNotebookRef";
+    const defaultNotebookName = "Personal";
+    const storageNotebookRef = "activeNotebookRef";
     const notebookLimit = 3;
+    //let firstTimeLoad = true;
 
-
-    // Init Cookies
-    //
-    const cookies = new Cookies();
+    // Notebook ref for local storage
     let lastNotebookUsed: Notebook;
 
 
@@ -107,25 +105,20 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const { user } = useUser();
     const router = useRouter();
     const { createDocument } = useDocumentCreate(AppwriteIds.collectionId_notebook);
-    const { createDocument: createFirstNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notebook);
-
     const { createNoteExamples } = useNoteExamples();
 
 
     // Fetch notebooks
     //
-    const fetchNotebooks = async (skipActivation?: boolean, eventNotebook?: Notebook) => {
+    const fetchNotebooks = async () => {
 
         setIsLoading(true);
 
         try {
 
             // Fetch user's notebooks
-            const res = await databases.listDocuments(
-                AppwriteIds.databaseId,
-                AppwriteIds.collectionId_notebook
-            );
+            const res = await databases.listDocuments(AppwriteIds.databaseId, AppwriteIds.collectionId_notebook);
 
             // Set collection & total
             setCollection(res.documents as Notebook[]);
@@ -135,46 +128,16 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             //     databases.deleteDocument(AppwriteIds.databaseId, AppwriteIds.collectionId_notebook, element.$id)
             // });
 
-
+            // If no notebooks are found, return.
             if (res.total == 0) return;
 
-            // Skip notebook activation when realtime triggers.
-            if (skipActivation) {
-                // Update active notebook only if eventNotebook is the same as the one currently active.
-                if (activeNotebook && eventNotebook?.$id === activeNotebook?.$id) {
-                    activateNotebook(eventNotebook);
-                }
-                return;
-            }
+            // The first document in the list is the default one: called ''Personal'
+            if (defaultNotebook === null) setDefaultNotebook(res.documents[0] as Notebook);
 
-            // The first document in the list is the default one: called ''General'
-            setDefaultNotebook(res.documents[0] as Notebook);
-
-            if (!cookies.get(cookieNotebookRef)) {
-                activateNotebook(res.documents[0] as Notebook);
-            }
-
-            let isFound = false;
-
-            // If cookie found is also in fetched notebooks, set saved. 
-            if (lastNotebookUsed) {
-                for (let i = 0; i < res.documents.length; i++) {
-                    if (lastNotebookUsed.$id == res.documents[i].$id) {
-                        isFound = true;
-                        activateNotebook(lastNotebookUsed);
-                        break;
-                    }
-                }
-
-                //If notebook saved in cookie not found, set default as active and save in cookie
-                if (!isFound) {
-                    activateNotebook(res.documents[0] as Notebook);
-                    cookies.set(cookieNotebookRef, defaultNotebook);
-                }
-
-            } else {
-                //create cookie with default
-                cookies.set(cookieNotebookRef, defaultNotebook);
+            // Auto-activate notebook on first time load
+            if (isFirstTimeLoad) {
+                onLoadActivateNotebook(res.documents as Notebook[]);
+                setIsFirstTimeLoad(false);
             }
 
         } catch (error) {
@@ -184,16 +147,42 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         }
     }
 
+
+    // Activate a notebook on first time load
+    //
+    const onLoadActivateNotebook = async (notebooks: Notebook[]) => {
+
+        // If we found notebook in local storage
+        // Check if it exists in fetched notebooks first, activate it. 
+        let isFound = false;
+        if (lastNotebookUsed) {
+
+            for (let i = 0; i < notebooks.length; i++) {
+                if (lastNotebookUsed.$id == notebooks[i].$id) {
+                    isFound = true;
+                    activateNotebook(lastNotebookUsed);
+                    return;
+                }
+            }
+        }
+
+        // If not found or the notebook found is not in fetched notebooks, set default active and save in local storage
+        if (!isFound || !lastNotebookUsed) {
+            activateNotebook(notebooks[0]);
+            if (defaultNotebook) localStorage.setItem(storageNotebookRef, JSON.stringify(defaultNotebook));
+
+        }
+    }
+
+
     // Set selected notebook as active
     //
     const activateNotebook = async (notebook: Notebook, backToWorkspace?: boolean) => {
-        console.log("active notebook is changing");
 
         setActiveNotebook(notebook);
 
-        // Also set it in cookies, check first if cookies exists.
-        if (cookies.get(cookieNotebookRef)) {
-            cookies.set(cookieNotebookRef, notebook);
+        if (localStorage.getItem(storageNotebookRef)) {
+            localStorage.setItem(storageNotebookRef, JSON.stringify(notebook));
         }
 
         if (backToWorkspace) {
@@ -202,7 +191,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }
 
 
-    // Create a new notebook
+    // Create a notebook
     //
     const createNotebook = async (title: string, isFirst?: boolean) => {
         // Abort if user not found
@@ -226,16 +215,17 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             data: {
                 title: isFirst ? defaultNotebookName : title,
             } as Notebook,
-            permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
+            permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
         });
 
-        // Automatically create some tutorial/example notes for the first 'General Notebook'
+        // Automatically create some tutorial/example notes for the first 'Personal Notebook'
         if (isFirst && newNotebook) {
             const welcomeNoteId = await createNoteExamples(newNotebook.$id);
             router.push('/workspace/' + welcomeNoteId);
         }
 
     }
+
 
     // Update a notebook
     //
@@ -261,11 +251,12 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     const deleteNotebook = (id: string) => {
         deleteDocument({ document_id: id })
 
-        // Switch active notebook to 'General' If the active notebook has been deleted
+        // Switch active notebook to 'Personal' If the active notebook has been deleted
         if (activeNotebook?.$id === id && defaultNotebook?.$id) {
             activateNotebook(defaultNotebook);
         }
     }
+
 
     //Fetch all notes for active notebook, for limit controls and stat display
     //
@@ -302,35 +293,49 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     }, [activeNotebook]);
 
 
-    // Use effect for notebooks
+    // Use effect for first time notebooks fetch
     //
     useEffect(() => {
 
         // Fetch notebooks
         fetchNotebooks();
 
-        // Fetch saved active notebook from cookies
-        lastNotebookUsed = cookies.get(cookieNotebookRef);
+        // Fetch saved active notebook from local storage
+        const savedNotebook: string | null = localStorage.getItem(storageNotebookRef);
+
+        // If found, assign it
+        if (savedNotebook) lastNotebookUsed = JSON.parse(savedNotebook);
+
+    }, []);
+
+
+    //Use effect to update ALL notes for active notebook and subscribe to notebook changes
+    //
+    useEffect(() => {
+        // Fetch notes for when active notebook is changed or found (first time)
+        fetchNotes();
 
         // Subscribe to live changes for the user's notebook collection
         //
         const subscribe = client.subscribe(`databases.${AppwriteIds.databaseId}.collections.${AppwriteIds.collectionId_notebook}.documents`,
             res => {
-
+                // Ref to the notebook that changed
                 const eventNotebook: Notebook = res.payload as Notebook;
 
-                fetchNotebooks(true, eventNotebook);
+                // If the event was an update
+                if (res.events[0].includes("update") && eventNotebook.$id === activeNotebook?.$id) {
+                    // Reactivate if it already was (to get the updates to show)
+                    activateNotebook(eventNotebook);
+                }
+
+                // Fetch again.
+                fetchNotebooks();
             }
         );
 
-    }, []);
-
-
-    //Use effect to update ALL notes for active notebook
-    //
-    useEffect(() => {
-        // Fetch notes for when active notebook is changed or found (first time)
-        fetchNotes();
+        return () => {
+            subscribe();
+        }
 
     }, [fetchNotes]);
 
@@ -339,7 +344,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
     //
     const contextValue: NotebookContextType = {
         isLoading,
-        collection: collection as Notebook[] | null,
+        collection: collection as Notebook[],
         total,
         defaultNotebookName,
         notebookLimit,
@@ -353,7 +358,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
         isLoadingAllNotes,
         fetchNotes
     }
-
 
     return (
         <NotebookContext.Provider value={contextValue}>

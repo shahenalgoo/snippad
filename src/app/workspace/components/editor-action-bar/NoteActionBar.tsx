@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 // Typings
 import { Note } from "@/types/typings";
-import { NoteStatus } from "@/types/enums";
+import { NoteStatus, NoteType } from "@/types/enums";
 
 // Hooks
 import { useDocumentUpdate } from "@/hooks";
@@ -31,6 +31,7 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import SaveNote from "./SaveNote";
 import StarNote from "./StarNote";
 import MoveNote from "./MoveNote";
+import CharacterCount from "./CharacterCount";
 
 
 interface NoteActionBarProps {
@@ -41,10 +42,13 @@ interface NoteActionBarProps {
     setStarred: Dispatch<SetStateAction<boolean>>;
     status: NoteStatus | null;
     setStatus: Dispatch<SetStateAction<NoteStatus | null>>;
+    characterCount: number;
+    wordCount: number;
+
 }
 
 
-const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus }) => {
+const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus, characterCount, wordCount }) => {
 
     // States
     //
@@ -99,10 +103,19 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
         updateNoteStatus(status === NoteStatus.trashed ? NoteStatus.published : NoteStatus.trashed, setIsLoadingTrash);
     }
 
-
     return (
         <div className="fixed bottom-4 left-0 z-30 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
 
+            {/* Character & Word Count */}
+            {note?.type === NoteType.note &&
+                <CharacterCount
+                    characterCount={characterCount}
+                    wordCount={wordCount}
+                />
+            }
+
+
+            {/* Save - Move - Star - Archive... */}
             <div className="rounded-full py-1 px-2 flex items-center gap-2 backdrop-blur-md bg-black/5 dark:bg-white/5">
                 {note?.status === NoteStatus.published &&
                     <SaveNote

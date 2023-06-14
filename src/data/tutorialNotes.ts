@@ -20,7 +20,7 @@ export const tutorialNotes = [
         subtitle: "A simple hello world!",
         body: `function helloWorld() { \n  console.log('Hello World!');\n}`,
         type: NoteType.code,
-        snippet_language: "js"
+        snippet_language: "javascript"
     },
     {
         title: "Appwrite's listDocuments",
@@ -28,6 +28,6 @@ export const tutorialNotes = [
         body:
             "import { Client, Databases } from 'appwrite';\n\nconst client = new Client();\n\nconst databases = new Databases(client);\n\nclient\n    .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint\n    .setProject('5df5acd0d48c2') // Your project ID;\n\nconst promise = databases.listDocuments('[DATABASE_ID]', '[COLLECTION_ID]');\n\npromise.then(function (response) {\n    console.log(response); // Success\n}, function (error) {\n    console.log(error); // Failure\n});",
         type: NoteType.code,
-        snippet_language: "js"
+        snippet_language: "javascript"
     }
 ];

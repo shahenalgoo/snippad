@@ -14,7 +14,7 @@ import { Button, Grid, Modal, Spinner } from "@/components";
 import NoteCard from "../cards/NoteCard";
 
 // Icons
-import { TbSearch, TbX } from 'react-icons/tb';
+import { TbSearch, TbSquareRounded, TbSquareRoundedCheck, TbX } from 'react-icons/tb';
 
 // Utils
 import { useGlobalState, setGlobalState } from "@/utils/global-states";
@@ -24,6 +24,7 @@ import { toast } from "react-hot-toast";
 // Appwrite
 import { AppwriteIds, databases } from "@/lib/appwrite-config";
 import { Query } from "appwrite";
+import { useToggle } from "@/hooks";
 
 
 /**
@@ -33,12 +34,14 @@ import { Query } from "appwrite";
 interface HeaderProps {
     searchQuery: string | null;
     setSearchQuery: Dispatch<SetStateAction<string | null>>
+    globalSearch: boolean;
+    setGlobalSearch: Dispatch<SetStateAction<boolean>>;
     setResults: Dispatch<SetStateAction<Note[] | null>>;
     onSubmit: FormEventHandler<HTMLFormElement>;
     onClose: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, setResults, onClose, onSubmit }) => {
+const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, globalSearch, setGlobalSearch, setResults, onClose, onSubmit }) => {
 
     const ref = useRef<any>(null);
     const [searchModal] = useGlobalState("searchModal");
@@ -60,21 +63,42 @@ const Header: FC<HeaderProps> = ({ searchQuery, setSearchQuery, setResults, onCl
     }, [searchQuery, setResults]);
 
     return (
-        <div className="flex items-center justify-between px-2 border-b border-border-light dark:border-border-dark">
-            <form onSubmit={onSubmit} className="flex-1">
-                <input
-                    type="text"
-                    ref={ref}
-                    onChange={onChange}
-                    placeholder="Type and hit enter to search..."
-                    className="w-full h-14 px-4 outline-none text-lg font-semibold placeholder:text-sm placeholder:font-normal bg-transparent"
-                />
-            </form>
+        <>
+            <div className="flex items-center justify-between px-2 border-b border-border-light dark:border-border-dark">
+                <form onSubmit={onSubmit} className="flex-1">
+                    <input
+                        type="text"
+                        ref={ref}
+                        onChange={onChange}
+                        placeholder="Type and hit enter to search..."
+                        className="w-full h-14 px-4 outline-none text-lg font-semibold placeholder:text-sm placeholder:font-normal bg-transparent"
+                    />
 
-            <Button variant='black' size='square' onClick={onClose}>
-                <TbX size={20} strokeWidth={1} className='' />
-            </Button>
-        </div>
+                </form>
+
+                <Button onClick={() => setGlobalSearch(!globalSearch)} size='small' variant="link" className="hidden sm:flex mr-3">
+                    <span className="mr-2 text-xl">
+                        {!globalSearch && <TbSquareRounded strokeWidth={1} />}
+                        {globalSearch && <TbSquareRoundedCheck strokeWidth={1} />}
+                    </span>
+                    Global Search
+                </Button>
+
+                <Button type="button" variant='black' size='square' onClick={onClose}>
+                    <TbX size={20} strokeWidth={1} className='' />
+                </Button>
+            </div>
+
+            <div className="sm:hidden py-2 px-4 border-b border-border-light dark:border-border-dark">
+                <Button onClick={() => setGlobalSearch(!globalSearch)} size='small' variant="link" className="mr-2">
+                    <span className="mr-2 text-xl">
+                        {!globalSearch && <TbSquareRounded strokeWidth={1} />}
+                        {globalSearch && <TbSquareRoundedCheck strokeWidth={1} />}
+                    </span>
+                    Global Search
+                </Button>
+            </div>
+        </>
     );
 }
 
@@ -95,6 +119,7 @@ const SearchModal: FC<SearchModalProps> = () => {
     const [searchQuery, setSearchQuery] = useState<string | null>(null);
     const [results, setResults] = useState<Note[] | null>(null);
     const [resultsCount, setResultsCount] = useState<number>(0)
+    const [globalSearch, setGlobalSearch] = useState<boolean>(false);
 
 
     // Hooks
@@ -103,7 +128,7 @@ const SearchModal: FC<SearchModalProps> = () => {
 
 
     // Search Notes
-    const searchNotes = async (e: React.FormEvent<HTMLFormElement>, searchGlobal?: boolean) => {
+    const searchNotes = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // If no active notebook is found, cancel fetch.
@@ -129,7 +154,7 @@ const SearchModal: FC<SearchModalProps> = () => {
         ]
 
         // Search only in active notebook, if not global
-        if (!searchGlobal) {
+        if (!globalSearch) {
             queries.push(Query.equal('notebook_related', activeNotebook.$id));
         }
 
@@ -170,6 +195,10 @@ const SearchModal: FC<SearchModalProps> = () => {
                 <Header
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
+
+                    globalSearch={globalSearch}
+                    setGlobalSearch={setGlobalSearch}
+
                     setResults={setResults}
                     onSubmit={searchNotes}
                     onClose={onClose}

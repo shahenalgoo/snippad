@@ -62,6 +62,42 @@ body {
 
 
 /*//////////////////////////////////////////////////////////////
+    CHECKBOX
+//////////////////////////////////////////////////////////////*/
+.checkbox {
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: black;
+
+    input {
+        display: none;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+    }
+
+    // checked bg
+    input:checked~.checkmark {
+        background-color: theme('colors.primary');
+    }
+
+    input:checked~.checkmark .checkmark-icon {
+        display: block;
+    }
+}
+
+
+/*//////////////////////////////////////////////////////////////
     TEXT EDITOR - PROSE MIRROR
 //////////////////////////////////////////////////////////////*/
 
