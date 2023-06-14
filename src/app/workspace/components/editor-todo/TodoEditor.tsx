@@ -72,9 +72,10 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
  */
 interface TodoEditorProps {
     note: Note | null;
+    onUpdateFormBody: (newBody: string) => void;
 }
 
-const TodoEditor: FC<TodoEditorProps> = ({ note }) => {
+const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
 
     // States
     //
@@ -125,7 +126,6 @@ const TodoEditor: FC<TodoEditorProps> = ({ note }) => {
         }
 
         setData(newData);
-
     }
 
 
@@ -133,16 +133,20 @@ const TodoEditor: FC<TodoEditorProps> = ({ note }) => {
         setData((array) => arrayMoveImmutable(array, oldIndex, newIndex))
     }
 
-    const onSave = () => {
-        localStorage.setItem("todo", JSON.stringify(data));
-    }
 
+    // First time load data
+    //
     useEffect(() => {
-        const savedList = localStorage.getItem("todo");
-        if (savedList) {
-            setData(JSON.parse(savedList));
-        }
+        if (note && note.type === NoteType.todo) { setData(JSON.parse(note.body)) };
     }, []);
+
+
+    // Update note body on change
+    //
+    useEffect(() => {
+        onUpdateFormBody(JSON.stringify(data))
+    }, [data]);
+
 
     return note?.type === NoteType.todo ? (
         <>
@@ -161,8 +165,6 @@ const TodoEditor: FC<TodoEditorProps> = ({ note }) => {
                     Add Item
                 </Button>
             </div>
-
-            {/* <button onClick={onSave}>Save List</button> */}
         </>
     ) : null
 }

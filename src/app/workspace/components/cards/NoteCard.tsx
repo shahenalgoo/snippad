@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 // Typings
-import { Note } from "@/types/typings";
+import { Note, Todo } from "@/types/typings";
 
 // Icons
 import * as Icons from "react-icons/tb";
+import { NoteType } from "@/types/enums";
 
 interface NoteCardProps {
     note: Note | null;
@@ -24,10 +25,23 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
     // Remove HTML tags from string for non-HTML bodies (in sidebar preview)
     const removeTags = (note: Note | null) => {
         if (note?.body == null || undefined || '') return '';
-        if (note?.type === "code" && note?.snippet_language === 'html') return note?.body.substring(0, 120);
+        if (note?.type === NoteType.code && note?.snippet_language === 'html') return note?.body.substring(0, 120);
+        if (note?.type === NoteType.todo) return todoPreview()?.substring(0, 120);
 
         const newText = new DOMParser().parseFromString(note?.body, 'text/html');
         return newText.body.textContent?.substring(0, 120);
+
+        function todoPreview() {
+            if (!note) return "";
+            let preview = "";
+            const todoList: Todo[] = JSON.parse(note.body);
+            for (let i = 0; i < todoList.length; i++) {
+                const done = todoList[i].done ? "🟩 " : "🟥 ";
+                preview += done + todoList[i].title;
+                if (i + 1 !== todoList.length) preview += ", ";
+            }
+            return preview;
+        }
     }
 
     let color = "";
