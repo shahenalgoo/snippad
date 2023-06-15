@@ -35,6 +35,7 @@ NEXT_PUBLIC_COLLECTION_NOTEBOOKS_ID=xxxx
 NEXT_PUBLIC_COLLECTION_NOTES_ID=xxxx
 
 NEXT_PUBLIC_BUCKET_IMAGES_ID=xxxx
+NEXT_PUBLIC_FUNCTION_SHARE_NOTE=xxxx
 ```
 
 \
@@ -64,7 +65,9 @@ c. **Create Notebooks Collection**
  
 |Key  |Type  |Default Value |
 |--|--|--|
-|title (required)  |string  |*~leave empty~*
+|title (required)  |string  |-
+|type|enum (personal, shared)|-
+
 
  4. Go to the Settings tab of the collection and set the permission:
 
@@ -95,6 +98,7 @@ d. **Create Notes Collection**
 |status_last_update  |datetime|-  |-
 |snippet_language  |string|20  |-
 |search_index  |string|5500  |-
+|last_change_by| string|50|-
 \
 5. Once done, we need to setup our search functionality and filters. Go to the Index tab and add:
 
@@ -127,8 +131,8 @@ You can also go to `/src/app/(authentication)/login/CreateOauthSession.tsx` to s
 Please refer to the Appwrite documentation for help on how to [Appwrite 0auth](https://appwrite.io/docs/client/account?sdk=web-default#accountCreateOAuth2Session).
 
 
-## Server Function(optional)
-You’ve reached the last step, here is how to set up the server function that deletes trash after 30 days.
+## Server Function - Delete Trash
+Here is how to set up the server function that deletes trash after 30 days.
 For more information, please refer to the [Appwrite Functions API](https://appwrite.io/docs/client/functions) and a tutorial about [how to get started with Appwrite functions](https://appwrite.io/docs/functions).
 \
 To get started:
@@ -169,7 +173,17 @@ APPWRITE_FUNCTION_PROJECT_ID
 DATABASE_ID
 COLLECTION_ID_NOTES
 ```
+
+## Server Function - Live Collab
+Repeat the same steps from above(trash function). 
+
+ 1. Create a folder called `snippad_live_collab` , initialize a function until you get the `index.js`. 
+ 2. Replace everything in `index.js` with `liveCollab.js` (found in `/functions` from the source code).
+ 3. Deploy the function.
+ 4. Go to the **Settings** tab of the function and in the `Execute Access` section, select **All Users**.
+
 \
 **Congrats!**
+
 Go back to the root folder of the source code and open the terminal. 
 Run the command `npm run dev` or `yarn dev` and you’re all set!
