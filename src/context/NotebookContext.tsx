@@ -216,7 +216,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                 title: isFirst ? defaultNotebookName : title,
                 type: NotebookType.personal
             } as Notebook,
-            permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
+            permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
         });
 
         if (isFirst && newNotebook) {
@@ -227,7 +227,7 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
                     title: "Shared (Experimental)",
                     type: NotebookType.shared
                 } as Notebook,
-                permission: isFirst ? [Permission.read(Role.user(user.$id)), Permission.delete(Role.user(user.$id))] : undefined
+                permission: isFirst ? [Permission.read(Role.user(user.$id))] : undefined
             });
 
             // Automatically create some tutorial/example notes for the first 'Personal Notebook'
