@@ -167,9 +167,6 @@ export const NotebookProvider: React.FC<NotebookProviderProps> = ({ children }: 
             }
         }
 
-        console.log("first time load");
-
-
         // If not found or the notebook found is not in fetched notebooks, set default active and save in local storage
         if (!isFound || !lastNotebookUsed) {
             activateNotebook(notebooks[0]);
