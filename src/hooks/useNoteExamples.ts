@@ -17,6 +17,7 @@ import { tutorialNotes } from "@/data/tutorialNotes";
 
 // Appwrite
 import { AppwriteIds } from "@/lib/appwrite-config";
+import { useUser } from "@/context/SessionContext";
 
 
 /**
@@ -32,8 +33,12 @@ export default function useNoteExamples() {
     // States
     //
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { createDocument: createNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
 
+
+    // Hooks
+    //
+    const { createDocument: createNote } = useDocumentCreate(AppwriteIds.collectionId_notes);
+    const { user } = useUser();
 
     //Create Notes Function
     //
@@ -57,7 +62,8 @@ export default function useNoteExamples() {
                     status: NoteStatus.published,
                     status_last_update: new Date(),
                     snippet_language: noteData.snippet_language,
-                    search_index: ''
+                    search_index: noteData.title + ' ' + noteData.subtitle + ' ' + noteData.body,
+                    last_change_by: user?.$id
                 } as Note,
             })
 
