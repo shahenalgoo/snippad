@@ -31,12 +31,14 @@ const NoteCard: FC<NoteCardProps> = ({ note, asSearchResult }) => {
         const newText = new DOMParser().parseFromString(note?.body, 'text/html');
         return newText.body.textContent?.substring(0, 120);
 
+        // Build a preview for todo lists
+        //
         function todoPreview() {
-            if (!note) return "";
+            if (!note || note.body === "") return "";
             let preview = "";
             const todoList: Todo[] = JSON.parse(note.body);
             for (let i = 0; i < todoList.length; i++) {
-                const done = todoList[i].done ? "🟩 " : "🟥 ";
+                const done = todoList[i].done ? "🟢 " : "⚫ ";
                 preview += done + todoList[i].title;
                 if (i + 1 !== todoList.length) preview += ", ";
             }

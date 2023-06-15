@@ -11,17 +11,18 @@ import { useRouter } from 'next/navigation';
 
 // Typings
 import { Note } from "@/types/typings";
-import { NoteStatus, NoteType } from "@/types/enums";
+import { NoteStatus, NoteType, NotebookType } from "@/types/enums";
 
 // Hooks
 import { useDocumentUpdate } from "@/hooks";
 import { useNotebook } from "@/context/NotebookContext";
+import { useUser } from "@/context/SessionContext";
 
 // Components
 import { Button } from "@/components";
 
 // Icons
-import { TbCheck, TbLoader2, TbRotateRectangle, TbTrash } from "react-icons/tb";
+import { TbCheck, TbLoader2, TbRotateRectangle, TbShare2, TbTrash } from "react-icons/tb";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
 
 // Appwrite
@@ -31,6 +32,7 @@ import { AppwriteIds } from "@/lib/appwrite-config";
 import SaveNote from "./SaveNote";
 import StarNote from "./StarNote";
 import MoveNote from "./MoveNote";
+import ShareNote from "./ShareNote";
 import CharacterCount from "./CharacterCount";
 
 
@@ -45,10 +47,24 @@ interface NoteActionBarProps {
     characterCount: number;
     wordCount: number;
 
+    // Share notes
+    shareNote: (e: React.FormEvent<HTMLFormElement>) => void;
+    shareEmail: string | null;
+    setShareEmail: Dispatch<SetStateAction<string | null>>
 }
 
 
-const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isStarred, setStarred, status, setStatus, characterCount, wordCount }) => {
+const NoteActionBar: FC<NoteActionBarProps> = ({
+    note,
+    isSaving, saveNote,
+    isStarred, setStarred,
+    status, setStatus,
+    characterCount, wordCount,
+
+    shareNote,
+    shareEmail,
+    setShareEmail
+}) => {
 
     // States
     //
@@ -59,6 +75,8 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
     // Hooks
     //
     const router = useRouter();
+    const { user } = useUser();
+    const { activeNotebook } = useNotebook();
     const { updateDocument } = useDocumentUpdate(AppwriteIds.collectionId_notes);
     const { fetchNotes } = useNotebook();
 
@@ -104,7 +122,7 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
     }
 
     return (
-        <div className="fixed bottom-4 left-0 z-30 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
+        <div className="fixed bottom-4 left-0 z-20 w-full flex justify-center lg:z-40 lg:bottom-auto lg:w-auto lg:left-auto lg:top-[6px] lg:right-[70px]">
 
             {/* Character & Word Count */}
             {note?.type === NoteType.note &&
@@ -167,6 +185,17 @@ const NoteActionBar: FC<NoteActionBarProps> = ({ note, isSaving, saveNote, isSta
                     </Button>
                 }
             </div>
+
+
+            {/* Share Doc */}
+            {user && activeNotebook?.type === NotebookType.shared && note?.$permissions[0].includes(user.$id) &&
+                <ShareNote
+                    shareNote={shareNote}
+                    shareEmail={shareEmail}
+                    setShareEmail={setShareEmail}
+                />
+            }
+
         </div>
     );
 }

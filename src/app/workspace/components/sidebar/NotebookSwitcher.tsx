@@ -101,7 +101,7 @@ const NotebookSwitcher: FC<NotebookSwitcherProps> = () => {
 
             {/* Notebook backdrop */}
             < div onClick={() => setNotebookDropdown(!notebookDropdown)} className={`absolute top-0 left-0 w-full h-full cursor-zoom-out backdrop-blur-lg bg-black/10 dark:bg-white/10 transition-all ${!notebookDropdown ? 'invisible opacity-0' : 'visible opacity-100 z-40'}`}>
-                & nbsp;
+                &nbsp;
             </div >
         </>
     );

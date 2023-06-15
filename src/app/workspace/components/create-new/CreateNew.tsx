@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 // Typings
 import { Note } from "@/types/typings";
-import { NoteStatus, NoteType } from "@/types/enums";
+import { NoteStatus, NoteType, NotebookType } from "@/types/enums";
 
 // Hooks
 import { useUser } from "@/context/SessionContext";
@@ -67,13 +67,14 @@ const CreateNew: FC<CreateNewProps> = () => {
                     title: "",
                     subtitle: "",
                     body: "",
-                    notebook_related: activeNotebook.$id,
+                    notebook_related: activeNotebook.type == NotebookType.personal ? activeNotebook.$id : NotebookType.shared,
                     type: type,
                     starred: false,
                     status: NoteStatus.published,
                     status_last_update: new Date(),
                     snippet_language: 'html',
-                    search_index: ''
+                    search_index: '',
+                    last_change_by: user?.$id
                 } as Note,
                 permission: [
                     Permission.read(Role.user(user?.$id)),
@@ -121,19 +122,26 @@ const CreateNew: FC<CreateNewProps> = () => {
                         <h1 className="mb-8 text-xl text-black dark:text-white font-semibold">Create New</h1>
 
                         <div className="flex gap-4 md:gap-6">
+
                             <CreateNewButton className="bg-blue-950" onClick={() => createNote(NoteType.code)}>
                                 <TbCode size={30} strokeWidth={1} />
                                 Code
                             </CreateNewButton>
+
                             <CreateNewButton className="bg-emerald-900" onClick={() => createNote(NoteType.note)}>
                                 <TbNotes size={30} strokeWidth={1} />
                                 Note
                             </CreateNewButton>
 
-                            <CreateNewButton className="bg-purple-950" onClick={() => createNote(NoteType.todo)}>
-                                <TbListDetails size={30} strokeWidth={1} />
-                                Todo
-                            </CreateNewButton>
+                            {/* TODO not available in shared */}
+                            {activeNotebook?.type !== NotebookType.shared &&
+                                <CreateNewButton className="bg-purple-950" onClick={() => createNote(NoteType.todo)}>
+                                    <TbListDetails size={30} strokeWidth={1} />
+                                    Todo
+                                </CreateNewButton>
+
+                            }
+
                         </div>
                     </>
                 }

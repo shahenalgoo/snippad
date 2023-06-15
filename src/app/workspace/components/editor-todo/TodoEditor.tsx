@@ -42,7 +42,7 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
             <div className="shrink-0 mr-4">
                 <Checkbox
                     variant="circle"
-                    defaultChecked={todo.done}
+                    checked={todo.done}
                     onChange={(e: any) => onCheckItem(index, e.target.checked)}
                     className="shrink-0 mr-4"
                 />
@@ -51,7 +51,7 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
             <div className="flex-1">
                 <input
                     type="text"
-                    defaultValue={todo.title}
+                    value={todo.title}
                     onChange={(e) => onChangeContent(index, e.target.value)}
                     className="flex-1 w-full h-14 outline-none bg-transparent"
                 />
@@ -73,25 +73,32 @@ const TodoItem: FC<TodoItemProps> = ({ todo, index, onChangeContent, onCheckItem
 interface TodoEditorProps {
     note: Note | null;
     onUpdateFormBody: (newBody: string) => void;
+    changeDetector: boolean
+    body: string;
 }
 
-const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
-
+const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody, changeDetector, body }) => {
     // States
     //
     const [data, setData] = useState<Todo[]>([]);
 
-
+    // New item
+    //
     const newItem: Todo = {
         title: "New item",
-        done: false,
-        order: data.length
+        done: false
     }
 
+
+    // Add a new item
+    //
     const onAddItem = () => {
         setData(data => [...data, newItem])
     }
 
+
+    // Check box of a todo item
+    //
     const onCheckItem = (index: number, checked: boolean) => {
         const newState = data.map((obj, i) => {
             if (i === index) {
@@ -104,6 +111,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newState);
     };
 
+
+    // Changing content of a todo item
+    //
     const onChangeContent = (index: number, newTitle: string) => {
         const newState = data.map((obj, i) => {
             if (i === index) {
@@ -116,6 +126,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newState);
     };
 
+
+    // Delete a todo item
+    //
     const onDelete = (index: number) => {
         let newData: Todo[] = new Array();
 
@@ -128,7 +141,8 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
         setData(newData);
     }
 
-
+    // Swapping items in array
+    //
     const onSortEnd = (oldIndex: number, newIndex: number) => {
         setData((array) => arrayMoveImmutable(array, oldIndex, newIndex))
     }
@@ -137,7 +151,9 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
     // First time load data
     //
     useEffect(() => {
-        if (note && note.type === NoteType.todo) { setData(JSON.parse(note.body)) };
+        if (note && note.type === NoteType.todo && note.body !== "") {
+            setData(JSON.parse(note.body))
+        };
     }, []);
 
 
@@ -159,6 +175,7 @@ const TodoEditor: FC<TodoEditorProps> = ({ note, onUpdateFormBody }) => {
                     </SortableItem>
                 ))}
             </SortableList>
+
 
             <div className="text-center">
                 <Button onClick={onAddItem} variant='black'>

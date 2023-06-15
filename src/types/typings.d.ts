@@ -1,5 +1,5 @@
 import { Models } from "appwrite";
-import { NoteStatus, NoteType } from "./enums";
+import { NoteStatus, NoteType, NotebookType } from "./enums";
 
 /**
  * Appwrite DB interfaces
@@ -49,6 +49,7 @@ export interface IDeleteDocument {
 
 export type Notebook = Models.Document & {
     title: string;
+    type: NotebookType;
 }
 
 export type Note = Models.Document & {
@@ -62,6 +63,7 @@ export type Note = Models.Document & {
     status_last_update: Date;
     snippet_language: string;
     search_index: string;
+    last_change_by: string;
 }
 
 
@@ -72,7 +74,6 @@ export type Note = Models.Document & {
 export interface Todo {
     title: string;
     done: boolean;
-    order: number
 }
 
 /**

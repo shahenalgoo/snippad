@@ -59,12 +59,7 @@ export default function useDocumentUpdate(collection_id: string) {
                 AppwriteIds.databaseId,
                 collection_id,
                 document_id,
-                data,
-                permission ? permission : [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id)),
-                ]
+                data
             );
 
             // Execute OnSuccess, if any

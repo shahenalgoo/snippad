@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { Dispatch, FC, SetStateAction } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 
 // Typings
 import { Note } from '@/types/typings';
@@ -25,9 +25,12 @@ interface TextEditorProps {
     noteStatus: NoteStatus | null;
     setCharacterCount: Dispatch<SetStateAction<number>>;
     setWordCount: Dispatch<SetStateAction<number>>;
+    changeDetector: boolean
+    body: string;
 }
 
-const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus, setCharacterCount, setWordCount }) => {
+const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus, setCharacterCount, setWordCount, changeDetector, body }) => {
+
 
     const characterLimit = 5000;
 
@@ -68,10 +71,16 @@ const TextEditor: FC<TextEditorProps> = ({ note, onUpdateFormBody, noteStatus, s
             // Update word count onUpdate
             setCharacterCount(editor.storage.characterCount.characters());
             setWordCount(editor.storage.characterCount.words());
-
         },
-
     });
+
+
+    // Use effect when receiving live data from, set received data
+    useEffect(() => {
+        editor?.commands.setContent(body);
+        setCharacterCount(editor?.storage.characterCount.characters());
+        setWordCount(editor?.storage.characterCount.words());
+    }, [changeDetector]);
 
 
     return note?.type === NoteType.note ? (

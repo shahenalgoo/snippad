@@ -114,6 +114,15 @@ body {
     color: #525252;
 }
 
+.dark .ProseMirror {
+
+    h1,
+    h2,
+    h3 {
+        color: theme('colors.primary') !important;
+    }
+}
+
 // HEADINGS
 .ProseMirror {
 

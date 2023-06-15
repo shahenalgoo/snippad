@@ -9,6 +9,7 @@
 export { default as useToggle } from './useToggle';
 export { default as useNoteExamples } from './useNoteExamples';
 export { default as useUnsavedChangesWarning } from './useUnsavedChangesWarning';
+export { default as useCTRLS } from './useCTRLS';
 
 
 // Appwrite Auth
