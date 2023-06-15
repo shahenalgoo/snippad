@@ -36,7 +36,7 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
             <Modal title="Are you sure?" modalActive={modalActive} onClose={() => setModalActive(!modalActive)} closeButton={false} closeWithBackdrop={false}>
                 <div className="p-4 pt-0">
                     {confirmationMessage}
-                    <div className="mt-8 flex justify-end gap-2">
+                    <div className="mt-8 flex flex-col sm:flex-row justify-end gap-2">
                         <Button onClick={() => setModalActive(!modalActive)} variant='gray'>Cancel</Button>
 
                         {confirmationButton}
